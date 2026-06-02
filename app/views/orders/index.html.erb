@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Commandes</h1>
+      <p class="text-muted">Suivez les prestations et ventes de votre atelier.</p>
+    </div>
+
+    <%= link_to "Nouvelle commande", new_order_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @orders.any? %>
+    <div class="list-group">
+      <% @orders.each do |order| %>
+        <%= link_to order_path(order), class: "list-group-item list-group-item-action mb-2 rounded shadow-sm" do %>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1">
+                Commande #<%= order.id %>
+              </h5>
+
+              <p class="mb-1">
+                <%= order.customer.firstname %> <%= order.customer.lastname %>
+              </p>
+
+              <small class="text-muted">
+                Échéance :
+                <%= order.due_date.present? ? l(order.due_date) : "Non définie" %>
+              </small>
+            </div>
+
+            <div class="text-end">
+              <span class="badge bg-secondary mb-2"><%= order.status %></span>
+              <br>
+              <span class="badge bg-warning text-dark"><%= order.priority %></span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      Aucune commande pour le moment.
+    </div>
+  <% end %>
+</div>

@@ -1,16 +1,41 @@
 Rails.application.routes.draw do
+  get "communications/create"
+  get "orders/index"
+  get "orders/show"
+  get "orders/new"
+  get "orders/create"
+  get "orders/edit"
+  get "orders/update"
+  get "orders/destroy"
+  get "items/index"
+  get "items/show"
+  get "items/new"
+  get "items/create"
+  get "items/edit"
+  get "items/update"
+  get "items/destroy"
+  get "customers/index"
+  get "customers/show"
+  get "customers/new"
+  get "customers/create"
+  get "customers/edit"
+  get "customers/update"
+  get "customers/destroy"
+  get "dashboards/show"
   devise_for :users
-  root to: "pages#home"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  root to: "pages#home"
+
+  # Health check Heroku / Rails
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  # Dashboard
+  get "dashboard", to: "dashboards#show", as: :dashboard
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # App métier Popwear Pro
+  resources :customers
+  resources :items
+  resources :orders do
+    resources :communications, only: [:create]
+  end
 end

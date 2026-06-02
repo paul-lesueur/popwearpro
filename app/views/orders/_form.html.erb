@@ -1,0 +1,148 @@
+<%= form_with model: order, local: true do |form| %>
+  <% if order.errors.any? %>
+    <div class="alert alert-danger">
+      <p><strong>Erreur :</strong></p>
+      <ul>
+        <% order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Informations commande</h2>
+
+      <div class="mb-3">
+        <%= form.label :customer_id, "Client", class: "form-label" %>
+        <%= form.collection_select :customer_id,
+          @customers,
+          :id,
+          :lastname,
+          { prompt: "Choisir un client" },
+          class: "form-select"
+        %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :status, "Statut", class: "form-label" %>
+        <%= form.select :status,
+          [
+            ["À faire", "pending"],
+            ["En cours", "in_progress"],
+            ["Terminée", "completed"],
+            ["Livrée", "delivered"],
+            ["Annulée", "cancelled"]
+          ],
+          {},
+          class: "form-select"
+        %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :priority, "Priorité", class: "form-label" %>
+        <%= form.select :priority,
+          [
+            ["Basse", "low"],
+            ["Moyenne", "medium"],
+            ["Haute", "high"],
+            ["Urgente", "urgent"]
+          ],
+          {},
+          class: "form-select"
+        %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :due_date, "Date limite", class: "form-label" %>
+        <%= form.date_field :due_date, class: "form-control" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :payment_method, "Moyen de paiement", class: "form-label" %>
+        <%= form.select :payment_method,
+          [
+            ["Carte", "card"],
+            ["Espèces", "cash"],
+            ["Virement", "bank_transfer"],
+            ["Autre", "other"]
+          ],
+          { prompt: "Choisir un moyen de paiement" },
+          class: "form-select"
+        %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :payment_status, "Statut paiement", class: "form-label" %>
+        <%= form.select :payment_status,
+          [
+            ["Non payé", "unpaid"],
+            ["Payé", "paid"]
+          ],
+          {},
+          class: "form-select"
+        %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :internal_notes, "Notes internes", class: "form-label" %>
+        <%= form.text_area :internal_notes, rows: 4, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Lignes de commande</h2>
+
+      <p class="text-muted">
+        Sélectionnez une ou plusieurs prestations / produits. Les lignes vides seront ignorées.
+      </p>
+
+      <%= form.fields_for :order_lines do |line_form| %>
+        <div class="row align-items-end border-bottom py-3">
+          <div class="col-md-5">
+            <%= line_form.label :item_id, "Élément catalogue", class: "form-label" %>
+            <%= line_form.collection_select :item_id,
+              @items,
+              :id,
+              :name,
+              { prompt: "Choisir une prestation ou un produit" },
+              class: "form-select"
+            %>
+          </div>
+
+          <div class="col-md-2">
+            <%= line_form.label :quantity, "Quantité", class: "form-label" %>
+            <%= line_form.number_field :quantity, class: "form-control", min: 1 %>
+          </div>
+
+          <div class="col-md-2">
+            <%= line_form.label :unit_price_ht, "Prix HT", class: "form-label" %>
+            <%= line_form.number_field :unit_price_ht, step: 0.01, class: "form-control" %>
+          </div>
+
+          <div class="col-md-2">
+            <%= line_form.label :vat_rate, "TVA %", class: "form-label" %>
+            <%= line_form.number_field :vat_rate, step: 0.01, class: "form-control" %>
+          </div>
+
+          <div class="col-md-1">
+            <% if line_form.object.persisted? %>
+              <div class="form-check">
+                <%= line_form.check_box :_destroy, class: "form-check-input" %>
+                <%= line_form.label :_destroy, "Suppr.", class: "form-check-label small" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= form.submit "Enregistrer", class: "btn btn-primary" %>
+    <%= link_to "Annuler", orders_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

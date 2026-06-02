@@ -1,0 +1,41 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1><%= @customer.firstname %> <%= @customer.lastname %></h1>
+      <p class="text-muted">Fiche client</p>
+    </div>
+
+    <div>
+      <%= link_to "Modifier", edit_customer_path(@customer), class: "btn btn-outline-primary" %>
+      <%= link_to "Retour", customers_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <p><strong>Email :</strong> <%= @customer.email.presence || "Non renseigné" %></p>
+      <p><strong>Téléphone :</strong> <%= @customer.phone.presence || "Non renseigné" %></p>
+      <p><strong>Notes :</strong></p>
+      <p><%= @customer.notes.presence || "Aucune note." %></p>
+    </div>
+  </div>
+
+  <h2 class="h4 mb-3">Commandes du client</h2>
+
+  <% if @customer.orders.any? %>
+    <div class="list-group">
+      <% @customer.orders.each do |order| %>
+        <%= link_to order_path(order), class: "list-group-item list-group-item-action" do %>
+          <div class="d-flex justify-content-between">
+            <span>Commande #<%= order.id %></span>
+            <span class="badge bg-secondary"><%= order.status %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      Ce client n'a pas encore de commande.
+    </div>
+  <% end %>
+</div>

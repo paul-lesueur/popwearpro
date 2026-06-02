@@ -1,0 +1,44 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Clients</h1>
+      <p class="text-muted">Gérez les clients de votre atelier.</p>
+    </div>
+
+    <%= link_to "Nouveau client", new_customer_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="row">
+    <% @customers.each do |customer| %>
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">
+              <%= customer.firstname %> <%= customer.lastname %>
+            </h5>
+
+            <p class="card-text mb-1">
+              <strong>Email :</strong> <%= customer.email.presence || "Non renseigné" %>
+            </p>
+
+            <p class="card-text mb-1">
+              <strong>Téléphone :</strong> <%= customer.phone.presence || "Non renseigné" %>
+            </p>
+
+            <p class="card-text text-muted">
+              <%= truncate(customer.notes, length: 80) %>
+            </p>
+
+            <%= link_to "Voir", customer_path(customer), class: "btn btn-outline-primary btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @customers.empty? %>
+    <div class="alert alert-info">
+      Aucun client pour le moment.
+    </div>
+  <% end %>
+</div>

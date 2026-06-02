@@ -1,0 +1,70 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Commande #<%= @order.id %></h1>
+      <p class="text-muted">
+        Client :
+        <%= @order.customer.firstname %> <%= @order.customer.lastname %>
+      </p>
+    </div>
+
+    <div>
+      <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary" %>
+      <%= link_to "Retour", orders_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <p><strong>Statut :</strong> <%= @order.status %></p>
+      <p><strong>Priorité :</strong> <%= @order.priority %></p>
+      <p><strong>Date limite :</strong> <%= @order.due_date.present? ? l(@order.due_date) : "Non définie" %></p>
+      <p><strong>Moyen de paiement :</strong> <%= @order.payment_method.presence || "Non renseigné" %></p>
+      <p><strong>Statut paiement :</strong> <%= @order.payment_status.presence || "Non renseigné" %></p>
+
+      <p><strong>Notes internes :</strong></p>
+      <p><%= @order.internal_notes.presence || "Aucune note." %></p>
+    </div>
+  </div>
+
+  <h2 class="h4 mb-3">Lignes de commande</h2>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <% total_ht = 0 %>
+      <% total_ttc = 0 %>
+
+      <% @order.order_lines.each do |line| %>
+        <% total_ht += line.total_ht %>
+        <% total_ttc += line.total_ttc %>
+
+        <div class="d-flex justify-content-between border-bottom py-2">
+          <div>
+            <strong><%= line.item.name %></strong>
+            <br>
+            <small class="text-muted">
+              Quantité : <%= line.quantity %> —
+              TVA : <%= line.vat_rate %> %
+            </small>
+          </div>
+
+          <div class="text-end">
+            <%= number_to_currency(line.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC
+          </div>
+        </div>
+      <% end %>
+
+      <div class="text-end mt-3">
+        <p class="mb-1">
+          <strong>Total HT :</strong>
+          <%= number_to_currency(total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+        </p>
+
+        <p class="fs-5">
+          <strong>Total TTC :</strong>
+          <%= number_to_currency(total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
