@@ -2,10 +2,21 @@ class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
   before_action :set_form_data, only: [:new, :create, :edit, :update]
 
+  KANBAN_COLUMNS = [
+    { key: "new",         label: "Nouvelles commandes",       statuses: %w[draft pending] },
+    { key: "in_progress", label: "En cours",                  statuses: %w[in_progress] },
+    { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent] },
+    { key: "done",        label: "Terminées",                 statuses: %w[completed delivered] }
+  ].freeze
+
   def index
-    @orders = current_establishment.orders
-                                   .includes(:customer, :order_lines)
-                                   .order(created_at: :desc)
+    orders = current_establishment.orders
+                                  .includes(:customer, order_lines: :item)
+                                  .order(created_at: :desc)
+
+    @columns = KANBAN_COLUMNS.map do |col|
+      col.merge(orders: orders.select { |o| col[:statuses].include?(o.status) })
+    end
   end
 
   def show
