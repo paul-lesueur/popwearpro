@@ -88,3 +88,9 @@
   color: $success;
   background: #fff;
 }
+
+// ---- Off-canvas mobile (<992px) : mêmes items, largeur réduite ----
+.app-sidebar-offcanvas {
+  --bs-offcanvas-width: 260px;
+}
+

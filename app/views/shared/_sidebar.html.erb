@@ -1,49 +1,9 @@
-<%
-  # Détection de l'item actif via le contrôleur courant.
-  nav = controller_name
-  orders_count = current_establishment&.orders&.count.to_i
-%>
-<aside class="app-sidebar" id="sidebarOffcanvas">
+<%# Sidebar permanente (desktop ≥992px). En dessous, c'est l'off-canvas qui prend le relais. %>
+<aside class="app-sidebar d-none d-lg-flex">
   <div class="app-sidebar__brand">
     <span class="app-sidebar__logo">popwear</span>
     <span class="app-sidebar__pro">PRO</span>
   </div>
 
-  <nav class="app-sidebar__nav">
-    <%= link_to dashboard_path, class: "app-sidebar__item #{'is-active' if nav == 'dashboards'}" do %>
-      <i class="fa-solid fa-star app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Tableau de bord</span>
-    <% end %>
-
-    <%= link_to orders_path, class: "app-sidebar__item #{'is-active' if nav == 'orders'}" do %>
-      <i class="fa-solid fa-tag app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Commandes</span>
-      <% if orders_count.positive? %>
-        <span class="app-sidebar__badge"><%= orders_count %></span>
-      <% end %>
-    <% end %>
-
-    <%# TODO route à câbler : Messages (communications n'a qu'une route nested :create) %>
-    <%= link_to "#", class: "app-sidebar__item" do %>
-      <i class="fa-solid fa-comment-dots app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Messages</span>
-    <% end %>
-
-    <%# TODO route à câbler : Ventes (aucune route pour l'instant) %>
-    <%= link_to "#", class: "app-sidebar__item" do %>
-      <i class="fa-solid fa-list app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Ventes</span>
-    <% end %>
-
-    <%= link_to customers_path, class: "app-sidebar__item #{'is-active' if nav == 'customers'}" do %>
-      <i class="fa-solid fa-users app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Clients</span>
-    <% end %>
-
-    <%# TODO route à câbler : Établissement (pas de resource dédiée pour l'instant) %>
-    <%= link_to "#", class: "app-sidebar__item" do %>
-      <i class="fa-solid fa-house app-sidebar__icon"></i>
-      <span class="app-sidebar__label">Établissement</span>
-    <% end %>
-  </nav>
+  <%= render "shared/sidebar_nav" %>
 </aside>
