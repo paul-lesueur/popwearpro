@@ -1,2 +1,163 @@
-<h1>Dashboards#show</h1>
-<p>Find me in app/views/dashboards/show.html.erb</p>
+<div class="container py-4">
+  <div class="mb-4">
+    <h1>Dashboard</h1>
+    <p class="text-muted">
+      Vue d'ensemble de l'activité de <%= @establishment.name %>.
+    </p>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Commandes en cours</p>
+          <h2><%= @orders_in_progress.count %></h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Commandes urgentes</p>
+          <h2><%= @urgent_orders.count %></h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Clients</p>
+          <h2><%= @customers.count %></h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">CA encaissé</p>
+          <h2>
+            <%= number_to_currency(@revenue, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-8 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Dernières commandes</h2>
+            <%= link_to "Voir tout", orders_path, class: "btn btn-outline-primary btn-sm" %>
+          </div>
+
+          <% if @recent_orders.any? %>
+            <div class="list-group">
+              <% @recent_orders.each do |order| %>
+                <%= link_to order_path(order), class: "list-group-item list-group-item-action" do %>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>Commande #<%= order.id %></strong>
+                      <br>
+                      <small class="text-muted">
+                        <%= order.customer.firstname %> <%= order.customer.lastname %>
+                      </small>
+                    </div>
+
+                    <div class="text-end">
+                      <span class="badge bg-secondary"><%= order.status %></span>
+                      <br>
+                      <small class="text-muted">
+                        <%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                      </small>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="alert alert-info mb-0">
+              Aucune commande pour le moment.
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h5 mb-3">Actions rapides</h2>
+
+          <div class="d-grid gap-2">
+            <%= link_to "Nouvelle commande", new_order_path, class: "btn btn-primary" %>
+            <%= link_to "Nouveau client", new_customer_path, class: "btn btn-outline-primary" %>
+            <%= link_to "Nouvel élément catalogue", new_item_path, class: "btn btn-outline-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Commandes urgentes</h2>
+            <%= link_to "Commandes", orders_path, class: "btn btn-outline-primary btn-sm" %>
+          </div>
+
+          <% if @urgent_orders.any? %>
+            <% @urgent_orders.each do |order| %>
+              <div class="border-bottom py-2">
+                <strong>Commande #<%= order.id %></strong>
+                <br>
+                <small class="text-muted">
+                  <%= order.customer.firstname %> <%= order.customer.lastname %>
+                  —
+                  échéance le <%= order.due_date.present? ? l(order.due_date) : "non définie" %>
+                </small>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="alert alert-success mb-0">
+              Aucune commande urgente.
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Derniers clients</h2>
+            <%= link_to "Voir tout", customers_path, class: "btn btn-outline-primary btn-sm" %>
+          </div>
+
+          <% if @recent_customers.any? %>
+            <% @recent_customers.each do |customer| %>
+              <div class="border-bottom py-2">
+                <strong><%= customer.firstname %> <%= customer.lastname %></strong>
+                <br>
+                <small class="text-muted">
+                  <%= customer.phone.presence || "Téléphone non renseigné" %>
+                </small>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="alert alert-info mb-0">
+              Aucun client pour le moment.
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
