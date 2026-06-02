@@ -1,0 +1,102 @@
+// Structure applicative : sidebar fixe + colonne principale (header + contenu).
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: $bg-card;
+  border-right: 1px solid $border;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  min-width: 0; // évite les débordements horizontaux du contenu
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1 1 auto;
+  padding: 1.5rem;
+}
+
+// ---- Header ----
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1.5rem;
+  background: $bg-card;
+  border-bottom: 1px solid $border;
+}
+
+.app-header__burger {
+  background: transparent;
+  border: 0;
+  font-size: 1.25rem;
+  color: $text-primary;
+  line-height: 1;
+}
+
+.app-header__user {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+  color: $text-primary;
+
+  &::after { display: none; } // on masque la flèche par défaut du dropdown Bootstrap
+}
+
+.app-header__name { font-weight: 600; }
+.app-header__chevron { color: $subtext; font-size: .75rem; }
+
+.app-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-pill;
+  background: $neutral-soft;
+  color: $subtext;
+  font-weight: 700;
+  font-size: .875rem;
+}
+
+// ---- Flash ----
+.flash-stack {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  padding: 1rem 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.flash-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .875rem 2.5rem .875rem 1rem;
+  background: $bg-card;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+}
+
+.flash-card__accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+}
+
+.flash-card--success .flash-card__accent { background: $gradient-green; }
+.flash-card--error   .flash-card__accent { background: $error; }
+.flash-card--error   .flash-card__body   { color: $error; }

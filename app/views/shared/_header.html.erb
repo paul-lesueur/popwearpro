@@ -1,0 +1,24 @@
+<header class="app-header">
+  <%# Hamburger : ouvre la sidebar en off-canvas sous 992px uniquement. %>
+  <button class="app-header__burger d-lg-none" type="button"
+          data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"
+          aria-controls="sidebarOffcanvas" aria-label="Ouvrir le menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="dropdown ms-auto">
+    <a href="#" class="app-header__user dropdown-toggle" id="userMenu"
+       data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="app-avatar"><%= user_initials(current_user) %></span>
+      <span class="app-header__name d-none d-sm-inline"><%= current_user.name.presence || current_user.email %></span>
+      <i class="fa-solid fa-chevron-down app-header__chevron"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+      <li>
+        <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item" do %>
+          <i class="fa-solid fa-right-from-bracket me-2"></i>Déconnexion
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</header>
