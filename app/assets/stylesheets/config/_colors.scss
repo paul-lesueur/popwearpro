@@ -1,10 +1,27 @@
-// Define variables for your color scheme
+// Design System Popwear Pro — tokens relevés dans Figma (NE PAS modifier sans la charte).
+// Voir docs/design-system.md
 
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
+// ---- Texte ----
+$text-primary: #131523; // titres
+$secondary:    #411221; // prune : titres de section, corps, prix
+$subtext:      #8B82B0; // lavande : sous-textes, initiales avatars, croix modale
+
+// ---- Marque (dégradés officiels) ----
+$gradient-orange: linear-gradient(135deg, #EE7635 0%, #FF6342 100%); // "Main Gradient"
+$gradient-green:  linear-gradient(135deg, #00BA94 0%, #49D825 100%); // "Alert Gradient"
+$primary: #FF6342; // orange solide : bordure + texte des boutons outline, accents
+
+$success: #00BA88;
+$warning: #F4AD22;
+$error:   #E5484D;
+
+// ---- Surfaces ----
+$bg-page:      #FCF8F8; // fond de l'app (crème)
+$bg-card:      #FFFFFF;
+$neutral-soft: #E6E9F4; // fond de badge neutre
+$border:       #EAE4DF;
+
+// ---- Formes ----
+$radius:      12px;
+$radius-pill: 999px;
+$shadow-card: 0 4px 16px rgba(19, 21, 35, .06);

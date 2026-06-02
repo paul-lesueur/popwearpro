@@ -1,16 +1,10 @@
-// Import Google fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700|Work+Sans:400,700&display=swap');
+// Système à 2 polices Popwear Pro.
+// Les polices sont chargées via Google Fonts dans le <head> du layout
+// (application.html.erb), pas via @import ici. Voir docs/design-system.md
 
-// Define fonts for body and headers
-$body-font: "Work Sans", "Helvetica", "sans-serif";
-$headers-font: "Nunito", "Helvetica", "sans-serif";
+$font-heading: 'League Spartan', "Helvetica", sans-serif; // titres H1–H4 (Bold)
+$font-body:    'Inter', "Helvetica", sans-serif;          // corps, sub, boutons, labels
 
-// To use a font file (.woff) uncomment following lines
-// @font-face {
-//   font-family: "Font Name";
-//   src: font-url('FontFile.eot');
-//   src: font-url('FontFile.eot?#iefix') format('embedded-opentype'),
-//        font-url('FontFile.woff') format('woff'),
-//        font-url('FontFile.ttf') format('truetype')
-// }
-// $my-font: "Font Name";
+// Alias conservés pour compatibilité avec d'éventuels usages existants.
+$headers-font: $font-heading;
+$body-font:    $font-body;
