@@ -1,0 +1,62 @@
+<%= form_with model: establishment, url: establishment_path, method: :patch, local: true do |form| %>
+  <% if establishment.errors.any? %>
+    <div class="alert alert-danger">
+      <p><strong>Erreur :</strong></p>
+      <ul>
+        <% establishment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :name, "Nom de l'atelier", class: "form-label" %>
+    <%= form.text_field :name, class: "form-control", placeholder: "Ex : Atelier Popwear" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :description, "Description", class: "form-label" %>
+    <%= form.text_area :description, rows: 4, class: "form-control", placeholder: "Décrivez votre activité..." %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :address, "Adresse", class: "form-label" %>
+    <%= form.text_field :address, class: "form-control", placeholder: "Ex : 12 rue des Artisans, Paris" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :category, "Catégorie", class: "form-label" %>
+    <%= form.select :category,
+      [
+        ["Couture / retouche", "couture"],
+        ["Cordonnerie", "cordonnerie"],
+        ["Textile", "textile"],
+        ["Cuir", "cuir"],
+        ["Autre", "autre"]
+      ],
+      {},
+      class: "form-select"
+    %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :payment_methods, "Moyens de paiement", class: "form-label" %>
+    <%= form.text_field :payment_methods, class: "form-control", placeholder: "Carte bancaire, espèces, virement" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :opening_hours, "Horaires d'ouverture", class: "form-label" %>
+    <%= form.text_area :opening_hours, rows: 3, class: "form-control", placeholder: "Lundi au samedi, 9h30 - 18h30" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :siret_siren, "SIRET / SIREN", class: "form-label" %>
+    <%= form.text_field :siret_siren, class: "form-control", placeholder: "Ex : 12345678900012" %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= form.submit "Enregistrer", class: "btn btn-primary" %>
+    <%= link_to "Annuler", establishment_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>
