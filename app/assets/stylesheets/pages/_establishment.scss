@@ -1,0 +1,576 @@
+.establishment-page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.establishment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 32px;
+
+  h1 {
+    margin: 8px 0;
+    color: $text-primary;
+    font-size: 38px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: $subtext;
+    font-size: 16px;
+  }
+}
+
+.establishment-kicker {
+  color: $primary;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.establishment-primary-btn,
+.establishment-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: $gradient-orange;
+  color: white;
+  border: none;
+  border-radius: $radius;
+  padding: 12px 18px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: $shadow-card;
+
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+.establishment-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: $primary;
+  font-weight: 800;
+  text-decoration: none;
+  margin-bottom: 10px;
+
+  &:hover {
+    color: $primary;
+    text-decoration: none;
+  }
+}
+
+.establishment-grid,
+.establishment-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 24px;
+  align-items: start;
+}
+
+.establishment-main-card,
+.establishment-side-card,
+.establishment-form-card,
+.establishment-form-side-card {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+}
+
+.establishment-main-card,
+.establishment-form-card {
+  padding: 28px;
+}
+
+.establishment-side-card,
+.establishment-form-side-card {
+  padding: 26px;
+  position: sticky;
+  top: 24px;
+
+  h3 {
+    margin: 18px 0 10px;
+    color: $text-primary;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  p {
+    color: $subtext;
+    margin-bottom: 22px;
+  }
+}
+
+.establishment-photo-card {
+  margin-bottom: 24px;
+}
+
+.establishment-photo {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: $radius;
+  border: 1px solid $border;
+}
+
+.establishment-photo-placeholder {
+  height: 220px;
+  border: 1px dashed $border;
+  border-radius: $radius;
+  background: $bg-page;
+  color: $subtext;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 26px;
+    color: $primary !important;
+  }
+}
+
+.establishment-card-header,
+.establishment-form-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid $border;
+
+  h2 {
+    margin: 0;
+    color: $text-primary;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $subtext;
+  }
+}
+
+.establishment-avatar,
+.establishment-side-icon,
+.establishment-form-icon,
+.establishment-form-side-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius;
+  background: $gradient-orange;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+  flex-shrink: 0;
+
+  i {
+    color: white !important;
+  }
+}
+
+.establishment-section {
+  margin-bottom: 26px;
+
+  h3 {
+    color: $secondary;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: $secondary;
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+.establishment-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.establishment-info-card {
+  display: flex;
+  gap: 14px;
+  background: $bg-page;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 18px;
+}
+
+.establishment-info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius;
+  background: rgba($primary, 0.1);
+  color: $primary !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: $primary !important;
+  }
+}
+
+.establishment-info-card span {
+  display: block;
+  color: $subtext;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.establishment-info-card strong {
+  color: $secondary;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.establishment-check-list,
+.establishment-form-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  div {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: $secondary;
+    font-weight: 600;
+  }
+
+  i {
+    color: $success !important;
+    margin-top: 3px;
+  }
+}
+
+.establishment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.establishment-form-section {
+  padding-bottom: 26px;
+  border-bottom: 1px solid $border;
+
+  &:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  h3 {
+    color: $text-primary;
+    font-size: 21px;
+    font-weight: 800;
+    margin-bottom: 18px;
+  }
+}
+
+.establishment-section-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $subtext;
+  }
+}
+
+.establishment-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.establishment-form-field {
+  margin-bottom: 18px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: $secondary;
+    font-size: 14px;
+    font-weight: 800;
+  }
+}
+
+.establishment-input {
+  width: 100%;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg-page;
+  color: $secondary;
+  padding: 13px 15px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &::placeholder {
+    color: rgba($subtext, 0.75);
+  }
+
+  &:focus {
+    border-color: $primary;
+    background: $bg-card;
+    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+  }
+}
+
+.establishment-input-with-icon {
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $primary !important;
+  }
+
+  .establishment-input {
+    padding-left: 44px;
+  }
+}
+
+.establishment-textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.establishment-form-errors {
+  background: rgba($error, 0.08);
+  border: 1px solid rgba($error, 0.2);
+  border-radius: $radius;
+  padding: 16px;
+
+  h3 {
+    color: $error;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    color: $secondary;
+  }
+}
+
+.establishment-photo-upload {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  background: $bg-page;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 18px;
+
+  p {
+    margin: 8px 0 0;
+    color: $subtext;
+    font-size: 14px;
+  }
+}
+
+.establishment-photo-preview,
+.establishment-photo-preview-placeholder {
+  width: 120px;
+  height: 90px;
+  border-radius: $radius;
+  border: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.establishment-photo-preview {
+  object-fit: cover;
+}
+
+.establishment-photo-preview-placeholder {
+  background: $bg-card;
+  color: $subtext;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    color: $primary !important;
+  }
+}
+
+.establishment-file-input {
+  color: $secondary;
+  max-width: 100%;
+}
+
+.establishment-payment-intro {
+  margin: -8px 0 18px;
+  color: $subtext;
+}
+
+.establishment-payment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.establishment-payment-option {
+  cursor: pointer;
+  margin: 0;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.establishment-payment-card {
+  min-height: 126px;
+  border: 1px solid rgba($primary, 0.45);
+  border-radius: $radius;
+  background: $bg-page;
+  color: $secondary;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px;
+  text-align: center;
+  transition: border 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.establishment-payment-icon {
+  color: $primary !important;
+  font-size: 28px;
+  line-height: 1;
+
+  i {
+    color: $primary !important;
+  }
+}
+
+.establishment-payment-label {
+  color: $secondary;
+  font-weight: 800;
+}
+
+.establishment-payment-option:hover .establishment-payment-card {
+  transform: translateY(-2px);
+  box-shadow: $shadow-card;
+}
+
+.establishment-payment-option input:checked + .establishment-payment-card {
+  background: rgba($primary, 0.08);
+  border-color: $primary;
+  box-shadow: 0 0 0 3px rgba($primary, 0.12);
+}
+
+.establishment-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.establishment-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($subtext, 0.08);
+  color: $secondary;
+  border-radius: $radius;
+  padding: 12px 18px;
+  font-weight: 800;
+  text-decoration: none;
+
+  &:hover {
+    color: $secondary;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .establishment-grid,
+  .establishment-form-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .establishment-side-card,
+  .establishment-form-side-card {
+    position: static;
+  }
+
+  .establishment-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .establishment-payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .establishment-photo-upload {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .establishment-photo-preview,
+  .establishment-photo-preview-placeholder {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+@media (max-width: 700px) {
+  .establishment-header {
+    flex-direction: column;
+  }
+
+  .establishment-main-card,
+  .establishment-form-card {
+    padding: 22px;
+  }
+
+  .establishment-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .establishment-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .establishment-btn-primary,
+  .establishment-btn-secondary,
+  .establishment-primary-btn {
+    width: 100%;
+  }
+}
