@@ -30,6 +30,9 @@ class OrdersController < ApplicationController
 
   def create
     @order = current_establishment.orders.new(order_params)
+    # Client anonyme : on rattache un nouveau client anonyme (ANON-xxxxx), sans identité.
+    # L'autosave de belongs_to crée le client dans la même transaction que la commande.
+    @order.customer = current_establishment.customers.new(is_anonymous: true) if anonymous_order?
     fill_order_line_prices
 
     if @order.save
@@ -67,8 +70,14 @@ class OrdersController < ApplicationController
   end
 
   def set_form_data
-    @customers = current_establishment.customers.order(:lastname, :firstname)
+    # On n'affiche QUE les clients nommés dans le menu déroulant (jamais les anonymes).
+    @customers = current_establishment.customers.named.order(:lastname, :firstname)
     @items = current_establishment.items.where(active: true).order(:name)
+  end
+
+  # Case "Client anonyme" cochée dans le formulaire (champ hors modèle).
+  def anonymous_order?
+    params.dig(:order, :anonymous) == "1"
   end
 
   def order_params

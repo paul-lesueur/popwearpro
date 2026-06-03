@@ -24,4 +24,22 @@ class Order < ApplicationRecord
   def paid?
     payment_status == "paid"
   end
+
+  # Conformité FR : un client anonyme ne donne droit qu'à un reçu/ticket,
+  # un client nommé (identifié) donne lieu à une facture nominative.
+  def document_type
+    customer&.is_anonymous? ? :receipt : :invoice
+  end
+
+  def receipt?
+    document_type == :receipt
+  end
+
+  def invoice?
+    document_type == :invoice
+  end
+
+  def document_label
+    receipt? ? "Reçu" : "Facture"
+  end
 end
