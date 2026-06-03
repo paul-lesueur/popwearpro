@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_02_133244) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_03_111912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "chats", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "deadline_id", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["deadline_id"], name: "index_chats_on_deadline_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
+  end
 
   create_table "communications", force: :cascade do |t|
     t.string "channel"
@@ -37,6 +47,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_133244) do
     t.index ["establishment_id"], name: "index_customers_on_establishment_id"
   end
 
+  create_table "deadlines", force: :cascade do |t|
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "due_date"
+    t.integer "estimated_duration"
+    t.string "status"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_deadlines_on_user_id"
+  end
+
   create_table "establishments", force: :cascade do |t|
     t.string "address"
     t.string "category"
@@ -53,7 +76,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_133244) do
 
   create_table "items", force: :cascade do |t|
     t.boolean "active"
-    t.string "category"
     t.datetime "created_at", null: false
     t.bigint "establishment_id", null: false
     t.string "name"
@@ -63,6 +85,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_133244) do
     t.datetime "updated_at", null: false
     t.decimal "vat_rate"
     t.index ["establishment_id"], name: "index_items_on_establishment_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
   end
 
   create_table "order_lines", force: :cascade do |t|
@@ -107,10 +138,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_133244) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "chats", "deadlines"
+  add_foreign_key "chats", "users"
   add_foreign_key "communications", "orders"
   add_foreign_key "customers", "establishments"
+  add_foreign_key "deadlines", "users"
   add_foreign_key "establishments", "users"
   add_foreign_key "items", "establishments"
+  add_foreign_key "messages", "chats"
   add_foreign_key "order_lines", "items"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "orders", "customers"

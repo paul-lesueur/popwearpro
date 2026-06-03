@@ -72,7 +72,6 @@ puts "Creating catalog items..."
 
 ourlet = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Ourlet pantalon",
   price_ht: 18.00,
   vat_rate: 20.00,
@@ -83,7 +82,6 @@ ourlet = Item.create!(
 
 fermeture = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Réparation fermeture éclair",
   price_ht: 35.00,
   vat_rate: 20.00,
@@ -94,34 +92,11 @@ fermeture = Item.create!(
 
 robe = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Retouche robe",
   price_ht: 55.00,
   vat_rate: 20.00,
   repair_bonus: false,
   photo_url: "https://images.unsplash.com/photo-1595777457583-95e059d581b8",
-  active: true
-)
-
-lacets = Item.create!(
-  establishment: establishment,
-  category: "product",
-  name: "Lacets premium",
-  price_ht: 8.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-  active: true
-)
-
-produit_cuir = Item.create!(
-  establishment: establishment,
-  category: "product",
-  name: "Produit d'entretien cuir",
-  price_ht: 14.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519",
   active: true
 )
 
@@ -206,14 +181,6 @@ OrderLine.create!(
   vat_rate: ourlet.vat_rate
 )
 
-OrderLine.create!(
-  order: order_3,
-  item: lacets,
-  quantity: 1,
-  unit_price_ht: lacets.price_ht,
-  vat_rate: lacets.vat_rate
-)
-
 order_4 = Order.create!(
   establishment: establishment,
   customer: customer_1,
@@ -229,10 +196,10 @@ order_4 = Order.create!(
 
 OrderLine.create!(
   order: order_4,
-  item: produit_cuir,
+  item: robe,
   quantity: 1,
-  unit_price_ht: produit_cuir.price_ht,
-  vat_rate: produit_cuir.vat_rate
+  unit_price_ht: robe.price_ht,
+  vat_rate: robe.vat_rate
 )
 
 puts "Seeds finished!"

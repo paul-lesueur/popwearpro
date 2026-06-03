@@ -11,15 +11,6 @@
   <% end %>
 
   <div class="mb-3">
-    <%= form.label :category, "Catégorie", class: "form-label" %>
-    <%= form.select :category,
-      [["Prestation", "service"], ["Produit", "product"]],
-      {},
-      class: "form-select"
-    %>
-  </div>
-
-  <div class="mb-3">
     <%= form.label :name, "Nom", class: "form-label" %>
     <%= form.text_field :name, class: "form-control", placeholder: "Ex : Ourlet pantalon" %>
   </div>
