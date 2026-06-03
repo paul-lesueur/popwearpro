@@ -9,6 +9,11 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# Polices du Design System : Inter (corps) + League Spartan (titres) %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
@@ -23,9 +28,27 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body><%= render "shared/navbar" %>
-<%= render "shared/flashes" %>
+  <body>
+    <% if user_signed_in? %>
+      <div class="app-shell">
+        <%= render "shared/sidebar" %>
+        <%= render "shared/sidebar_offcanvas" %>
 
-    <%= yield %>
+        <div class="app-main">
+          <%= render "shared/header" %>
+          <%= render "shared/flashes" %>
+
+          <main class="app-content">
+            <%= yield %>
+          </main>
+        </div>
+      </div>
+    <% else %>
+      <%# Pages publiques (Devise) : pas de chrome applicatif. %>
+      <%= render "shared/flashes" %>
+      <main class="auth-content">
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

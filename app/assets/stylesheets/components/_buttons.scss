@@ -1,0 +1,44 @@
+// Boutons Popwear Pro (radius 12 via $border-radius).
+// 3 styles : primaire (gradient orange), succès (gradient vert), outline (orange).
+
+.btn-primary {
+  background: $gradient-orange;
+  border: none;
+  color: #fff;
+
+  &:hover, &:focus, &:active {
+    color: #fff;
+    opacity: .92;
+  }
+}
+
+.btn-success {
+  background: $gradient-green;
+  border: none;
+  color: #fff;
+
+  &:hover, &:focus, &:active {
+    color: #fff;
+    opacity: .92;
+  }
+}
+
+// Outline : fond blanc, bordure + texte $primary (Annuler, Voir le détail, Ajouter…)
+.btn-outline-primary {
+  background-color: #fff;
+  border-color: $primary;
+  color: $primary;
+
+  &:hover, &:focus, &:active {
+    background: $gradient-orange;
+    border-color: transparent;
+    color: #fff;
+  }
+}
+
+// ---- Utilitaires Design System ----
+.bg-gradient-orange { background: $gradient-orange !important; }
+.bg-gradient-green  { background: $gradient-green  !important; }
+.text-primary   { color: $text-primary !important; } // override : titres (#131523)
+.text-secondary { color: $secondary    !important; } // prune
+.text-subtext   { color: $subtext      !important; } // lavande (sous-textes)
