@@ -1,11 +1,15 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1>Commandes</h1>
-  <%= link_to "+ Créer une commande", new_order_path, class: "btn btn-primary" %>
-</div>
+<div data-controller="kanban">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Commandes</h1>
+    <%= link_to "+ Créer une commande", new_order_path, class: "btn btn-primary" %>
+  </div>
 
-<div class="d-flex gap-3 align-items-start overflow-auto">
+  <div class="d-flex gap-3 align-items-start overflow-auto">
     <% @columns.each do |column| %>
-      <div class="kanban-column flex-shrink-0 bg-white rounded-3 p-3" style="width: 280px;">
+      <div class="kanban-column flex-shrink-0 bg-white rounded-3 p-3"
+           style="width: 280px;"
+           data-status="<%= column[:target_status] %>"
+           data-action="dragover->kanban#dragover dragleave->kanban#dragleave drop->kanban#drop">
         <% badge_styles = { "new" => "bg-gradient-green", "in_progress" => "bg-gradient-orange", "recollect" => "bg-warning", "done" => nil } %>
         <div class="d-flex align-items-center mb-3">
           <h6 class="mb-0 fw-semibold"><%= column[:label] %></h6>
@@ -17,24 +21,31 @@
         </div>
 
         <% column[:orders].each do |order| %>
-          <div class="card mb-3 border-0 bg-white" style="box-shadow: 0 4px 16px rgba(19,21,35,.06);">
+          <div class="card mb-3 border-0 bg-white"
+               draggable="true"
+               data-order-id="<%= order.id %>"
+               data-action="dragstart->kanban#dragstart dragend->kanban#dragend"
+               style="box-shadow: 0 4px 16px rgba(19,21,35,.06); cursor: grab;">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-start mb-1">
                 <strong class="text-primary">
                   <%= order.customer.short_name %>
                 </strong>
                 <% if order.urgent? %>
-                  <span class="badge rounded-pill bg-warning text-white" style="font-size: .7rem;">Urgent</span>
+                  <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-25" style="width: 28px; height: 28px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#F4AD22" viewBox="0 0 16 16">
+                      <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                    </svg>
+                  </span>
                 <% end %>
               </div>
 
-              <small class="text-muted d-block mb-1">
-                <%= l(order.created_at.to_date, format: :short) %>
-              </small>
+              <small class="text-muted d-block mb-2" style="font-size: 0.75rem;"><%= current_establishment.category.capitalize %> · N° CMD-<%= order.id %></small>
 
-              <small class="text-muted d-block mb-2">
-                N° commande : VDY<%= order.id.to_s.rjust(6, "0") %>
-              </small>
+              <% if order.due_date.present? %>
+                <small class="text-muted d-block mb-1">Re-collecte : <%= order.due_date.strftime("%d/%m/%y") %></small>
+              <% end %>
 
               <% if order.order_lines.any? %>
                 <p class="mb-1"><small class="fw-semibold text-muted">Prestations</small></p>
@@ -65,3 +76,4 @@
       </div>
     <% end %>
   </div>
+</div>

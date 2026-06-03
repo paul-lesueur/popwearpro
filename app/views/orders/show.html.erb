@@ -1,4 +1,4 @@
-<div class="container py-4">
+<div>
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h1>
@@ -12,65 +12,107 @@
           <span class="badge bg-light text-dark">Anonyme</span>
         <% end %>
       </p>
+      <h1>VDY<%= @order.id.to_s.rjust(6, "0") %></h1>
+      <p class="text-muted mb-0"><%= @order.customer.firstname %> <%= @order.customer.lastname %></p>
     </div>
+    <div class="d-flex gap-2">
+      <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary btn-sm" %>
+      <%= link_to "Retour", orders_path, class: "btn btn-outline-secondary btn-sm" %>
+    </div>
+  </div>
 
+  <%# Statut de la commande %>
+  <h5 class="fw-bold text-secondary mb-3">Statut de la commande</h5>
+  <% status_labels = {
+    "draft"       => "Brouillon",
+    "pending"     => "En attente de validation",
+    "in_progress" => "En cours",
+    "sent"        => "Envoyée",
+    "completed"   => "Terminée",
+    "delivered"   => "Livrée"
+  } %>
+  <div class="d-flex flex-column gap-2 mb-4">
+    <span class="badge rounded-pill px-3 py-2 align-self-start bg-warning text-white d-inline-flex align-items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+      </svg>
+      <%= status_labels[@order.status] || @order.status %>
+    </span>
+    <% if @order.payment_method.present? %>
+      <span class="badge rounded-pill px-3 py-2 align-self-start bg-gradient-green text-white d-inline-flex align-items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+        </svg>
+        Paiement <%= @order.payment_method %>
+      </span>
+    <% end %>
+  </div>
+
+  <hr style="border-color: #EAE4DF;">
+
+  <%# Prestations %>
+  <h5 class="fw-bold text-secondary mb-3 mt-4">Prestations</h5>
+  <% if @order.order_lines.any? %>
+    <% @order.order_lines.each do |line| %>
+      <p class="mb-1 text-muted"><%= line.item.name %></p>
+    <% end %>
+  <% else %>
+    <p class="text-muted">Aucune prestation.</p>
+  <% end %>
+
+  <hr style="border-color: #EAE4DF;">
+
+  <%# Tarifs et paiement %>
+  <h5 class="fw-bold text-secondary mb-3 mt-4">Tarifs et paiement</h5>
+  <% total_ht = @order.total_ht %>
+  <% total_ttc = @order.total_ttc %>
+  <% tva = total_ttc - total_ht %>
+  <div class="mb-3">
+    <div class="d-flex justify-content-between mb-1">
+      <span class="text-muted">Sous-total</span>
+      <span class="text-muted"><%= number_to_currency(total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> HT</span>
+    </div>
+    <div class="d-flex justify-content-between mb-1">
+      <span class="text-muted">Réduction</span>
+      <span class="text-muted">0,00 €</span>
+    </div>
+    <div class="d-flex justify-content-between mb-1">
+      <span class="text-muted">TVA</span>
+      <span class="text-muted"><%= number_to_currency(tva, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></span>
+    </div>
+    <div class="d-flex justify-content-between mt-2 pt-2" style="border-top: 1px solid #EAE4DF;">
+      <span class="fw-bold">Montant total</span>
+      <span class="fw-bold text-secondary"><%= number_to_currency(total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC</span>
+    </div>
+  </div>
+  <% payment_status_labels = { "unpaid" => "Non payé", "paid" => "Payé" } %>
+  <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "bank_transfer" => "Virement", "other" => "Autre" } %>
+  <% if @order.payment_status.present? %>
+    <p class="text-muted mb-1">Modalité de paiement : <%= payment_status_labels[@order.payment_status] || @order.payment_status %></p>
+  <% end %>
+  <% if @order.payment_method.present? %>
+    <p class="text-muted mb-0">Moyen de paiement : <%= payment_method_labels[@order.payment_method] || @order.payment_method %></p>
+  <% end %>
+
+  <hr style="border-color: #EAE4DF;">
+
+  <%# Client %>
+  <h5 class="fw-bold text-secondary mb-3 mt-4">Client</h5>
+  <div class="d-flex justify-content-between align-items-center">
     <div>
-      <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary" %>
-      <%= link_to "Retour", orders_path, class: "btn btn-secondary" %>
+      <p class="mb-0 fw-semibold"><%= @order.customer.firstname %> <%= @order.customer.lastname %></p>
+      <small class="text-muted"><%= @order.customer.orders.count %> commandes au total</small>
     </div>
+    <%= link_to "Aperçu", customer_path(@order.customer), class: "btn btn-outline-primary btn-sm" %>
   </div>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <p><strong>Statut :</strong> <%= @order.status %></p>
-      <p><strong>Priorité :</strong> <%= @order.priority %></p>
-      <p><strong>Date limite :</strong> <%= @order.due_date.present? ? l(@order.due_date) : "Non définie" %></p>
-      <p><strong>Moyen de paiement :</strong> <%= @order.payment_method.presence || "Non renseigné" %></p>
-      <p><strong>Statut paiement :</strong> <%= @order.payment_status.presence || "Non renseigné" %></p>
+  <hr style="border-color: #EAE4DF;">
 
-      <p><strong>Notes internes :</strong></p>
-      <p><%= @order.internal_notes.presence || "Aucune note." %></p>
-    </div>
-  </div>
-
-  <h2 class="h4 mb-3">Lignes de commande</h2>
-
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <% total_ht = 0 %>
-      <% total_ttc = 0 %>
-
-      <% @order.order_lines.each do |line| %>
-        <% total_ht += line.total_ht %>
-        <% total_ttc += line.total_ttc %>
-
-        <div class="d-flex justify-content-between border-bottom py-2">
-          <div>
-            <strong><%= line.item.name %></strong>
-            <br>
-            <small class="text-muted">
-              Quantité : <%= line.quantity %> —
-              TVA : <%= line.vat_rate %> %
-            </small>
-          </div>
-
-          <div class="text-end">
-            <%= number_to_currency(line.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC
-          </div>
-        </div>
-      <% end %>
-
-      <div class="text-end mt-3">
-        <p class="mb-1">
-          <strong>Total HT :</strong>
-          <%= number_to_currency(total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
-        </p>
-
-        <p class="fs-5">
-          <strong>Total TTC :</strong>
-          <%= number_to_currency(total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
-        </p>
-      </div>
-    </div>
-  </div>
+  <%# Informations %>
+  <h5 class="fw-bold text-secondary mb-3 mt-4">Informations</h5>
+  <p class="fw-semibold mb-1">Commentaires</p>
+  <p class="text-muted"><%= @order.internal_notes.presence || "Aucune note." %></p>
+  <p class="fw-semibold mb-1">Date de re-collecte</p>
+  <p class="text-muted"><%= @order.due_date.present? ? l(@order.due_date) : "Date à fixer" %></p>
 </div>

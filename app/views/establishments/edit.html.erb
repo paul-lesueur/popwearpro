@@ -1,0 +1,15 @@
+<div class="establishment-page">
+  <div class="establishment-header">
+    <div>
+      <%= link_to establishment_path, class: "establishment-back-link" do %>
+        <i class="fa fa-arrow-left"></i>
+        Retour à l’établissement
+      <% end %>
+
+      <h1>Modifier l’établissement</h1>
+      <p>Mettez à jour les informations de votre atelier.</p>
+    </div>
+  </div>
+
+  <%= render "form", establishment: @establishment %>
+</div>

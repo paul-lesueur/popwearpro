@@ -1,0 +1,122 @@
+<div class="establishment-page">
+  <div class="establishment-header">
+    <div>
+      <span class="establishment-kicker">Profil atelier</span>
+      <h1>Mon établissement</h1>
+      <p>Gérez les informations principales de votre atelier.</p>
+    </div>
+
+    <%= link_to edit_establishment_path, class: "establishment-primary-btn" do %>
+      <i class="fa fa-pencil"></i>
+      Modifier
+    <% end %>
+  </div>
+
+  <div class="establishment-grid">
+    <section class="establishment-main-card">
+      <div class="establishment-photo-card">
+        <% if @establishment.photo.attached? %>
+          <%= image_tag @establishment.photo, class: "establishment-photo" %>
+        <% else %>
+          <div class="establishment-photo-placeholder">
+            <i class="fa fa-camera"></i>
+            <span>Aucune photo d’atelier ajoutée</span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="establishment-card-header">
+        <div class="establishment-avatar">
+          <%= @establishment.name.present? ? @establishment.name.first.upcase : "A" %>
+        </div>
+
+        <div>
+          <h2><%= @establishment.name.presence || "Nom non renseigné" %></h2>
+          <p><%= @establishment.category.presence || "Catégorie non renseignée" %></p>
+        </div>
+      </div>
+
+      <div class="establishment-section">
+        <h3>Présentation</h3>
+        <p>
+          <%= @establishment.description.presence || "Aucune description renseignée pour le moment." %>
+        </p>
+      </div>
+
+      <div class="establishment-info-grid">
+        <div class="establishment-info-card">
+          <div class="establishment-info-icon">
+            <i class="fa fa-map-marker"></i>
+          </div>
+
+          <div>
+            <span>Adresse</span>
+            <strong><%= @establishment.address.presence || "Adresse non renseignée" %></strong>
+          </div>
+        </div>
+
+        <div class="establishment-info-card">
+          <div class="establishment-info-icon">
+            <i class="fa fa-calendar"></i>
+          </div>
+
+          <div>
+            <span>Horaires</span>
+            <strong><%= @establishment.opening_hours.presence || "Horaires non renseignés" %></strong>
+          </div>
+        </div>
+
+        <div class="establishment-info-card">
+          <div class="establishment-info-icon">
+            <i class="fa fa-credit-card"></i>
+          </div>
+
+          <div>
+            <span>Moyens de paiement</span>
+            <strong><%= @establishment.payment_methods.presence || "Non renseignés" %></strong>
+          </div>
+        </div>
+
+        <div class="establishment-info-card">
+          <div class="establishment-info-icon">
+            <i class="fa fa-id-card"></i>
+          </div>
+
+          <div>
+            <span>SIRET</span>
+            <strong><%= @establishment.siret_siren.presence || "Non renseigné" %></strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="establishment-side-card">
+      <div class="establishment-side-icon">
+        <i class="fa fa-building"></i>
+      </div>
+
+      <h3>Profil atelier</h3>
+
+      <p>
+        Ces informations servent de base pour votre activité, vos commandes et vos communications client.
+      </p>
+
+      <div class="establishment-check-list">
+        <div>
+          <i class="fa fa-check"></i>
+          <span>Profil atelier centralisé</span>
+        </div>
+
+        <div>
+          <i class="fa fa-check"></i>
+          <span>Photo d’atelier disponible</span>
+        </div>
+
+        <div>
+          <i class="fa fa-check"></i>
+          <span>Horaires simples à modifier</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

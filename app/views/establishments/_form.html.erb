@@ -1,0 +1,189 @@
+<div class="establishment-form-layout">
+  <div class="establishment-form-card">
+    <div class="establishment-form-card-header">
+      <div class="establishment-form-icon">
+        <i class="fa fa-building"></i>
+      </div>
+
+      <div>
+        <h2>Informations de l’atelier</h2>
+        <p>Renseignez les informations principales de votre établissement.</p>
+      </div>
+    </div>
+
+    <%= form_with(model: establishment, url: establishment_path, method: :patch, local: true, class: "establishment-form") do |f| %>
+      <% if establishment.errors.any? %>
+        <div class="establishment-form-errors">
+          <h3>Impossible d’enregistrer l’établissement</h3>
+
+          <ul>
+            <% establishment.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="establishment-form-section">
+        <h3>Identité de l’atelier</h3>
+
+        <div class="establishment-form-field">
+          <%= f.label :photo, "Photo de l’atelier" %>
+
+          <div class="establishment-photo-upload">
+            <% if establishment.photo.attached? %>
+              <%= image_tag establishment.photo, class: "establishment-photo-preview" %>
+            <% else %>
+              <div class="establishment-photo-preview-placeholder">
+                <i class="fa fa-camera"></i>
+                <span>Aucune photo</span>
+              </div>
+            <% end %>
+
+            <div>
+              <%= f.file_field :photo, class: "establishment-file-input" %>
+              <p>Ajoutez une photo claire de votre atelier.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="establishment-form-field">
+          <%= f.label :name, "Nom de l’établissement" %>
+          <%= f.text_field :name, class: "establishment-input", placeholder: "Ex : Atelier Popwear" %>
+        </div>
+
+        <div class="establishment-form-field">
+          <%= f.label :description, "Présentation de votre activité" %>
+          <%= f.text_area :description,
+            rows: 5,
+            class: "establishment-input establishment-textarea",
+            placeholder: "Décrivez votre atelier, vos prestations et votre savoir-faire." %>
+        </div>
+      </div>
+
+      <div class="establishment-form-section">
+        <h3>Coordonnées</h3>
+
+        <div class="establishment-form-field">
+          <%= f.label :address, "Adresse de l’établissement" %>
+
+          <div class="establishment-input-with-icon">
+            <i class="fa fa-map-marker"></i>
+            <%= f.text_field :address, class: "establishment-input", placeholder: "Ex : 12 rue des Artisans, 75011 Paris" %>
+          </div>
+        </div>
+
+        <div class="establishment-form-grid">
+          <div class="establishment-form-field">
+            <%= f.label :category, "Catégorie métier" %>
+
+            <div class="establishment-input-with-icon">
+              <i class="fa fa-tag"></i>
+              <%= f.text_field :category, class: "establishment-input", placeholder: "Ex : couture" %>
+            </div>
+          </div>
+
+          <div class="establishment-form-field">
+            <%= f.label :siret_siren, "SIRET" %>
+
+            <div class="establishment-input-with-icon">
+              <i class="fa fa-id-card"></i>
+              <%= f.text_field :siret_siren, class: "establishment-input", placeholder: "Ex : 12345678900012" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="establishment-form-section">
+        <div class="establishment-section-title-with-icon">
+          <div class="establishment-info-icon">
+            <i class="fa fa-calendar"></i>
+          </div>
+
+          <div>
+            <h3>Horaires d’ouverture</h3>
+            <p>Indiquez simplement les horaires habituels de votre atelier.</p>
+          </div>
+        </div>
+
+        <div class="establishment-form-field">
+          <%= f.label :opening_hours, "Horaires" %>
+
+          <div class="establishment-input-with-icon">
+            <i class="fa fa-calendar"></i>
+            <%= f.text_field :opening_hours,
+              class: "establishment-input",
+              placeholder: "Ex : Lundi au samedi, 9h30 - 18h30" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="establishment-form-section">
+        <h3>Moyens de paiement acceptés</h3>
+        <p class="establishment-payment-intro">
+          Sélectionnez les moyens de paiement que vous acceptez dans votre établissement.
+        </p>
+
+        <%= hidden_field_tag "establishment[payment_methods][]", "" %>
+
+        <div class="establishment-payment-grid">
+          <% Establishment::PAYMENT_METHODS.each do |payment_method| %>
+            <% selected = establishment.payment_methods_array.include?(payment_method[:value]) %>
+            <% checkbox_id = "payment_method_#{payment_method[:value].parameterize}" %>
+
+            <label class="establishment-payment-option" for="<%= checkbox_id %>">
+              <%= check_box_tag "establishment[payment_methods][]",
+                payment_method[:value],
+                selected,
+                id: checkbox_id %>
+
+              <span class="establishment-payment-card">
+                <span class="establishment-payment-icon">
+                  <i class="fa <%= payment_method[:icon] %>"></i>
+                </span>
+
+                <span class="establishment-payment-label">
+                  <%= payment_method[:label] %>
+                </span>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="establishment-form-actions">
+        <%= link_to "Annuler", establishment_path, class: "establishment-btn-secondary" %>
+        <%= f.submit "Enregistrer les modifications", class: "establishment-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <aside class="establishment-form-side-card">
+    <div class="establishment-form-side-icon">
+      <i class="fa fa-info-circle"></i>
+    </div>
+
+    <h3>Conseil</h3>
+
+    <p>
+      Une fiche établissement complète rend votre atelier plus clair et facilite la gestion des commandes.
+    </p>
+
+    <div class="establishment-form-tips">
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Photo d’atelier rassurante</span>
+      </div>
+
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Horaires simples à mettre à jour</span>
+      </div>
+
+      <div>
+        <i class="fa fa-check"></i>
+        <span>SIRET renseigné</span>
+      </div>
+    </div>
+  </aside>
+</div>

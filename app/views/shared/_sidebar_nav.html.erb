@@ -3,6 +3,7 @@
   nav = controller_name
   orders_count = current_establishment&.orders&.count.to_i
 %>
+
 <nav class="app-sidebar__nav">
   <%= link_to dashboard_path, class: "app-sidebar__item #{'is-active' if nav == 'dashboards'}" do %>
     <i class="fa-solid fa-star app-sidebar__icon"></i>
@@ -12,6 +13,7 @@
   <%= link_to orders_path, class: "app-sidebar__item #{'is-active' if nav == 'orders'}" do %>
     <i class="fa-solid fa-tag app-sidebar__icon"></i>
     <span class="app-sidebar__label">Commandes</span>
+
     <% if orders_count.positive? %>
       <span class="app-sidebar__badge"><%= orders_count %></span>
     <% end %>
@@ -28,8 +30,7 @@
     <span class="app-sidebar__label">Clients</span>
   <% end %>
 
-  <%# TODO route à câbler : Établissement (pas de resource dédiée pour l'instant) %>
-  <%= link_to "#", class: "app-sidebar__item" do %>
+  <%= link_to establishment_path, class: "app-sidebar__item #{'is-active' if nav == 'establishments'}" do %>
     <i class="fa-solid fa-house app-sidebar__icon"></i>
     <span class="app-sidebar__label">Établissement</span>
   <% end %>
