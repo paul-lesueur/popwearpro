@@ -1,0 +1,5 @@
+class AddOpeningScheduleToEstablishments < ActiveRecord::Migration[8.0]
+  def change
+    add_column :establishments, :opening_schedule, :jsonb, default: {}, null: false
+  end
+end

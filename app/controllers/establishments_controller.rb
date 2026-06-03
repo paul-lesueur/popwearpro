@@ -18,30 +18,27 @@ class EstablishmentsController < ApplicationController
   private
 
   def set_establishment
-    @establishment = current_user.establishment
-
-    return if @establishment.present?
-
-    @establishment = current_user.create_establishment!(
-      name: "Mon atelier",
-      description: "Description à compléter",
-      address: "Adresse à compléter",
-      category: "couture",
-      payment_methods: "Carte bancaire, espèces, virement",
-      opening_hours: "Horaires à compléter",
-      siret_siren: "À compléter"
-    )
+    @establishment = current_establishment
   end
 
   def establishment_params
-    params.require(:establishment).permit(
+    permitted_params = params.require(:establishment).permit(
       :name,
       :description,
       :address,
       :category,
-      :payment_methods,
       :opening_hours,
-      :siret_siren
+      :siret_siren,
+      :photo,
+      payment_methods: []
     )
+
+    if permitted_params[:payment_methods].is_a?(Array)
+      permitted_params[:payment_methods] = permitted_params[:payment_methods]
+                                           .reject(&:blank?)
+                                           .join(", ")
+    end
+
+    permitted_params
   end
 end
