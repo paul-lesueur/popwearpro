@@ -1,44 +1,218 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1>Clients</h1>
-      <p class="text-muted">Gérez les clients de votre atelier.</p>
+<div class="customers-page" data-controller="customer-panel">
+  <section class="customers-main">
+    <div class="customers-header">
+      <div>
+        <h1>Clients</h1>
+        <p>Retrouvez les clients de votre atelier, leurs coordonnées et leur historique de commandes.</p>
+      </div>
+
+      <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
     </div>
 
-    <%= link_to "Nouveau client", new_customer_path, class: "btn btn-primary" %>
-  </div>
+    <div class="customers-stats">
+      <div class="customer-stat-card">
+        <span class="customer-stat-label">Clients</span>
+        <strong><%= @customers_count %></strong>
+      </div>
 
-  <div class="row">
-    <% @customers.each do |customer| %>
-      <div class="col-md-4 mb-3">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">
-              <%= customer.firstname %> <%= customer.lastname %>
-            </h5>
+      <div class="customer-stat-card">
+        <span class="customer-stat-label">Nouveaux ce mois</span>
+        <strong><%= @new_customers_this_month %></strong>
+      </div>
+    </div>
 
-            <p class="card-text mb-1">
-              <strong>Email :</strong> <%= customer.email.presence || "Non renseigné" %>
-            </p>
+    <div class="customers-toolbar">
+      <input type="text" class="customers-search" placeholder="Rechercher un client">
+      <button type="button" class="customers-filter">Filtrer</button>
+    </div>
 
-            <p class="card-text mb-1">
-              <strong>Téléphone :</strong> <%= customer.phone.presence || "Non renseigné" %>
-            </p>
+    <div class="customers-list-card">
+      <div class="customers-list-header">
+        <span>Client</span>
+        <span>Contact</span>
+        <span>Commandes</span>
+        <span>Depuis</span>
+      </div>
 
-            <p class="card-text text-muted">
-              <%= truncate(customer.notes, length: 80) %>
-            </p>
+      <% if @customers.any? %>
+        <% @customers.each do |customer| %>
+          <% last_order = customer.orders.max_by(&:created_at) %>
 
-            <%= link_to "Voir", customer_path(customer), class: "btn btn-outline-primary btn-sm" %>
+          <button
+            type="button"
+            class="customers-row"
+            data-action="click->customer-panel#open"
+            data-customer-panel-target="row"
+            data-customer-id="<%= customer.id %>"
+            data-name="<%= customer.display_name %>"
+            data-initials="<%= customer.initials %>"
+            data-email="<%= customer.email.presence || 'Email non renseigné' %>"
+            data-phone="<%= customer.phone.presence || 'Téléphone non renseigné' %>"
+            data-notes="<%= customer.notes.presence || 'Aucune note interne.' %>"
+            data-orders-count="<%= customer.orders.size %>"
+            data-created-at="<%= customer.created_at.strftime('%d/%m/%Y') %>"
+            data-last-order-date="<%= last_order ? last_order.created_at.strftime('%d/%m/%Y') : 'Aucune commande' %>"
+            data-edit-url="<%= edit_customer_path(customer) %>"
+          >
+            <div class="customer-cell-main">
+              <div class="customer-avatar">
+                <%= customer.initials %>
+              </div>
+
+              <div>
+                <strong><%= customer.display_name %></strong>
+                <span>Client #<%= customer.id %></span>
+              </div>
+            </div>
+
+            <div class="customer-cell-contact">
+              <span><%= customer.email.presence || "Email non renseigné" %></span>
+              <small><%= customer.phone.presence || "Téléphone non renseigné" %></small>
+            </div>
+
+            <div>
+              <span class="customer-orders-count">
+                <%= customer.orders.size %>
+              </span>
+            </div>
+
+            <div>
+              <%= customer.created_at.strftime("%d/%m/%Y") %>
+            </div>
+          </button>
+
+          <template
+            data-customer-panel-target="ordersTemplate"
+            data-customer-id="<%= customer.id %>"
+          >
+            <% if customer.orders.any? %>
+              <% customer.orders.order(created_at: :desc).limit(5).each do |order| %>
+                <div class="customer-panel-order">
+                  <div>
+                    <strong>Commande #<%= order.id %></strong>
+                    <span><%= order.created_at.strftime("%d/%m/%Y") %></span>
+                  </div>
+
+                  <div class="customer-panel-order-badges">
+                    <% if order.respond_to?(:status) && order.status.present? %>
+                      <span class="customer-badge"><%= order.status %></span>
+                    <% end %>
+
+                    <% if order.respond_to?(:payment_status) && order.payment_status.present? %>
+                      <span class="customer-badge customer-badge-payment"><%= order.payment_status %></span>
+                    <% end %>
+
+                    <% if order.respond_to?(:priority) && order.priority.present? %>
+                      <span class="customer-badge customer-badge-priority"><%= order.priority %></span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="customer-panel-empty">Aucune commande pour ce client.</p>
+            <% end %>
+          </template>
+        <% end %>
+      <% else %>
+        <div class="customers-empty-state">
+          <h3>Aucun client pour le moment</h3>
+          <p>Ajoutez votre premier client pour commencer à organiser votre atelier.</p>
+          <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <aside class="customer-panel" data-customer-panel-target="panel" aria-hidden="true">
+    <div class="customer-panel-header">
+      <h2>Fiche client</h2>
+
+      <button type="button" class="customer-panel-close" data-action="click->customer-panel#close">
+        Fermer
+      </button>
+    </div>
+
+    <div class="customer-panel-identity">
+      <div class="customer-avatar customer-avatar-large" data-customer-panel-target="initials">
+        CL
+      </div>
+
+      <div class="customer-panel-name">
+        <h3 data-customer-panel-target="name">Client</h3>
+        <p data-customer-panel-target="email">Email non renseigné</p>
+      </div>
+
+      <a href="#" class="customer-panel-edit" data-customer-panel-target="editLink">
+        Modifier
+      </a>
+    </div>
+
+    <div class="customer-panel-summary">
+      <strong data-customer-panel-target="ordersCount">0</strong>
+      <span>commande(s)</span>
+    </div>
+
+    <div class="customer-panel-card">
+      <h4>Coordonnées</h4>
+
+      <div class="customer-contact-line">
+        <div class="customer-contact-icon">
+          <i class="fa-solid fa-phone"></i>
+        </div>
+
+        <div>
+          <span>Téléphone</span>
+          <strong data-customer-panel-target="phone">Téléphone non renseigné</strong>
+        </div>
+      </div>
+
+      <div class="customer-contact-line">
+        <div class="customer-contact-icon">
+          <i class="fa-solid fa-envelope"></i>
+        </div>
+
+        <div>
+          <span>Adresse e-mail</span>
+          <strong data-customer-panel-target="emailInDetails">Email non renseigné</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="customer-panel-card">
+      <h4>Notes internes</h4>
+      <p data-customer-panel-target="notes">Aucune note interne.</p>
+    </div>
+
+    <div class="customer-panel-card">
+      <h4>Historique de commandes</h4>
+
+      <div data-customer-panel-target="orders">
+        <p class="customer-panel-empty">Sélectionnez un client pour voir ses commandes.</p>
+      </div>
+    </div>
+
+    <div class="customer-panel-card">
+      <h4>Chronologie</h4>
+
+      <div class="customer-timeline">
+        <div class="customer-timeline-item">
+          <span class="customer-timeline-dot"></span>
+
+          <div>
+            <strong>Dernière commande</strong>
+            <p data-customer-panel-target="lastOrderDate">Aucune commande</p>
+          </div>
+        </div>
+
+        <div class="customer-timeline-item">
+          <span class="customer-timeline-dot"></span>
+
+          <div>
+            <strong>Création du client</strong>
+            <p data-customer-panel-target="createdAt">—</p>
           </div>
         </div>
       </div>
-    <% end %>
-  </div>
-
-  <% if @customers.empty? %>
-    <div class="alert alert-info">
-      Aucun client pour le moment.
     </div>
-  <% end %>
+  </aside>
 </div>
