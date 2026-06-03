@@ -4,6 +4,7 @@ class CustomersController < ApplicationController
   def index
     @customers = current_establishment
                  .customers
+                 .named
                  .includes(:orders)
                  .order(created_at: :desc)
 

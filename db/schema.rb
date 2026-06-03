@@ -54,14 +54,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_140335) do
   end
 
   create_table "customers", force: :cascade do |t|
+    t.string "anon_ref"
     t.datetime "created_at", null: false
     t.string "email"
     t.bigint "establishment_id", null: false
     t.string "firstname"
+    t.boolean "is_anonymous", default: false, null: false
     t.string "lastname"
     t.text "notes"
     t.string "phone"
     t.datetime "updated_at", null: false
+    t.index ["anon_ref"], name: "index_customers_on_anon_ref", unique: true
     t.index ["establishment_id"], name: "index_customers_on_establishment_id"
   end
 

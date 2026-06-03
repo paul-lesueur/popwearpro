@@ -3,7 +3,7 @@ class DashboardsController < ApplicationController
     @establishment = current_establishment
 
     @orders = @establishment.orders.includes(:customer, :order_lines)
-    @customers = @establishment.customers
+    @customers = @establishment.customers.named # exclut les clients anonymes des stats
     @items = @establishment.items
 
     @orders_in_progress = @orders.where(status: ["pending", "in_progress"])

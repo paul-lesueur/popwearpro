@@ -64,7 +64,7 @@
                       <strong>Commande #<%= order.id %></strong>
                       <br>
                       <small class="text-muted">
-                        <%= order.customer.firstname %> <%= order.customer.lastname %>
+                        <%= order.customer.display_name %>
                       </small>
                     </div>
 
@@ -118,7 +118,7 @@
                 <strong>Commande #<%= order.id %></strong>
                 <br>
                 <small class="text-muted">
-                  <%= order.customer.firstname %> <%= order.customer.lastname %>
+                  <%= order.customer.display_name %>
                   —
                   échéance le <%= order.due_date.present? ? l(order.due_date) : "non définie" %>
                 </small>
