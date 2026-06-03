@@ -133,7 +133,6 @@ puts "Creating catalog items..."
 
 ourlet = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Ourlet pantalon",
   price_ht: 18.00,
   vat_rate: 20.00,
@@ -144,7 +143,6 @@ ourlet = Item.create!(
 
 fermeture = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Réparation fermeture éclair",
   price_ht: 35.00,
   vat_rate: 20.00,
@@ -155,7 +153,6 @@ fermeture = Item.create!(
 
 robe = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Retouche robe",
   price_ht: 55.00,
   vat_rate: 20.00,
@@ -320,6 +317,7 @@ order_4 = create_order_with_lines!(
   ]
 )
 
+order_4 = Order.create!(
 order_5 = create_order_with_lines!(
   establishment: establishment,
   customer: customer_4,
@@ -419,6 +417,12 @@ order_10 = create_order_with_lines!(
   ]
 )
 
+OrderLine.create!(
+  order: order_4,
+  item: robe,
+  quantity: 1,
+  unit_price_ht: robe.price_ht,
+  vat_rate: robe.vat_rate
 order_11 = create_order_with_lines!(
   establishment: establishment,
   customer: customer_10,

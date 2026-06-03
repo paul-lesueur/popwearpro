@@ -97,7 +97,7 @@
       <h2 class="h5 mb-3">Lignes de commande</h2>
 
       <p class="text-muted">
-        Sélectionnez une ou plusieurs prestations / produits. Les lignes vides seront ignorées.
+        Sélectionnez une ou plusieurs prestations. Les lignes vides seront ignorées.
       </p>
 
       <%= form.fields_for :order_lines do |line_form| %>
@@ -108,7 +108,7 @@
               @items,
               :id,
               :name,
-              { prompt: "Choisir une prestation ou un produit" },
+              { prompt: "Choisir une prestation" },
               class: "form-select"
             %>
           </div>

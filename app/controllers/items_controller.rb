@@ -46,7 +46,6 @@ class ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(
-      :category,
       :name,
       :price_ht,
       :vat_rate,
