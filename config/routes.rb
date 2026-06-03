@@ -18,5 +18,8 @@ Rails.application.routes.draw do
 
   resources :orders do
     resources :communications, only: [:create]
+    member do
+      patch :move
+    end
   end
 end

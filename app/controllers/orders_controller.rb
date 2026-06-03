@@ -1,13 +1,15 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [:show, :edit, :update, :destroy, :move]
   before_action :set_form_data, only: [:new, :create, :edit, :update]
 
   KANBAN_COLUMNS = [
-    { key: "new",         label: "Nouvelles commandes",       statuses: %w[draft pending] },
-    { key: "in_progress", label: "En cours",                  statuses: %w[in_progress] },
-    { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent] },
-    { key: "done",        label: "Terminées",                 statuses: %w[completed delivered] }
+    { key: "new",         label: "Nouvelles commandes",       statuses: %w[draft pending],       target_status: "pending" },
+    { key: "in_progress", label: "En cours",                  statuses: %w[in_progress],         target_status: "in_progress" },
+    { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent],                target_status: "sent" },
+    { key: "done",        label: "Terminées",                 statuses: %w[completed delivered], target_status: "completed" }
   ].freeze
+
+  ALLOWED_STATUSES = KANBAN_COLUMNS.map { |col| col[:target_status] }.freeze
 
   def index
     orders = current_establishment.orders
@@ -53,6 +55,12 @@ class OrdersController < ApplicationController
       @order.order_lines.build if @order.order_lines.empty?
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def move
+    status = params[:status]
+    @order.update(status:) if ALLOWED_STATUSES.include?(status)
+    head :ok
   end
 
   def destroy
