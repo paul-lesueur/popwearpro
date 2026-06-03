@@ -163,7 +163,6 @@ robe = Item.create!(
 
 veste = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Ajustement veste",
   price_ht: 48.00,
   vat_rate: 20.00,
@@ -174,34 +173,11 @@ veste = Item.create!(
 
 sac_cuir = Item.create!(
   establishment: establishment,
-  category: "service",
   name: "Réparation sac cuir",
   price_ht: 42.00,
   vat_rate: 20.00,
   repair_bonus: true,
   photo_url: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7",
-  active: true
-)
-
-lacets = Item.create!(
-  establishment: establishment,
-  category: "product",
-  name: "Lacets premium",
-  price_ht: 8.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-  active: true
-)
-
-produit_cuir = Item.create!(
-  establishment: establishment,
-  category: "product",
-  name: "Produit d'entretien cuir",
-  price_ht: 14.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519",
   active: true
 )
 
@@ -296,8 +272,7 @@ order_3 = create_order_with_lines!(
   collected_at: nil,
   internal_notes: "Ourlets terminés. En attente de récupération.",
   lines: [
-    { item: ourlet, quantity: 2 },
-    { item: lacets, quantity: 1 }
+    { item: ourlet, quantity: 2 }
   ]
 )
 
@@ -313,11 +288,10 @@ order_4 = create_order_with_lines!(
   collected_at: Time.current - 3.days,
   internal_notes: "Commande livrée et payée.",
   lines: [
-    { item: produit_cuir, quantity: 1 }
+    { item: robe, quantity: 1 }
   ]
 )
 
-order_4 = Order.create!(
 order_5 = create_order_with_lines!(
   establishment: establishment,
   customer: customer_4,
@@ -379,8 +353,7 @@ order_8 = create_order_with_lines!(
   collected_at: nil,
   internal_notes: "Réparation cuir urgente. Client souhaite un appel dès que terminé.",
   lines: [
-    { item: sac_cuir, quantity: 1 },
-    { item: produit_cuir, quantity: 1 }
+    { item: sac_cuir, quantity: 1 }
   ]
 )
 
@@ -412,17 +385,11 @@ order_10 = create_order_with_lines!(
   collected_at: Time.current - 8.days,
   internal_notes: "Commande terminée sans problème.",
   lines: [
-    { item: lacets, quantity: 2 },
-    { item: produit_cuir, quantity: 1 }
+    { item: ourlet, quantity: 2 },
+    { item: robe, quantity: 1 }
   ]
 )
 
-OrderLine.create!(
-  order: order_4,
-  item: robe,
-  quantity: 1,
-  unit_price_ht: robe.price_ht,
-  vat_rate: robe.vat_rate
 order_11 = create_order_with_lines!(
   establishment: establishment,
   customer: customer_10,
