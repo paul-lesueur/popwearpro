@@ -1,0 +1,138 @@
+.orders-kanban {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  transition: grid-template-columns 0.25s ease;
+  align-items: start;
+}
+
+.orders-kanban--with-panel {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.order-panel {
+  display: none;
+  position: sticky;
+  top: 24px;
+  animation: orderPanelIn 0.2s ease;
+}
+
+.order-panel.is-open {
+  display: block;
+}
+
+@keyframes orderPanelIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.order-panel-header {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+    color: $text-primary;
+    font-size: 20px;
+    font-weight: 800;
+  }
+}
+
+.order-panel-close {
+  border: 0;
+  background: rgba($primary, 0.1);
+  color: $primary;
+  border-radius: $radius-pill;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.order-panel-body {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  padding: 24px;
+}
+
+.order-timeline-item {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 18px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 30px;
+    bottom: 0;
+    width: 2px;
+    background: $border;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.order-timeline-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba($primary, 0.12);
+  color: $primary;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.order-timeline-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $secondary;
+}
+
+.order-timeline-date {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: $subtext;
+}
+
+@media (max-width: 1100px) {
+  .orders-kanban,
+  .orders-kanban--with-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .order-panel {
+    position: fixed;
+    inset: 16px;
+    z-index: 1000;
+    overflow-y: auto;
+    border-radius: $radius;
+    box-shadow: 0 20px 60px rgba(19, 21, 35, 0.18);
+    background: $bg-page;
+  }
+}
