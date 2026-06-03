@@ -1,42 +1,102 @@
-<%= form_with model: customer, local: true do |form| %>
-  <% if customer.errors.any? %>
-    <div class="alert alert-danger">
-      <p><strong>Erreur :</strong></p>
-      <ul>
-        <% customer.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+<% submit_text = local_assigns[:submit_label] || "Enregistrer le client" %>
+
+<div class="customer-form-layout">
+  <div class="customer-form-card">
+    <div class="customer-form-card-header">
+      <div class="customer-form-icon">
+        <i class="fa fa-user"></i>
+      </div>
+
+      <div>
+        <h2>Informations client</h2>
+        <p>Renseignez les informations principales du client.</p>
+      </div>
     </div>
-  <% end %>
 
-  <div class="mb-3">
-    <%= form.label :firstname, "Prénom", class: "form-label" %>
-    <%= form.text_field :firstname, class: "form-control" %>
+    <%= form_with(model: customer, local: true, class: "customer-form") do |f| %>
+      <% if customer.errors.any? %>
+        <div class="customer-form-errors">
+          <h3>Impossible d’enregistrer ce client</h3>
+
+          <ul>
+            <% customer.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="customer-form-grid">
+        <div class="customer-form-field">
+          <%= f.label :firstname, "Prénom" %>
+          <%= f.text_field :firstname, placeholder: "Ex : Camille", class: "customer-input" %>
+        </div>
+
+        <div class="customer-form-field">
+          <%= f.label :lastname, "Nom" %>
+          <%= f.text_field :lastname, placeholder: "Ex : Mercier", class: "customer-input" %>
+        </div>
+      </div>
+
+      <div class="customer-form-field">
+        <%= f.label :email, "Adresse e-mail" %>
+
+        <div class="customer-input-with-icon">
+          <i class="fa fa-envelope"></i>
+          <%= f.email_field :email, placeholder: "Ex : camille@email.fr", class: "customer-input" %>
+        </div>
+      </div>
+
+      <div class="customer-form-field">
+        <%= f.label :phone, "Téléphone" %>
+
+        <div class="customer-input-with-icon">
+          <i class="fa fa-phone"></i>
+          <%= f.telephone_field :phone, placeholder: "Ex : 06 12 34 56 78", class: "customer-input" %>
+        </div>
+      </div>
+
+      <div class="customer-form-field">
+        <%= f.label :notes, "Notes internes" %>
+        <%= f.text_area :notes,
+          rows: 5,
+          placeholder: "Ex : Cliente fidèle, préfère être prévenue par SMS.",
+          class: "customer-input customer-textarea" %>
+      </div>
+
+      <div class="customer-form-actions">
+        <%= link_to "Annuler", customers_path, class: "customer-btn-secondary" %>
+        <%= f.submit submit_text, class: "customer-btn-primary" %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="mb-3">
-    <%= form.label :lastname, "Nom", class: "form-label" %>
-    <%= form.text_field :lastname, class: "form-control" %>
-  </div>
+  <aside class="customer-form-side-card">
+    <div class="customer-form-side-icon">
+      <i class="fa fa-address-book"></i>
+    </div>
 
-  <div class="mb-3">
-    <%= form.label :email, "Email", class: "form-label" %>
-    <%= form.email_field :email, class: "form-control" %>
-  </div>
+    <h3>Carnet client atelier</h3>
 
-  <div class="mb-3">
-    <%= form.label :phone, "Téléphone", class: "form-label" %>
-    <%= form.text_field :phone, class: "form-control" %>
-  </div>
+    <p>
+      Chaque client ajouté pourra ensuite être relié à ses commandes, ses paiements et son historique dans Popwear Pro.
+    </p>
 
-  <div class="mb-3">
-    <%= form.label :notes, "Notes", class: "form-label" %>
-    <%= form.text_area :notes, rows: 4, class: "form-control" %>
-  </div>
+    <div class="customer-form-tips">
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Coordonnées centralisées</span>
+      </div>
 
-  <div class="d-flex gap-2">
-    <%= form.submit "Enregistrer", class: "btn btn-primary" %>
-    <%= link_to "Annuler", customers_path, class: "btn btn-secondary" %>
-  </div>
-<% end %>
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Notes internes visibles par l’atelier</span>
+      </div>
+
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Historique de commandes accessible depuis la fiche client</span>
+      </div>
+    </div>
+  </aside>
+</div>

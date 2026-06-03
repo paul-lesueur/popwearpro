@@ -2,7 +2,16 @@ class CustomersController < ApplicationController
   before_action :set_customer, only: [:show, :edit, :update, :destroy]
 
   def index
-    @customers = current_establishment.customers.order(created_at: :desc)
+    @customers = current_establishment
+                 .customers
+                 .includes(:orders)
+                 .order(created_at: :desc)
+
+    @customers_count = @customers.size
+
+    @new_customers_this_month = @customers.select do |customer|
+      customer.created_at >= Time.current.beginning_of_month
+    end.count
   end
 
   def show
