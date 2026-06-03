@@ -1,0 +1,46 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Mon établissement</h1>
+      <p class="text-muted">Gérez les informations de votre atelier.</p>
+    </div>
+
+    <%= link_to "Modifier", edit_establishment_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="h4 mb-3"><%= @establishment.name %></h2>
+
+      <p>
+        <strong>Description :</strong><br>
+        <%= @establishment.description.presence || "Non renseignée" %>
+      </p>
+
+      <p>
+        <strong>Adresse :</strong><br>
+        <%= @establishment.address.presence || "Non renseignée" %>
+      </p>
+
+      <p>
+        <strong>Catégorie :</strong><br>
+        <%= @establishment.category.presence || "Non renseignée" %>
+      </p>
+
+      <p>
+        <strong>Moyens de paiement :</strong><br>
+        <%= @establishment.payment_methods.presence || "Non renseignés" %>
+      </p>
+
+      <p>
+        <strong>Horaires :</strong><br>
+        <%= @establishment.opening_hours.presence || "Non renseignés" %>
+      </p>
+
+      <p>
+        <strong>SIRET / SIREN :</strong><br>
+        <%= @establishment.siret_siren.presence || "Non renseigné" %>
+      </p>
+    </div>
+  </div>
+</div>
