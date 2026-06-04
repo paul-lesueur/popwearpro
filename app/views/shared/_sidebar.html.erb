@@ -1,9 +1,32 @@
 <%# Sidebar permanente (desktop ≥992px). En dessous, c'est l'off-canvas qui prend le relais. %>
+
 <aside class="app-sidebar d-none d-lg-flex">
   <div class="app-sidebar__brand">
     <span class="app-sidebar__logo">popwear</span>
     <span class="app-sidebar__pro">PRO</span>
   </div>
 
-  <%= render "shared/sidebar_nav" %>
+  <div class="app-sidebar__main">
+    <%= render "shared/sidebar_nav" %>
+  </div>
+
+  <div class="app-sidebar__bottom">
+    <%= link_to new_order_path, class: "app-sidebar__cta" do %>
+      <i class="fa-solid fa-plus"></i>
+      <span>Nouvelle commande</span>
+    <% end %>
+
+    <% if current_establishment.present? %>
+      <div class="app-sidebar__establishment">
+        <span class="app-sidebar__status-dot"></span>
+
+        <span class="app-sidebar__establishment-content">
+          <span class="app-sidebar__establishment-name">
+            <%= current_establishment.name %>
+          </span>
+        </span>
+      </div>
+    <% end %>
+  </div>
+</aside>
 </aside>
