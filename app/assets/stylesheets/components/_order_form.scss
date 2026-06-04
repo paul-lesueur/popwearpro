@@ -173,6 +173,24 @@
   position: relative;
 }
 
+// Champ avec icône loupe à gauche.
+.customer-search__field {
+  position: relative;
+
+  .form-control {
+    padding-left: 2.5rem;
+  }
+}
+
+.customer-search__icon {
+  position: absolute;
+  left: .9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $subtext;
+  pointer-events: none;
+}
+
 .customer-search__list {
   position: absolute;
   top: 100%;
