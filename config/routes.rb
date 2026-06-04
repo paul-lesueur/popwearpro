@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :communications, only: [:create]
     member do
       patch :move
+      get :confirmation
     end
   end
 end
