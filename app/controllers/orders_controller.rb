@@ -16,6 +16,14 @@ class OrdersController < ApplicationController
                                   .includes(:customer, order_lines: :item)
                                   .order(created_at: :desc)
 
+    @search_query = params[:q].to_s.strip
+    if @search_query.present?
+      pattern = "%#{@search_query.downcase}%"
+      orders = orders.joins(:customer).where(
+        "LOWER(customers.firstname || ' ' || customers.lastname) LIKE :q OR CAST(orders.id AS TEXT) LIKE :q",
+        q: pattern
+      )
+    end
     @columns = KANBAN_COLUMNS.map do |col|
       col.merge(orders: orders.select { |o| col[:statuses].include?(o.status) })
     end
