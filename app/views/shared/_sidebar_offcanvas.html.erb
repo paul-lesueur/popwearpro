@@ -1,14 +1,43 @@
-<%# Off-canvas mobile (<992px) : même navigation, ouvert par le hamburger du header. %>
 <div class="offcanvas offcanvas-start app-sidebar-offcanvas d-lg-none"
-     tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+     tabindex="-1"
+     id="sidebarOffcanvas"
+     aria-labelledby="sidebarOffcanvasLabel">
+
   <div class="offcanvas-header">
     <div class="app-sidebar__brand mb-0 pb-0">
       <span class="app-sidebar__logo" id="sidebarOffcanvasLabel">popwear</span>
       <span class="app-sidebar__pro">PRO</span>
     </div>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Fermer">
+    </button>
   </div>
-  <div class="offcanvas-body">
-    <%= render "shared/sidebar_nav" %>
+
+  <div class="offcanvas-body app-sidebar-offcanvas__body">
+    <div class="app-sidebar__main">
+      <%= render "shared/sidebar_nav" %>
+    </div>
+
+    <div class="app-sidebar__bottom">
+      <%= link_to new_order_path, class: "app-sidebar__cta" do %>
+        <i class="fa-solid fa-plus"></i>
+        <span>Nouvelle commande</span>
+      <% end %>
+
+      <% if current_establishment.present? %>
+        <div class="app-sidebar__establishment">
+          <span class="app-sidebar__status-dot"></span>
+
+          <span class="app-sidebar__establishment-content">
+            <span class="app-sidebar__establishment-name">
+              <%= current_establishment.name %>
+            </span>
+          </span>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
