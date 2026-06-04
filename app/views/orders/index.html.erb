@@ -6,6 +6,25 @@
       <%= link_to "+ Créer une commande", new_order_path, class: "btn btn-primary" %>
     </div>
 
+    <div data-controller="search">
+      <%= form_with url: orders_path, method: :get, data: { search_target: "form", turbo_frame: "orders-kanban-board" }, class: "mb-4" do |f| %>
+        <div class="input-group" style="max-width: 380px;">
+          <span class="input-group-text bg-white border-end-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+            </svg>
+          </span>
+          <%= f.text_field :q,
+              value: @search_query,
+              placeholder: "Rechercher un client ou N° de commande…",
+              class: "form-control border-start-0 ps-0",
+              autocomplete: "off",
+              data: { action: "input->search#submit" } %>
+        </div>
+      <% end %>
+    </div>
+
+    <turbo-frame id="orders-kanban-board" data-turbo-action="replace">
     <div class="d-flex gap-3 align-items-start overflow-auto">
       <% @columns.each do |column| %>
         <div class="kanban-column flex-shrink-0 bg-white rounded-3 p-3"
@@ -81,6 +100,7 @@
         </div>
       <% end %>
     </div>
+    </turbo-frame>
   </div>
 
   <aside class="order-panel" data-order-panel-target="panel" aria-hidden="true">

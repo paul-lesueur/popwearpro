@@ -1,0 +1,40 @@
+<div class="container py-4">
+  <div class="wizard">
+    <div class="cmddone">
+      <div class="cmddone__icon"><i class="fa-solid fa-check"></i></div>
+      <div class="cmddone__title">Commande validée</div>
+      <div class="cmddone__sub">
+        La commande <strong>#<%= @order.id %></strong> pour <strong><%= @order.customer.display_name %></strong>
+        a été enregistrée. Voici ce qui a été généré&nbsp;:
+      </div>
+
+      <div class="cmddone__outputs">
+        <div class="cmddone__card">
+          <span class="cmddone__card-ic"><i class="fa-solid fa-tag"></i></span>
+          <div>
+            <div class="cmddone__card-title">Ligne de commande</div>
+            <div class="cmddone__card-desc">Ajoutée au suivi de l'atelier — prête à passer en préparation.</div>
+          </div>
+        </div>
+        <div class="cmddone__card">
+          <span class="cmddone__card-ic"><i class="fa-solid fa-clipboard"></i></span>
+          <div>
+            <div class="cmddone__card-title"><%= @order.document_label %></div>
+            <div class="cmddone__card-desc">
+              <%= number_to_currency(@order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              · <%= @order.payment_method.presence || "—" %>
+              · <%= @order.paid? ? "payé" : "à régler au retrait" %>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
+        <%= link_to "Retour aux commandes", orders_path, class: "btn btn-light" %>
+        <%= link_to order_path(@order), class: "btn btn-primary" do %>
+          <i class="fa-solid fa-clipboard me-2"></i>Voir la commande
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

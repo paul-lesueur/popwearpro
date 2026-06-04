@@ -1,0 +1,260 @@
+// ============================================================
+//  Créer une commande — Wizard (parcours en 5 étapes)
+//  Porté depuis la maquette Figma, adapté à la charte Popwear Pro.
+// ============================================================
+
+// Teintes douces dérivées de la charte (pas dans _colors.scss).
+$w-orange-soft:   #FCEDE4;
+$w-orange-softer: #FEF6F1;
+$w-orange-press:  #DD4E18;
+$w-green:         $success;
+$w-green-soft:    #CFF3DE;
+$w-green-ink:     #0B7A4E;
+$w-amber:         $warning;
+$w-amber-soft:    #FCEFC7;
+$w-amber-ink:     #B07B12;
+$w-ink:           $secondary;       // #411221
+$w-ink-soft:      #6E4A56;
+$w-muted:         $subtext;
+$w-line:          $border;
+$w-line-strong:   #E2DBDE;
+$w-slate-soft:    #ECEBF2;
+$w-app-bg:        #FFFDFC;
+$w-hover:         #FBF7F5;
+
+// Variables CSS exposées (utilisées par quelques styles inline dans les vues).
+:root {
+  --font-heading: #{$font-heading};
+  --w-ink: #{$secondary};
+  --w-muted: #{$subtext};
+}
+
+.wizard { max-width: 1120px; margin: 0 auto; }
+
+.wizhead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; margin-bottom: 30px;
+}
+.wizhead__title {
+  display: flex; align-items: center; gap: 14px;
+  font-family: $font-heading; font-weight: 700; font-size: 1.875rem; color: $w-ink;
+  .wizhead__close { background: none; border: 0; color: $w-ink; display: flex; cursor: pointer; }
+  .wizhead__close:hover { color: $primary; }
+}
+
+// ---- Stepper ----
+.stepper { display: flex; align-items: flex-start; margin: 6px 0 36px; }
+.stepper__item {
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  flex: 0 0 auto; width: 104px; text-align: center; background: none; border: 0; padding: 0;
+  &.is-clickable { cursor: pointer; }
+}
+.stepper__line {
+  flex: 1; height: 2.5px; background: $w-line-strong; margin-top: 18px;
+  border-radius: 2px; transition: background .25s;
+  &.is-done { background: $gradient-green; }
+}
+.stepper__dot {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: $bg-card; border: 2px solid $w-line-strong; color: $w-muted;
+  font-family: $font-heading; font-weight: 700; font-size: .9375rem; transition: .2s;
+  i { font-size: 1rem; }
+}
+.stepper__item.is-active .stepper__dot { background: $gradient-orange; border-color: transparent; color: #fff; box-shadow: 0 6px 16px rgba(242, 84, 28, .32); }
+.stepper__item.is-done   .stepper__dot { background: $gradient-green; border-color: transparent; color: #fff; }
+.stepper__label { font-family: $font-heading; font-weight: 600; font-size: .8125rem; color: $w-muted; line-height: 1.3; }
+.stepper__item.is-active .stepper__label { color: $w-ink; }
+.stepper__item.is-done   .stepper__label { color: $w-green-ink; }
+
+// ---- Steps shell ----
+.wizstep { display: none; &.is-active { display: block; } }
+.wizstep__head { margin-bottom: 22px; }
+.wizstep__title { font-family: $font-heading; font-weight: 700; font-size: 1.375rem; color: $w-ink; }
+.wizstep__sub { color: $w-ink-soft; font-size: .9375rem; margin-top: 5px; max-width: 560px; line-height: 1.5; }
+
+.wiznav {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid $w-line;
+}
+.wiznav__hint { color: $w-muted; font-size: .85rem; display: inline-flex; align-items: center; gap: 8px; }
+
+// ---- Generic panel / kv ----
+.panel { background: $bg-card; border: 1px solid $w-line; border-radius: 22px; box-shadow: $shadow-card; padding: 24px 26px; }
+.panel + .panel { margin-top: 18px; }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: .9rem; }
+.kv__k { color: $w-ink-soft; }
+.kv__v { font-family: $font-heading; font-weight: 600; color: $w-ink; white-space: nowrap; }
+.kv--total { border-top: 1px solid $w-line; margin-top: 6px; padding-top: 11px; .kv__v { font-size: 1.0625rem; } }
+.kv__v--deduct { color: $w-green-ink; }
+.kv__k--deduct { color: $w-green-ink; display: inline-flex; align-items: center; gap: 6px; }
+
+// ---- Step 1 : client ----
+.clientopts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.clientopt {
+  text-align: left; border: 1.5px solid $w-line-strong; border-radius: $radius; background: $bg-card;
+  padding: 18px 18px 20px; cursor: pointer; transition: .14s;
+  display: flex; flex-direction: column; gap: 11px; position: relative;
+  &:hover { border-color: $primary; }
+  &.is-on { border-color: $primary; background: $w-orange-softer; box-shadow: 0 6px 18px rgba(242, 104, 44, .12); }
+}
+.clientopt__ic { width: 46px; height: 46px; border-radius: 13px; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.clientopt.is-on .clientopt__ic { background: $w-orange-soft; color: $w-orange-press; }
+.clientopt__title { font-family: $font-heading; font-weight: 700; font-size: .97rem; }
+.clientopt__desc { color: $w-muted; font-size: .8125rem; line-height: 1.45; }
+.clientopt__tick { position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: $primary; color: #fff; display: none; align-items: center; justify-content: center; font-size: .75rem; }
+.clientopt.is-on .clientopt__tick { display: flex; }
+
+.clientpick { margin-top: 22px; }
+.clientpick__list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; max-height: 288px; overflow-y: auto; padding: 2px; }
+.clientrow {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1.5px solid $w-line;
+  border-radius: 13px; cursor: pointer; transition: .12s; background: $bg-card; text-align: left; width: 100%;
+  &:hover { border-color: $primary; background: $w-hover; }
+  &.is-on { border-color: $primary; background: $w-orange-softer; }
+}
+.clientrow__name { font-family: $font-heading; font-weight: 600; font-size: .9rem; }
+.clientrow__meta { color: $w-muted; font-size: .78rem; margin-top: 1px; display: block; }
+
+// ---- Step 2 : prestations + panier ----
+.pos { display: grid; grid-template-columns: 1fr 380px; gap: 26px; align-items: start; }
+.posgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.postile {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; text-align: left; cursor: pointer;
+  position: relative; transition: .12s; background: $bg-card; border: 1px solid $w-line; border-radius: $radius;
+  &:hover { box-shadow: 0 6px 18px rgba(65, 18, 33, .08); transform: translateY(-1px); }
+  &.is-on { border-color: $primary; }
+}
+.postile__thumb { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; background: $w-slate-soft; flex: 0 0 auto; }
+.postile__name { font-family: $font-heading; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.postile__cat { color: $w-muted; font-size: .78rem; }
+.postile__price { font-family: $font-heading; font-weight: 700; font-size: .9375rem; white-space: nowrap; margin-left: auto; }
+.postile__qty { position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: $primary; color: #fff; font-family: $font-heading; font-weight: 700; font-size: .72rem; display: flex; align-items: center; justify-content: center; }
+
+.ticket { background: $bg-card; border: 1px solid $w-line; border-radius: 22px; box-shadow: $shadow-card; padding: 20px 20px 22px; position: sticky; top: 18px; }
+.ticket__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.ticket__title { font-family: $font-heading; font-weight: 700; font-size: 1.125rem; }
+.ticket__clear { background: none; border: 0; color: $primary; font-family: $font-heading; font-weight: 600; font-size: .85rem; cursor: pointer; }
+.ticket__lines { display: flex; flex-direction: column; gap: 10px; min-height: 80px; max-height: 280px; overflow-y: auto; }
+.ticket__empty { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; color: $w-muted; padding: 24px 10px; font-size: .85rem; line-height: 1.45; i { font-size: 1.75rem; color: $w-line-strong; } }
+.ticket__line { display: flex; align-items: center; gap: 11px; }
+.ticket__line-thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: $w-slate-soft; flex: 0 0 auto; }
+.ticket__line-name { font-family: $font-heading; font-weight: 600; font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ticket__line-unit { color: $w-muted; font-size: .78rem; }
+.ticket__totals { border-top: 1px solid $w-line; margin-top: 16px; padding-top: 14px; }
+.qtyctl { display: flex; align-items: center; gap: 8px; }
+.qtyctl button { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid $w-line-strong; background: $bg-card; color: $w-ink; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: .8rem; &:hover { background: $w-hover; } }
+.qtyctl span { font-family: $font-heading; font-weight: 700; font-size: .875rem; min-width: 14px; text-align: center; }
+.ticket__del { background: none; border: 0; color: $w-muted; padding: 4px; cursor: pointer; }
+
+.bonuscard { display: flex; align-items: center; gap: 14px; padding: 14px 15px; border-radius: 14px; border: 1.5px solid $w-green-soft; background: linear-gradient(180deg, #EAFBF1, #D6F4E2); margin-top: 16px; }
+.bonuscard__ic { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 11px; background: #fff; color: $w-green-ink; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(11, 122, 78, .18); }
+.bonuscard__txt { flex: 1; min-width: 0; }
+.bonuscard__title { font-family: $font-heading; font-weight: 700; font-size: .875rem; color: $w-green-ink; }
+.bonuscard__desc { font-size: .75rem; color: #1F7A56; line-height: 1.4; margin-top: 2px; }
+.discount-row { display: flex; gap: 8px; margin-top: 12px; }
+
+@media (max-width: 1200px) { .pos { grid-template-columns: 1fr; } .ticket { position: static; } }
+
+// ---- Step 3 : paiement ----
+.paygrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 620px; }
+.paytile {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px;
+  border: 1.5px solid $w-line-strong; border-radius: $radius; background: $bg-card; cursor: pointer; transition: .14s; position: relative;
+  &:hover { border-color: $primary; }
+  &.is-on { border-color: $primary; background: $w-orange-softer; box-shadow: 0 6px 18px rgba(242, 104, 44, .12); }
+}
+.paytile__ic { width: 54px; height: 54px; border-radius: 50%; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.paytile.is-on .paytile__ic { background: $w-orange-soft; color: $w-orange-press; }
+.paytile__label { font-family: $font-heading; font-weight: 600; font-size: .9375rem; }
+.paytile__tick { position: absolute; top: 13px; right: 13px; width: 22px; height: 22px; border-radius: 50%; background: $primary; color: #fff; display: none; align-items: center; justify-content: center; font-size: .72rem; }
+.paytile.is-on .paytile__tick { display: flex; }
+
+.statusgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 620px; }
+.statustile {
+  display: flex; align-items: center; gap: 13px; padding: 18px; border: 1.5px solid $w-line-strong;
+  border-radius: $radius; background: $bg-card; cursor: pointer; transition: .14s; text-align: left;
+  &:hover { border-color: $primary; }
+  &.is-paye.is-on { border-color: $w-green; background: $w-green-soft; }
+  &.is-retrait.is-on { border-color: $w-amber; background: $w-amber-soft; }
+}
+.statustile__ic { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 12px; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+.statustile.is-paye.is-on .statustile__ic { background: #fff; color: $w-green-ink; }
+.statustile.is-retrait.is-on .statustile__ic { background: #fff; color: $w-amber-ink; }
+.statustile__title { font-family: $font-heading; font-weight: 700; font-size: .9375rem; }
+.statustile__desc { color: $w-muted; font-size: .78rem; margin-top: 2px; display: block; }
+.section-title { font-family: $font-heading; font-weight: 700; color: $w-ink; }
+
+// ---- Step 4 : informations ----
+.inforow { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 18px 0; border-bottom: 1px solid $w-line; &:last-child { border-bottom: 0; } }
+.inforow__title { font-family: $font-heading; font-weight: 600; font-size: .9375rem; color: $w-ink; }
+.inforow__desc { color: $w-muted; font-size: .8125rem; margin-top: 3px; line-height: 1.45; max-width: 420px; }
+
+// ---- Toggle (switch custom) ----
+.w-toggle { width: 46px; height: 26px; border-radius: 99px; background: #CFC8D4; position: relative; transition: .16s; flex: 0 0 auto; border: none; cursor: pointer; padding: 0;
+  &::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); transition: .16s; }
+  &.is-on { background: $gradient-green; }
+  &.is-on::after { left: 23px; }
+}
+
+// ---- Step 5 : récap + reçu ----
+.recapwrap { display: grid; grid-template-columns: 1fr 360px; gap: 30px; align-items: start; }
+@media (max-width: 1080px) { .recapwrap { grid-template-columns: 1fr; } }
+.recap__line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid $w-line; font-size: .9rem; &:last-child { border-bottom: 0; } }
+.recap__line-name { display: flex; align-items: center; gap: 12px; font-family: $font-heading; font-weight: 600; }
+.recap__thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: $w-slate-soft; }
+.recap__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ticketprint { position: sticky; top: 18px; }
+.genticket { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; padding: 38px 22px; border: 1.5px dashed $w-line-strong; border-radius: $radius; color: $w-ink-soft; background: $w-app-bg; }
+.genticket__ic { width: 58px; height: 58px; border-radius: 14px; background: $w-orange-soft; color: $w-orange-press; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+.printactions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; justify-content: center; }
+
+.confirmcard { border: 1px solid $w-line; border-radius: $radius; overflow: hidden; margin-top: 24px; }
+.confirmcard__top { display: flex; align-items: center; gap: 13px; padding: 16px 18px; background: $w-orange-softer; border-bottom: 1px solid $w-line; }
+.confirmcard__ic { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 11px; background: $gradient-orange; color: #fff; display: flex; align-items: center; justify-content: center; }
+.confirmcard__title { font-family: $font-heading; font-weight: 700; font-size: .9375rem; }
+.confirmcard__desc { color: $w-ink-soft; font-size: .8125rem; margin-top: 2px; line-height: 1.45; }
+.confirmcard__body { padding: 16px 18px; }
+
+// ---- Receipt (ticket de caisse) ----
+.receipt {
+  width: 330px; margin: 0 auto; background: #fff; color: #2b2b2b;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78rem; line-height: 1.6; padding: 26px 26px 14px;
+  box-shadow: 0 16px 44px rgba(65, 18, 33, .16); position: relative; border-radius: 3px;
+}
+.receipt__center { text-align: center; }
+.receipt__brand { font-family: $font-heading; font-weight: 800; font-size: 1.0625rem; letter-spacing: .04em; color: #1c1c1c; text-transform: uppercase; }
+.receipt__addr { color: #666; font-size: .69rem; line-height: 1.5; margin-top: 4px; }
+.receipt__rule { border: 0; border-top: 1.5px dashed #c9c9c9; margin: 13px 0; }
+.receipt__meta { display: flex; justify-content: space-between; gap: 10px; color: #555; font-size: .72rem; white-space: nowrap; span:last-child { text-align: right; } }
+.receipt__row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 3px 0; > span:first-child { flex: 1; min-width: 0; } span:last-child { white-space: nowrap; } }
+.receipt__qty { color: #888; }
+.receipt__tot { font-family: $font-heading; font-weight: 700; font-size: .95rem; color: #1c1c1c; }
+.receipt__deduct { color: #0B7A4E; }
+.receipt__foot { text-align: center; color: #777; font-size: .69rem; line-height: 1.6; padding: 4px 0 10px; }
+.receipt__barcode { height: 42px; width: 100%; margin: 10px 0 4px; background: repeating-linear-gradient(90deg, #1c1c1c 0 2px, transparent 2px 4px, #1c1c1c 4px 5px, transparent 5px 9px, #1c1c1c 9px 12px, transparent 12px 14px); }
+
+// ---- Écran "Commande validée" ----
+.cmddone { text-align: center; padding: 30px 20px; }
+.cmddone__icon { width: 74px; height: 74px; margin: 0 auto 18px; border-radius: 50%; background: $w-green-soft; color: $w-green-ink; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.cmddone__title { font-family: $font-heading; font-weight: 700; font-size: 1.5rem; color: $w-ink; }
+.cmddone__sub { color: $w-ink-soft; font-size: .9375rem; margin: 8px auto 0; line-height: 1.55; max-width: 440px; }
+.cmddone__outputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 620px; margin: 26px auto 0; }
+.cmddone__card { display: flex; gap: 14px; align-items: flex-start; text-align: left; padding: 18px; border: 1px solid $w-line; border-radius: $radius; background: $bg-card; }
+.cmddone__card-ic { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 12px; background: $w-orange-soft; color: $w-orange-press; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+.cmddone__card-title { font-family: $font-heading; font-weight: 700; font-size: .9rem; }
+.cmddone__card-desc { color: $w-muted; font-size: .78rem; margin-top: 3px; line-height: 1.45; }
+
+@media (max-width: 720px) {
+  .clientopts, .paygrid { grid-template-columns: 1fr; }
+  .statusgrid, .posgrid, .cmddone__outputs, .clientpick__list { grid-template-columns: 1fr; }
+  .stepper__label { display: none; }
+  .stepper__item { width: auto; flex: 1; }
+}
+
+@media print {
+  .app-sidebar, .app-header, .wizhead, .wiznav, .stepper, .printactions, .confirmcard, .recap__col { display: none !important; }
+  .receipt { box-shadow: none; }
+}

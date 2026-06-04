@@ -167,3 +167,38 @@
     color: $secondary;
   }
 }
+
+// ---- Recherche client (menu filtrant) ----
+.customer-search {
+  position: relative;
+}
+
+// Champ avec icône loupe à gauche.
+.customer-search__field {
+  position: relative;
+
+  .form-control {
+    padding-left: 2.5rem;
+  }
+}
+
+.customer-search__icon {
+  position: absolute;
+  left: .9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $subtext;
+  pointer-events: none;
+}
+
+.customer-search__list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: .25rem;
+  max-height: 16rem;
+  overflow-y: auto;
+  box-shadow: $shadow-card;
+}

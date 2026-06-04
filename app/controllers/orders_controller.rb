@@ -16,6 +16,14 @@ class OrdersController < ApplicationController
                                   .includes(:customer, order_lines: :item)
                                   .order(created_at: :desc)
 
+    @search_query = params[:q].to_s.strip
+    if @search_query.present?
+      pattern = "%#{@search_query.downcase}%"
+      orders = orders.joins(:customer).where(
+        "LOWER(customers.firstname || ' ' || customers.lastname) LIKE :q OR CAST(orders.id AS TEXT) LIKE :q",
+        q: pattern
+      )
+    end
     @columns = KANBAN_COLUMNS.map do |col|
       col.merge(orders: orders.select { |o| col[:statuses].include?(o.status) })
     end
@@ -32,16 +40,19 @@ class OrdersController < ApplicationController
 
   def create
     @order = current_establishment.orders.new(order_params)
-    # Client anonyme : on rattache un nouveau client anonyme (ANON-xxxxx), sans identité.
-    # L'autosave de belongs_to crée le client dans la même transaction que la commande.
-    @order.customer = current_establishment.customers.new(is_anonymous: true) if anonymous_order?
+    assign_customer
     fill_order_line_prices
 
     if @order.save
-      redirect_to @order, notice: "Commande créée avec succès."
+      redirect_to confirmation_order_path(@order)
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  # Écran "Commande validée" affiché après création.
+  def confirmation
+    @order = current_establishment.orders.find(params[:id])
   end
 
   def edit
@@ -83,9 +94,29 @@ class OrdersController < ApplicationController
     @items = current_establishment.items.where(active: true).order(:name)
   end
 
-  # Case "Client anonyme" cochée dans le formulaire (champ hors modèle).
-  def anonymous_order?
-    params.dig(:order, :anonymous) == "1"
+  # Rattachement du client selon le mode choisi dans le wizard (étape 1).
+  # - passage  : client anonyme (ANON-xxxxx), sans identité -> donne un reçu.
+  # - new      : on crée une fiche client à partir du nom/tél/email saisis.
+  # - existing : le customer_id est déjà dans order_params.
+  # L'autosave de belongs_to crée le client dans la même transaction que la commande.
+  def assign_customer
+    case params.dig(:order, :client_mode)
+    when "passage"
+      @order.customer = current_establishment.customers.new(is_anonymous: true)
+    when "new"
+      @order.customer = build_new_customer
+    end
+  end
+
+  def build_new_customer
+    full = params.dig(:order, :new_name).to_s.strip
+    first, *rest = full.split(/\s+/)
+    current_establishment.customers.new(
+      firstname: first.presence || full,
+      lastname:  rest.join(" ").presence || first.presence || full,
+      phone:     params.dig(:order, :new_phone).presence,
+      email:     params.dig(:order, :new_email).presence
+    )
   end
 
   def order_params

@@ -31,16 +31,43 @@
     </div>
 
     <%# ---- CLIENT ---- %>
-    <section class="order-form__section" data-controller="customer-field">
+    <section class="order-form__section" data-controller="customer-field"
+             data-action="click@window->customer-field#closeOnOutside">
       <h2 class="order-form__title">Client</h2>
       <div class="row g-3 align-items-end">
         <div class="col-md-6">
           <%= form.label :customer_id, "Client", class: "form-label" %>
-          <%= form.select :customer_id,
-                @customers.map { |c| [c.display_name, c.id] },
-                { prompt: "Sélectionner ou saisir" },
-                class: "form-select",
-                data: { customer_field_target: "select" } %>
+          <%# Recherche filtrante (nom / email / téléphone) : on tape, on clique -> customer_id (caché). %>
+          <div class="customer-search">
+            <div class="customer-search__field">
+              <i class="fa-solid fa-magnifying-glass customer-search__icon"></i>
+              <input type="text" class="form-control" autocomplete="off"
+                     placeholder="Rechercher un client, un e-mail, un téléphone…"
+                     data-customer-field-target="search"
+                     data-action="input->customer-field#filter focus->customer-field#open">
+            </div>
+            <%= form.hidden_field :customer_id, data: { customer_field_target: "hidden" } %>
+            <%# d-none (et non hidden) car Bootstrap force display sur .list-group. %>
+            <div class="customer-search__list list-group d-none" data-customer-field-target="list">
+              <% @customers.each do |customer| %>
+                <% subtitle = [customer.email, customer.phone].reject(&:blank?).join(" · ") %>
+                <button type="button" class="list-group-item list-group-item-action"
+                        data-customer-field-target="option"
+                        data-action="customer-field#select"
+                        data-id="<%= customer.id %>"
+                        data-name="<%= customer.display_name %>"
+                        data-search="<%= [customer.display_name, customer.email, customer.phone].compact.join(' ').downcase %>">
+                  <span class="d-block fw-semibold"><%= customer.display_name %></span>
+                  <% if subtitle.present? %>
+                    <small class="text-subtext"><%= subtitle %></small>
+                  <% end %>
+                </button>
+              <% end %>
+              <div class="list-group-item text-subtext small d-none" data-customer-field-target="empty">
+                Aucun client trouvé. Crée-le, ou coche « Client anonyme ».
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-md-3" data-customer-field-target="addButton">
           <%= link_to "Ajouter un nouveau client", new_customer_path, class: "btn btn-outline-primary w-100" %>
