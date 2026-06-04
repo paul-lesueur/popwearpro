@@ -1,148 +1,206 @@
-<%= form_with model: order, local: true do |form| %>
-  <% if order.errors.any? %>
-    <div class="alert alert-danger">
-      <p><strong>Erreur :</strong></p>
-      <ul>
-        <% order.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+<% submit_text = local_assigns[:submit_label] || "Enregistrer la commande" %>
+
+<div class="order-form-layout">
+  <div class="order-form-card">
+    <div class="order-form-card-header">
+      <div class="order-form-icon">
+        <i class="fa fa-shopping-cart"></i>
+      </div>
+
+      <div>
+        <h2>Informations commande</h2>
+        <p>Renseignez les informations principales de la commande.</p>
+      </div>
     </div>
-  <% end %>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Informations commande</h2>
+    <%= form_with(model: order, local: true, class: "order-form") do |f| %>
+      <% if order.errors.any? %>
+        <div class="order-form-errors">
+          <h3>Impossible d'enregistrer cette commande</h3>
 
-      <div class="mb-3">
-        <%= form.label :customer_id, "Client", class: "form-label" %>
-        <%= form.collection_select :customer_id,
-          @customers,
-          :id,
-          :lastname,
-          { prompt: "Choisir un client" },
-          class: "form-select"
-        %>
+          <ul>
+            <% order.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="order-form-field">
+        <%= f.label :customer_id, "Client" %>
+
+        <div class="order-input-with-icon">
+          <i class="fa fa-user"></i>
+          <%= f.collection_select :customer_id,
+            @customers,
+            :id,
+            :lastname,
+            { prompt: "Choisir un client" },
+            class: "order-input"
+          %>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <%= form.label :status, "Statut", class: "form-label" %>
-        <%= form.select :status,
-          [
-            ["À faire", "pending"],
-            ["En cours", "in_progress"],
-            ["Terminée", "completed"],
-            ["Livrée", "delivered"],
-            ["Annulée", "cancelled"]
-          ],
-          {},
-          class: "form-select"
-        %>
+      <div class="order-form-grid">
+        <div class="order-form-field">
+          <%= f.label :status, "Statut" %>
+          <%= f.select :status,
+            [
+              ["À faire", "pending"],
+              ["En cours", "in_progress"],
+              ["Terminée", "completed"],
+              ["Livrée", "delivered"],
+              ["Annulée", "cancelled"]
+            ],
+            {},
+            class: "order-input"
+          %>
+        </div>
+
+        <div class="order-form-field">
+          <%= f.label :priority, "Priorité" %>
+          <%= f.select :priority,
+            [
+              ["Basse", "low"],
+              ["Moyenne", "medium"],
+              ["Haute", "high"],
+              ["Urgente", "urgent"]
+            ],
+            {},
+            class: "order-input"
+          %>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <%= form.label :priority, "Priorité", class: "form-label" %>
-        <%= form.select :priority,
-          [
-            ["Basse", "low"],
-            ["Moyenne", "medium"],
-            ["Haute", "high"],
-            ["Urgente", "urgent"]
-          ],
-          {},
-          class: "form-select"
-        %>
+      <div class="order-form-grid">
+        <div class="order-form-field">
+          <%= f.label :due_date, "Date limite" %>
+
+          <div class="order-input-with-icon">
+            <i class="fa fa-calendar"></i>
+            <%= f.date_field :due_date, class: "order-input" %>
+          </div>
+        </div>
+
+        <div class="order-form-field">
+          <%= f.label :payment_method, "Moyen de paiement" %>
+
+          <div class="order-input-with-icon">
+            <i class="fa fa-credit-card"></i>
+            <%= f.select :payment_method,
+              [
+                ["Carte", "card"],
+                ["Espèces", "cash"],
+                ["Virement", "bank_transfer"],
+                ["Autre", "other"]
+              ],
+              { prompt: "Choisir un moyen de paiement" },
+              class: "order-input"
+            %>
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <%= form.label :due_date, "Date limite", class: "form-label" %>
-        <%= form.date_field :due_date, class: "form-control" %>
-      </div>
-
-      <div class="mb-3">
-        <%= form.label :payment_method, "Moyen de paiement", class: "form-label" %>
-        <%= form.select :payment_method,
-          [
-            ["Carte", "card"],
-            ["Espèces", "cash"],
-            ["Virement", "bank_transfer"],
-            ["Autre", "other"]
-          ],
-          { prompt: "Choisir un moyen de paiement" },
-          class: "form-select"
-        %>
-      </div>
-
-      <div class="mb-3">
-        <%= form.label :payment_status, "Statut paiement", class: "form-label" %>
-        <%= form.select :payment_status,
+      <div class="order-form-field">
+        <%= f.label :payment_status, "Statut paiement" %>
+        <%= f.select :payment_status,
           [
             ["Non payé", "unpaid"],
             ["Payé", "paid"]
           ],
           {},
-          class: "form-select"
+          class: "order-input"
         %>
       </div>
 
-      <div class="mb-3">
-        <%= form.label :internal_notes, "Notes internes", class: "form-label" %>
-        <%= form.text_area :internal_notes, rows: 4, class: "form-control" %>
+      <div class="order-form-field">
+        <%= f.label :internal_notes, "Notes internes" %>
+        <%= f.text_area :internal_notes,
+          rows: 4,
+          placeholder: "Ex : Retouche urgente, client prévenu par téléphone.",
+          class: "order-input order-textarea" %>
       </div>
-    </div>
-  </div>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Lignes de commande</h2>
-
-      <p class="text-muted">
-        Sélectionnez une ou plusieurs prestations. Les lignes vides seront ignorées.
-      </p>
-
-      <%= form.fields_for :order_lines do |line_form| %>
-        <div class="row align-items-end border-bottom py-3">
-          <div class="col-md-5">
-            <%= line_form.label :item_id, "Élément catalogue", class: "form-label" %>
-            <%= line_form.collection_select :item_id,
-              @items,
-              :id,
-              :name,
-              { prompt: "Choisir une prestation" },
-              class: "form-select"
-            %>
+      <div class="order-form-lines">
+        <div class="order-form-lines-header">
+          <i class="fa fa-list"></i>
+          <div>
+            <h3>Lignes de commande</h3>
+            <p>Sélectionnez une ou plusieurs prestations. Les lignes vides seront ignorées.</p>
           </div>
+        </div>
 
-          <div class="col-md-2">
-            <%= line_form.label :quantity, "Quantité", class: "form-label" %>
-            <%= line_form.number_field :quantity, class: "form-control", min: 1 %>
-          </div>
+        <%= f.fields_for :order_lines do |line_form| %>
+          <div class="order-form-line-row">
+            <div class="order-form-line-item">
+              <%= line_form.label :item_id, "Prestation" %>
+              <%= line_form.collection_select :item_id,
+                @items,
+                :id,
+                :name,
+                { prompt: "Choisir une prestation" },
+                class: "order-input"
+              %>
+            </div>
 
-          <div class="col-md-2">
-            <%= line_form.label :unit_price_ht, "Prix HT", class: "form-label" %>
-            <%= line_form.number_field :unit_price_ht, step: 0.01, class: "form-control" %>
-          </div>
+            <div class="order-form-line-qty">
+              <%= line_form.label :quantity, "Qté" %>
+              <%= line_form.number_field :quantity, class: "order-input", min: 1 %>
+            </div>
 
-          <div class="col-md-2">
-            <%= line_form.label :vat_rate, "TVA %", class: "form-label" %>
-            <%= line_form.number_field :vat_rate, step: 0.01, class: "form-control" %>
-          </div>
+            <div class="order-form-line-price">
+              <%= line_form.label :unit_price_ht, "Prix HT" %>
+              <%= line_form.number_field :unit_price_ht, step: 0.01, class: "order-input" %>
+            </div>
 
-          <div class="col-md-1">
+            <div class="order-form-line-vat">
+              <%= line_form.label :vat_rate, "TVA %" %>
+              <%= line_form.number_field :vat_rate, step: 0.01, class: "order-input" %>
+            </div>
+
             <% if line_form.object.persisted? %>
-              <div class="form-check">
-                <%= line_form.check_box :_destroy, class: "form-check-input" %>
-                <%= line_form.label :_destroy, "Suppr.", class: "form-check-label small" %>
+              <div class="order-form-line-delete">
+                <%= line_form.check_box :_destroy, class: "order-form-check-input" %>
+                <%= line_form.label :_destroy, "Suppr." %>
               </div>
             <% end %>
           </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+
+      <div class="order-form-actions">
+        <%= link_to "Annuler", orders_path, class: "order-btn-secondary" %>
+        <%= f.submit submit_text, class: "order-btn-primary" %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="d-flex gap-2">
-    <%= form.submit "Enregistrer", class: "btn btn-primary" %>
-    <%= link_to "Annuler", orders_path, class: "btn btn-secondary" %>
-  </div>
-<% end %>
+  <aside class="order-form-side-card">
+    <div class="order-form-side-icon">
+      <i class="fa fa-list-alt"></i>
+    </div>
+
+    <h3>Gestion des commandes</h3>
+
+    <p>
+      Chaque commande peut être reliée à un client, suivie par statut et associée à des prestations du catalogue.
+    </p>
+
+    <div class="order-form-tips">
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Statut et priorité mis à jour facilement</span>
+      </div>
+
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Lignes de commande modifiables à tout moment</span>
+      </div>
+
+      <div>
+        <i class="fa fa-check"></i>
+        <span>Suivi des paiements intégré à la fiche commande</span>
+      </div>
+    </div>
+  </aside>
+</div>

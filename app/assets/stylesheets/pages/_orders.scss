@@ -136,3 +136,333 @@
     background: $bg-page;
   }
 }
+
+// ---- Formulaire d'édition de commande ----
+
+.order-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.order-form-card,
+.order-form-side-card {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+}
+
+.order-form-card {
+  padding: 28px;
+}
+
+.order-form-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid $border;
+
+  h2 {
+    margin: 0;
+    color: $text-primary;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $subtext;
+  }
+}
+
+.order-form-icon,
+.order-form-side-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius;
+  background: $gradient-orange;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.order-form-field {
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: $secondary;
+    font-weight: 800;
+    font-size: 14px;
+  }
+}
+
+.order-input {
+  width: 100%;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg-page;
+  color: $secondary;
+  padding: 13px 15px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  appearance: auto;
+
+  &::placeholder {
+    color: rgba($subtext, 0.75);
+  }
+
+  &:focus {
+    border-color: $primary;
+    background: $bg-card;
+    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+  }
+}
+
+.order-input-with-icon {
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $subtext;
+    pointer-events: none;
+  }
+
+  .order-input {
+    padding-left: 44px;
+  }
+}
+
+.order-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.order-form-errors {
+  background: rgba($error, 0.08);
+  border: 1px solid rgba($error, 0.2);
+  border-radius: $radius;
+  padding: 16px;
+
+  h3 {
+    color: $error;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    color: $secondary;
+  }
+}
+
+.order-form-lines {
+  border-top: 1px solid $border;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-form-lines-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  i {
+    width: 38px;
+    height: 38px;
+    border-radius: $radius;
+    background: rgba($primary, 0.1);
+    color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    margin: 0;
+    color: $text-primary;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $subtext;
+    font-size: 14px;
+  }
+}
+
+.order-form-line-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 110px 90px auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  background: $bg-page;
+  border: 1px solid $border;
+  border-radius: $radius;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    color: $secondary;
+    font-weight: 700;
+    font-size: 13px;
+  }
+}
+
+.order-form-line-delete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 3px;
+
+  label {
+    color: $subtext;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0;
+    cursor: pointer;
+  }
+}
+
+.order-form-check-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: $primary;
+}
+
+.order-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.order-btn-primary,
+.order-btn-secondary {
+  border-radius: $radius;
+  padding: 12px 18px;
+  font-weight: 800;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.order-btn-primary {
+  background: $gradient-orange;
+  color: white;
+  box-shadow: $shadow-card;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.order-btn-secondary {
+  background: rgba($subtext, 0.08);
+  color: $secondary;
+
+  &:hover {
+    color: $secondary;
+    text-decoration: none;
+  }
+}
+
+.order-form-side-card {
+  padding: 26px;
+  position: sticky;
+  top: 24px;
+
+  h3 {
+    margin: 18px 0 10px;
+    color: $text-primary;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  p {
+    color: $subtext;
+    margin-bottom: 22px;
+  }
+}
+
+.order-form-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  div {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: $secondary;
+    font-weight: 600;
+  }
+
+  i {
+    color: $success;
+    margin-top: 3px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .order-form-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .order-form-side-card {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .order-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .order-form-card {
+    padding: 22px;
+  }
+
+  .order-form-line-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .order-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .order-btn-primary,
+  .order-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
