@@ -1,163 +1,290 @@
-<div class="container py-4">
-  <div class="mb-4">
-    <h1>Dashboard</h1>
-    <p class="text-muted">
-      Vue d'ensemble de l'activité de <%= @establishment.name %>.
-    </p>
+<% average_recent_order = @recent_orders.any? ? (@recent_orders.sum { |order| order.total_ttc.to_f } / @recent_orders.count) : 0 %>
+<% recent_orders_total = @recent_orders.sum { |order| order.total_ttc.to_f } %>
+
+<%
+  status_labels = {
+    "new" => "Nouvelle",
+    "pending" => "En attente de re-collecte",
+    "in_progress" => "En cours",
+    "recollect" => "En attente de re-collecte",
+    "done" => "Terminée",
+    "completed" => "Terminée",
+    "delivered" => "Terminée",
+    "sent" => "Envoyée",
+    "cancelled" => "Annulée"
+  }
+
+  status_classes = {
+    "new" => "dashboard-v2__status-badge--new",
+    "pending" => "dashboard-v2__status-badge--recollect",
+    "in_progress" => "dashboard-v2__status-badge--in-progress",
+    "recollect" => "dashboard-v2__status-badge--recollect",
+    "done" => "dashboard-v2__status-badge--done",
+    "completed" => "dashboard-v2__status-badge--done",
+    "delivered" => "dashboard-v2__status-badge--done",
+    "sent" => "dashboard-v2__status-badge--sent",
+    "cancelled" => "dashboard-v2__status-badge--cancelled"
+  }
+
+  french_days = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
+
+  french_months = [
+    nil,
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "août",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre"
+  ]
+
+  today_label = "#{french_days[Date.current.wday].capitalize} #{Date.current.day} #{french_months[Date.current.month]} #{Date.current.year}"
+
+  date_label = lambda do |date|
+    date.present? ? "#{date.day} #{french_months[date.month]} #{date.year}" : "—"
+  end
+%>
+
+<div class="dashboard-v2">
+  <div class="dashboard-v2__topbar">
+    <div>
+      <h1>Tableau de bord</h1>
+      <p>Vue d’ensemble de l’activité de <%= @establishment.name %>.</p>
+    </div>
+
+    <div class="dashboard-v2__actions">
+      <%= link_to new_order_path, class: "dashboard-v2__btn dashboard-v2__btn--outline" do %>
+        <i class="fa-solid fa-plus"></i>
+        <span>Nouvelle commande</span>
+      <% end %>
+
+      <% if defined?(new_sale_path) %>
+        <%= link_to new_sale_path, class: "dashboard-v2__btn dashboard-v2__btn--primary" do %>
+          <i class="fa-solid fa-cash-register"></i>
+          <span>Nouvelle vente</span>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 
-  <div class="row mb-4">
-    <div class="col-md-3 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <p class="text-muted mb-1">Commandes en cours</p>
-          <h2><%= @orders_in_progress.count %></h2>
-        </div>
-      </div>
-    </div>
+  <div class="dashboard-v2__section-head">
+    <h2>Votre journée</h2>
 
-    <div class="col-md-3 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <p class="text-muted mb-1">Commandes urgentes</p>
-          <h2><%= @urgent_orders.count %></h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <p class="text-muted mb-1">Clients</p>
-          <h2><%= @customers.count %></h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <p class="text-muted mb-1">CA encaissé</p>
-          <h2>
-            <%= number_to_currency(@revenue, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
-          </h2>
-        </div>
-      </div>
-    </div>
+    <span class="dashboard-v2__date-pill">
+      <i class="fa-solid fa-calendar-day"></i>
+      <%= today_label %>
+    </span>
   </div>
 
-  <div class="row mb-4">
-    <div class="col-md-8 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">Dernières commandes</h2>
-            <%= link_to "Voir tout", orders_path, class: "btn btn-outline-primary btn-sm" %>
-          </div>
+  <div class="dashboard-v2__quick-stats">
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--green" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--green">
+        <i class="fa-solid fa-cash-register"></i>
+      </div>
 
-          <% if @recent_orders.any? %>
-            <div class="list-group">
-              <% @recent_orders.each do |order| %>
-                <%= link_to order_path(order), class: "list-group-item list-group-item-action" do %>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                      <strong>Commande #<%= order.id %></strong>
-                      <br>
-                      <small class="text-muted">
-                        <%= order.customer.display_name %>
-                      </small>
-                    </div>
+      <h3>
+        <%= number_to_currency(@revenue, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+      </h3>
 
-                    <div class="text-end">
-                      <span class="badge bg-secondary"><%= order.status %></span>
-                      <br>
-                      <small class="text-muted">
-                        <%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
-                      </small>
-                    </div>
-                  </div>
-                <% end %>
+      <p>Chiffre encaissé</p>
+    <% end %>
+
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--orange" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--orange">
+        <i class="fa-solid fa-clipboard-list"></i>
+      </div>
+
+      <h3><%= @recent_orders.count %></h3>
+      <p>Commandes récentes</p>
+    <% end %>
+
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--yellow" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--yellow">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+
+      <h3><%= @urgent_orders.count %></h3>
+      <p>Commandes urgentes</p>
+    <% end %>
+
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--coral" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--coral">
+        <i class="fa-solid fa-scissors"></i>
+      </div>
+
+      <h3><%= @orders_in_progress.count %></h3>
+      <p>À traiter</p>
+    <% end %>
+
+    <%= link_to customers_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--peach" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--peach">
+        <i class="fa-solid fa-address-book"></i>
+      </div>
+
+      <h3><%= @customers.count %></h3>
+      <p>Clients</p>
+    <% end %>
+  </div>
+
+  <section class="dashboard-v2__summary-card">
+    <div class="dashboard-v2__summary-header">
+      <h2>Résumé de l’activité</h2>
+
+      <div class="dashboard-v2__summary-actions">
+        <button type="button" class="dashboard-v2__filter-btn">
+          Ce mois-ci
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+
+        <%= link_to orders_path, class: "dashboard-v2__small-btn" do %>
+          Voir les commandes
+          <i class="fa-solid fa-arrow-right"></i>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="dashboard-v2__summary-grid">
+      <div class="dashboard-v2__summary-item">
+        <div>
+          <h3>
+            <%= number_to_currency(recent_orders_total, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </h3>
+          <p>Montant des dernières commandes</p>
+        </div>
+
+        <div class="dashboard-v2__summary-icon dashboard-v2__summary-icon--cash">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+      </div>
+
+      <div class="dashboard-v2__summary-item">
+        <div>
+          <h3>
+            <%= number_to_currency(average_recent_order, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </h3>
+          <p>Panier moyen récent</p>
+        </div>
+
+        <div class="dashboard-v2__summary-icon dashboard-v2__summary-icon--cart">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+      </div>
+
+      <div class="dashboard-v2__summary-item">
+        <div>
+          <h3><%= @orders_in_progress.count %></h3>
+          <p>Commandes en cours</p>
+        </div>
+
+        <div class="dashboard-v2__summary-icon dashboard-v2__summary-icon--work">
+          <i class="fa-solid fa-scissors"></i>
+        </div>
+      </div>
+
+      <div class="dashboard-v2__summary-item">
+        <div>
+          <h3><%= @customers.count %></h3>
+          <p>Clients enregistrés</p>
+        </div>
+
+        <div class="dashboard-v2__summary-icon dashboard-v2__summary-icon--clients">
+          <i class="fa-solid fa-address-book"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="dashboard-v2__bottom-grid">
+    <section class="dashboard-v2__panel dashboard-v2__panel--large">
+      <div class="dashboard-v2__panel-head">
+        <div>
+          <h2>Commandes en cours</h2>
+          <p><%= @orders_in_progress.count %> réparation(s) & création(s) en cours</p>
+        </div>
+
+        <%= link_to orders_path, class: "dashboard-v2__link" do %>
+          Gérer les commandes
+          <i class="fa-solid fa-arrow-right"></i>
+        <% end %>
+      </div>
+
+      <% if @orders_in_progress.any? %>
+        <div class="dashboard-v2__table-wrap">
+          <table class="dashboard-v2__table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Déposée le</th>
+                <th>Montant</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @orders_in_progress.first(6).each do |order| %>
+                <% current_status = order.status.to_s %>
+
+                <tr>
+                  <td>
+                    <strong><%= order.customer.display_name %></strong>
+                  </td>
+
+                  <td>
+                    <%= date_label.call(order.created_at&.to_date) %>
+                  </td>
+
+                  <td>
+                    <%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                  </td>
+
+                  <td>
+                    <span class="dashboard-v2__status-badge <%= status_classes[current_status] || "dashboard-v2__status-badge--default" %>">
+                      <%= status_labels[current_status] || current_status.humanize %>
+                    </span>
+                  </td>
+                </tr>
               <% end %>
-            </div>
-          <% else %>
-            <div class="alert alert-info mb-0">
-              Aucune commande pour le moment.
-            </div>
-          <% end %>
+            </tbody>
+          </table>
         </div>
-      </div>
-    </div>
+      <% else %>
+        <p class="dashboard-v2__empty-state">Aucune commande en cours.</p>
+      <% end %>
+    </section>
 
-    <div class="col-md-4 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h2 class="h5 mb-3">Actions rapides</h2>
-
-          <div class="d-grid gap-2">
-            <%= link_to "Nouvelle commande", new_order_path, class: "btn btn-primary" %>
-            <%= link_to "Nouveau client", new_customer_path, class: "btn btn-outline-primary" %>
-            <%= link_to "Nouvel élément catalogue", new_item_path, class: "btn btn-outline-primary" %>
-          </div>
+    <section class="dashboard-v2__panel">
+      <div class="dashboard-v2__panel-head">
+        <div>
+          <h2>Derniers clients</h2>
+          <p>Vos clients ajoutés récemment</p>
         </div>
+
+        <%= link_to customers_path, class: "dashboard-v2__small-btn" do %>
+          Voir tout
+          <i class="fa-solid fa-arrow-right"></i>
+        <% end %>
       </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">Commandes urgentes</h2>
-            <%= link_to "Commandes", orders_path, class: "btn btn-outline-primary btn-sm" %>
-          </div>
-
-          <% if @urgent_orders.any? %>
-            <% @urgent_orders.each do |order| %>
-              <div class="border-bottom py-2">
-                <strong>Commande #<%= order.id %></strong>
-                <br>
-                <small class="text-muted">
-                  <%= order.customer.display_name %>
-                  —
-                  échéance le <%= order.due_date.present? ? l(order.due_date) : "non définie" %>
-                </small>
-              </div>
-            <% end %>
-          <% else %>
-            <div class="alert alert-success mb-0">
-              Aucune commande urgente.
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 mb-3">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">Derniers clients</h2>
-            <%= link_to "Voir tout", customers_path, class: "btn btn-outline-primary btn-sm" %>
-          </div>
-
-          <% if @recent_customers.any? %>
-            <% @recent_customers.each do |customer| %>
-              <div class="border-bottom py-2">
+      <% if @recent_customers.any? %>
+        <div class="dashboard-v2__clients-list">
+          <% @recent_customers.each do |customer| %>
+            <div class="dashboard-v2__client-row">
+              <div>
                 <strong><%= customer.firstname %> <%= customer.lastname %></strong>
-                <br>
-                <small class="text-muted">
-                  <%= customer.phone.presence || "Téléphone non renseigné" %>
-                </small>
+                <p><%= customer.phone.presence || "Téléphone non renseigné" %></p>
               </div>
-            <% end %>
-          <% else %>
-            <div class="alert alert-info mb-0">
-              Aucun client pour le moment.
             </div>
           <% end %>
         </div>
-      </div>
-    </div>
+      <% else %>
+        <p class="dashboard-v2__empty-state">Aucun client pour le moment.</p>
+      <% end %>
+    </section>
   </div>
 </div>
