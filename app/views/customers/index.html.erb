@@ -28,7 +28,7 @@
 
   payment_status_labels = {
     "paid" => "Payé",
-    "unpaid" => "En attente de paiement",
+    "unpaid" => "Non payé",
     "pending" => "En attente",
     "partial" => "Partiel",
     "refunded" => "Remboursé",
@@ -49,7 +49,7 @@
     <div class="customers-header">
       <div>
         <h1>Clients</h1>
-        <p>Retrouvez les clients de votre établissement, leurs coordonnées et leur historique de commandes.</p>
+        <p>Retrouvez les clients de votre atelier, leurs coordonnées et leur historique de commandes.</p>
       </div>
 
       <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
@@ -81,7 +81,7 @@
         <%= hidden_field_tag :direction, params[:direction] if params[:direction].present? %>
 
         <div class="input-group" style="max-width: 380px;">
-          <span class="input-group-text bg-white border-end-0">
+          <span class="input-group-text bg-white border-end-0" style="background-color: #fff !important;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
             </svg>
@@ -89,8 +89,9 @@
 
           <%= f.text_field :query,
             value: params[:query],
-            placeholder: "Rechercher un client ou N° de téléphone…",
-            class: "form-control border-start-0 ps-0",
+            placeholder: "Rechercher un client ou téléphone…",
+            class: "form-control bg-white border-start-0 ps-0",
+            style: "background-color: #fff !important;",
             autocomplete: "off",
             data: { action: "input->search#submit" } %>
         </div>
@@ -212,7 +213,7 @@
       <% else %>
         <div class="customers-empty-state">
           <h3>Aucun client pour le moment</h3>
-          <p>Ajoutez votre premier client pour commencer à organiser votre établissement.</p>
+          <p>Ajoutez votre premier client pour commencer à organiser votre atelier.</p>
           <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
         </div>
       <% end %>
