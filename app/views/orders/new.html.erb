@@ -111,12 +111,14 @@
                         data-item-id="<%= item.id %>" data-price-ht="<%= item.price_ht %>"
                         data-name="<%= item.name %>" data-icon="<%= catalog_icon_source(item.icon) %>"
                         data-action="order-wizard#addItem">
-                  <span class="catalog-icon-halo" style="width:46px;height:46px"><%= catalog_icon(item.icon) %></span>
-                  <div style="flex:1;min-width:0">
-                    <div class="postile__name"><%= item.name %></div>
-                    <div class="postile__cat"><%= item.repair_bonus? ? "Éligible Bonus Réparation" : "Prestation" %></div>
+                  <div class="postile__top">
+                    <span class="catalog-icon-halo" style="width:44px;height:44px"><%= catalog_icon(item.icon) %></span>
+                    <span class="postile__name"><%= item.name %></span>
                   </div>
                   <div class="postile__price"><%= number_to_currency(item.price_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></div>
+                  <% if item.repair_bonus? %>
+                    <span class="badge bg-warning text-dark postile__bonus">Bonus réparation</span>
+                  <% end %>
                 </button>
               <% end %>
             </div>
@@ -131,16 +133,6 @@
             <div class="ticket__empty" data-order-wizard-target="ticketEmpty">
               <i class="fa-solid fa-cart-shopping"></i>
               <span>Ajoutez des prestations pour composer la commande.</span>
-            </div>
-
-            <%# Bonus Réparation — décoratif (TODO : pas de logique de déduction en base) %>
-            <div class="bonuscard">
-              <span class="bonuscard__ic"><i class="fa-solid fa-rotate"></i></span>
-              <div class="bonuscard__txt">
-                <div class="bonuscard__title">Bonus Réparation</div>
-                <div class="bonuscard__desc">Aide de l'État (Refashion) appliquée automatiquement.</div>
-              </div>
-              <button type="button" class="w-toggle is-on" data-action="order-wizard#toggleSwitch" aria-label="Bonus réparation"></button>
             </div>
 
             <div class="ticket__totals">
