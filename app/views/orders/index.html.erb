@@ -50,7 +50,11 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-1">
                   <strong class="text-primary">
-                    <%= order.customer.firstname %> <%= order.customer.lastname.first %>.
+                    <% if order.customer.firstname %>
+                      <%= order.customer.firstname&.first %>. <%= order.customer.lastname %>
+                    <% else %>
+                      <em>Anonyme</em>
+                    <% end %>
                   </strong>
                   <% if order.urgent? %>
                     <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-25" style="width: 28px; height: 28px;">
