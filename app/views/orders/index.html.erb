@@ -69,7 +69,7 @@
                   <% end %>
                 </div>
 
-                <small class="text-muted d-block mb-2" style="font-size: 0.75rem;"><%= current_establishment.category.capitalize %> · N° CMD-<%= order.id %></small>
+                <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">N° CMD-<%= order.id %></small>
 
                 <% if order.due_date.present? %>
                   <small class="text-muted d-block mb-1">Retrait : <%= order.due_date.strftime("%d/%m/%y") %></small>

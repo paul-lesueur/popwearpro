@@ -466,3 +466,13 @@
     text-align: center;
   }
 }
+
+.kanban-card--dragging {
+  border: 2px solid $primary !important;
+  box-shadow: 0 0 0 3px rgba($primary, 0.2) !important;
+}
+
+.kanban-column--over {
+  outline: 2px dashed $primary;
+  outline-offset: -2px;
+}
