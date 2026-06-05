@@ -1,20 +1,66 @@
-<h2>Log in</h2>
+<div class="devise-page">
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: false,
-                autofocus: true,
-                input_html: { autocomplete: "email" } %>
-    <%= f.input :password,
-                required: false,
-                input_html: { autocomplete: "current-password" } %>
-    <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+  <div class="devise-page__brand">
+    <%= link_to root_path do %>
+      <%= image_tag "logo-popwear-pro.png",
+                    alt: "Popwear Pro",
+                    width: 150,
+                    style: "position: absolute; top: 32px; left: 48px;" %>
+    <% end %>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Log in" %>
-  </div>
-<% end %>
+  <div class="devise-page__content">
+    <div class="devise-card">
 
-<%= render "devise/shared/links" %>
+      <h1 class="devise-card__title">Se connecter</h1>
+
+      <p class="devise-card__subtitle">
+        Connectez-vous avec votre adresse e-mail
+      </p>
+
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+
+        <div class="form-inputs">
+
+          <%= f.input :email,
+                      required: false,
+                      autofocus: true,
+                      label: false,
+                      placeholder: "Email",
+                      input_html: { autocomplete: "email" } %>
+
+          <%= f.input :password,
+                      required: false,
+                      label: false,
+                      placeholder: "Mot de passe",
+                      input_html: { autocomplete: "current-password" } %>
+
+          <% if devise_mapping.rememberable? %>
+            <%= f.input :remember_me,
+                        as: :boolean,
+                        label: "Se souvenir de moi" %>
+          <% end %>
+
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, "Se connecter" %>
+        </div>
+
+      <% end %>
+
+      <p class="devise-card__footer">
+        Pas encore de compte ?
+        <%= link_to "S'inscrire", new_registration_path(resource_name) %>
+      </p>
+
+      <% if devise_mapping.recoverable? %>
+        <div class="devise-card__links">
+          <%= link_to "Mot de passe oublié ?", new_password_path(resource_name) %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+
+</div>

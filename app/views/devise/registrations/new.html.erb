@@ -1,25 +1,62 @@
-<h2>Sign up</h2>
+<div class="devise-page">
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "email" }%>
-    <%= f.input :password,
-                required: true,
-                hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: true,
-                input_html: { autocomplete: "new-password" } %>
+  <div class="devise-page__brand">
+    <%= link_to root_path do %>
+      <%= image_tag "logo-popwear-pro.png",
+                    alt: "Popwear Pro",
+                    width: 150,
+                    style: "position: absolute; top: 32px; left: 48px;" %>
+    <% end %>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
-<% end %>
+  <div class="devise-page__content">
+    <div class="devise-card">
 
-<%= render "devise/shared/links" %>
+      <h1 class="devise-card__title">Créer un compte</h1>
+
+      <p class="devise-card__subtitle">
+        Connectez-vous avec votre e-mail
+      </p>
+
+      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+
+          <%= f.input :name,
+                      required: true,
+                      autofocus: true,
+                      label: false,
+                      placeholder: "Nom",
+                      input_html: { autocomplete: "name" } %>
+
+          <%= f.input :email,
+                      required: true,
+                      label: false,
+                      placeholder: "Email",
+                      input_html: { autocomplete: "email" } %>
+
+          <%= f.input :password,
+                      required: true,
+                      label: false,
+                      placeholder: "Mot de passe",
+                      input_html: { autocomplete: "new-password" } %>
+
+        </div>
+
+        <div class="form-actions">
+          <%= f.button :submit, "S'inscrire" %>
+        </div>
+
+      <% end %>
+
+      <p class="devise-card__footer">
+        Vous êtes déjà inscrit ?
+        <%= link_to "Se connecter", new_session_path(resource_name) %>
+      </p>
+
+    </div>
+  </div>
+
+</div>
