@@ -101,6 +101,17 @@
           <% if column[:orders].empty? %>
             <p class="text-muted text-center small mt-2">Aucune commande</p>
           <% end %>
+
+          <% if column[:key] == "done" && @archived_count > 0 %>
+            <div class="text-center mt-3 pt-2 border-top" style="border-color: #EAE4DF !important;">
+              <%= link_to archives_orders_path, class: "text-muted small text-decoration-none", data: { turbo_frame: "_top" } do %>
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                  <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                Voir les <%= @archived_count %> commandes archivées
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>

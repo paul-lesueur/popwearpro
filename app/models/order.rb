@@ -1,6 +1,33 @@
 class Order < ApplicationRecord
+  ARCHIVE_THRESHOLD_DAYS = 14
+  DONE_STATUSES = %w[completed delivered].freeze
+
   belongs_to :establishment
   belongs_to :customer
+
+  scope :archived,     -> { where.not(archived_at: nil) }
+  scope :not_archived, -> { where(archived_at: nil) }
+
+  before_save :set_completed_at
+
+  def self.auto_archive_done!(establishment)
+    threshold = ARCHIVE_THRESHOLD_DAYS.days.ago
+    establishment.orders
+                 .where(status: DONE_STATUSES, archived_at: nil)
+                 .where(
+                   "COALESCE(due_date, completed_at, updated_at) < ?",
+                   threshold
+                 )
+                 .update_all(archived_at: Time.current)
+  end
+
+  def archive!
+    update!(archived_at: Time.current)
+  end
+
+  def unarchive!
+    update!(archived_at: nil)
+  end
 
   has_many :order_lines, dependent: :destroy
   has_many :communications, dependent: :destroy
@@ -41,5 +68,12 @@ class Order < ApplicationRecord
 
   def document_label
     receipt? ? "Reçu" : "Facture"
+  end
+
+  private
+
+  def set_completed_at
+    return unless status_changed? && DONE_STATUSES.include?(status)
+    self.completed_at ||= Time.current
   end
 end
