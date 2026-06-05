@@ -115,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_05_105127) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.bigint "customer_id", null: false
+    t.decimal "discount", precision: 10, scale: 2, default: "0.0", null: false
     t.date "due_date"
     t.bigint "establishment_id", null: false
     t.text "internal_notes"

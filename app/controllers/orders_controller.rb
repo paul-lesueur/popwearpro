@@ -5,7 +5,7 @@ class OrdersController < ApplicationController
   KANBAN_COLUMNS = [
     { key: "new",         label: "Nouvelles commandes",       statuses: %w[pending],             target_status: "pending" },
     { key: "in_progress", label: "En cours",                  statuses: %w[in_progress],         target_status: "in_progress" },
-    { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent],                target_status: "sent" },
+    { key: "recollect",   label: "En attente de retrait", statuses: %w[sent],                target_status: "sent" },
     { key: "done",        label: "Terminées",                 statuses: %w[completed delivered], target_status: "completed" }
   ].freeze
 
@@ -148,6 +148,7 @@ class OrdersController < ApplicationController
       :paid_at,
       :collected_at,
       :internal_notes,
+      :discount,
       order_lines_attributes: [
         :id,
         :item_id,

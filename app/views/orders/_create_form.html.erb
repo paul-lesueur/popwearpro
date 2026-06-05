@@ -175,7 +175,7 @@
           <select class="form-select">
             <option selected disabled>Sélectionner</option>
             <option>Comptant</option>
-            <option>À la re-collecte</option>
+            <option>Au retrait</option>
           </select>
         </div>
         <div class="col-md-6">
@@ -192,7 +192,7 @@
     <section class="order-form__section">
       <h2 class="order-form__title">Informations</h2>
       <div class="mb-3">
-        <%= form.label :due_date, "Date de re-collecte", class: "form-label" %>
+        <%= form.label :due_date, "Date de retrait", class: "form-label" %>
         <%= form.date_field :due_date, class: "form-control" %>
       </div>
       <div class="mb-0">
@@ -211,7 +211,7 @@
       </div>
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" role="switch" id="reminderSms">
-        <label class="form-check-label" for="reminderSms">Envoyer un rappel SMS pour la re-collecte de la commande</label>
+        <label class="form-check-label" for="reminderSms">Envoyer un rappel SMS pour la retrait de la commande</label>
       </div>
     </section>
 

@@ -13,7 +13,7 @@
           <span class="cmddone__card-ic"><i class="fa-solid fa-tag"></i></span>
           <div>
             <div class="cmddone__card-title">Ligne de commande</div>
-            <div class="cmddone__card-desc">Ajoutée au suivi de l'atelier — prête à passer en préparation.</div>
+            <div class="cmddone__card-desc">Ajoutée au suivi de l'établissement — prête à passer en préparation.</div>
           </div>
         </div>
         <div class="cmddone__card">
@@ -21,7 +21,7 @@
           <div>
             <div class="cmddone__card-title"><%= @order.document_label %></div>
             <div class="cmddone__card-desc">
-              <%= number_to_currency(@order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              <%= number_to_currency(@order.total_due, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               · <%= @order.payment_method.presence || "—" %>
               · <%= @order.paid? ? "payé" : "à régler au retrait" %>.
             </div>

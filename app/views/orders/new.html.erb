@@ -111,12 +111,14 @@
                         data-item-id="<%= item.id %>" data-price-ht="<%= item.price_ht %>"
                         data-name="<%= item.name %>" data-icon="<%= catalog_icon_source(item.icon) %>"
                         data-action="order-wizard#addItem">
-                  <span class="catalog-icon-halo" style="width:46px;height:46px"><%= catalog_icon(item.icon) %></span>
-                  <div style="flex:1;min-width:0">
-                    <div class="postile__name"><%= item.name %></div>
-                    <div class="postile__cat"><%= item.repair_bonus? ? "Éligible Bonus Réparation" : "Prestation" %></div>
+                  <div class="postile__top">
+                    <span class="catalog-icon-halo" style="width:44px;height:44px"><%= catalog_icon(item.icon) %></span>
+                    <span class="postile__name"><%= item.name %></span>
                   </div>
                   <div class="postile__price"><%= number_to_currency(item.price_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></div>
+                  <% if item.repair_bonus? %>
+                    <span class="badge bg-warning text-dark postile__bonus">Bonus réparation</span>
+                  <% end %>
                 </button>
               <% end %>
             </div>
@@ -133,24 +135,23 @@
               <span>Ajoutez des prestations pour composer la commande.</span>
             </div>
 
-            <%# Bonus Réparation — décoratif (TODO : pas de logique de déduction en base) %>
-            <div class="bonuscard">
-              <span class="bonuscard__ic"><i class="fa-solid fa-rotate"></i></span>
-              <div class="bonuscard__txt">
-                <div class="bonuscard__title">Bonus Réparation</div>
-                <div class="bonuscard__desc">Aide de l'État (Refashion) appliquée automatiquement.</div>
-              </div>
-              <button type="button" class="w-toggle is-on" data-action="order-wizard#toggleSwitch" aria-label="Bonus réparation"></button>
-            </div>
-
             <div class="ticket__totals">
               <div class="kv"><span class="kv__k">Sous-total HT</span><span class="kv__v" data-order-wizard-target="subtotal">0,00 €</span></div>
               <div class="kv"><span class="kv__k">TVA 20 %</span><span class="kv__v" data-order-wizard-target="vat">0,00 €</span></div>
+              <div class="kv d-none" data-order-wizard-target="discountRow">
+                <span class="kv__k kv__k--deduct">Réduction</span>
+                <span class="kv__v kv__v--deduct" data-order-wizard-target="discountAmount">− 0,00 €</span>
+              </div>
               <div class="kv kv--total"><span class="kv__k">Total à payer</span><span class="kv__v" data-order-wizard-target="total">0,00 €</span></div>
             </div>
 
-            <%# Réduction — décoratif (TODO : pas de colonne) %>
-            <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-3" data-action="order-wizard#toggleSwitch">+ Appliquer une réduction</button>
+            <%# Réduction (montant € soustrait du total) %>
+            <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-3" data-order-wizard-target="discountToggle" data-action="order-wizard#showDiscount">+ Appliquer une réduction</button>
+            <div class="discount-row d-none mt-3" data-order-wizard-target="discountBox">
+              <input type="number" min="0" step="0.01" name="order[discount]" class="form-control"
+                     placeholder="Réduction €" data-order-wizard-target="discountInput" data-action="input->order-wizard#render">
+              <button type="button" class="btn btn-light btn-sm" data-action="order-wizard#removeDiscount">Retirer</button>
+            </div>
           </aside>
         </div>
       </section>
@@ -225,7 +226,7 @@
           <div class="inforow">
             <div class="inforow__txt">
               <div class="inforow__title">Conditions générales de vente</div>
-              <div class="inforow__desc">Applique les CGV par défaut de l'atelier à cette commande.</div>
+              <div class="inforow__desc">Applique les CGV par défaut de l'établissement à cette commande.</div>
             </div>
             <button type="button" class="w-toggle is-on" data-action="order-wizard#toggleSwitch" aria-label="CGV"></button>
           </div>
@@ -261,6 +262,10 @@
               <div class="mt-3">
                 <div class="kv"><span class="kv__k">Sous-total HT</span><span class="kv__v" data-order-wizard-target="subtotal">0,00 €</span></div>
                 <div class="kv"><span class="kv__k">TVA 20 %</span><span class="kv__v" data-order-wizard-target="vat">0,00 €</span></div>
+                <div class="kv d-none" data-order-wizard-target="discountRow">
+                  <span class="kv__k kv__k--deduct">Réduction</span>
+                  <span class="kv__v kv__v--deduct" data-order-wizard-target="discountAmount">− 0,00 €</span>
+                </div>
                 <div class="kv kv--total"><span class="kv__k">Total à payer</span><span class="kv__v" data-order-wizard-target="total">0,00 €</span></div>
               </div>
             </div>
@@ -302,12 +307,13 @@
                 <hr class="receipt__rule">
                 <div class="receipt__row"><span>Sous-total HT</span><span data-order-wizard-target="subtotal">0,00 €</span></div>
                 <div class="receipt__row"><span>TVA 20 %</span><span data-order-wizard-target="vat">0,00 €</span></div>
+                <div class="receipt__row receipt__deduct d-none" data-order-wizard-target="discountRow"><span>Réduction</span><span data-order-wizard-target="discountAmount">− 0,00 €</span></div>
                 <hr class="receipt__rule">
                 <div class="receipt__row receipt__tot"><span>TOTAL</span><span data-order-wizard-target="total">0,00 €</span></div>
                 <div class="receipt__row"><span>Paiement</span><span data-order-wizard-target="methodLabel">—</span></div>
                 <div class="receipt__row"><span>Statut</span><span data-order-wizard-target="statusLabel">—</span></div>
                 <hr class="receipt__rule">
-                <div class="receipt__foot">Merci de votre visite — à bientôt à l'atelier&nbsp;!</div>
+                <div class="receipt__foot">Merci de votre visite — à bientôt à l'établissement&nbsp;!</div>
                 <div class="receipt__barcode"></div>
               </div>
               <div class="printactions">

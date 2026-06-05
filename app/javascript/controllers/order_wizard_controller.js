@@ -10,6 +10,7 @@ export default class extends Controller {
     "tile", "lines", "ticketLines", "ticketEmpty", "ticketClear",
     "recapLines", "receiptLines",
     "subtotal", "vat", "ttc", "total",
+    "discountInput", "discountBox", "discountToggle", "discountRow", "discountAmount",
     "methodInput", "statusInput", "methodLabel", "statusLabel",
     "receiptSlot", "receiptBox",
     "back", "next", "finalize", "hint"
@@ -103,8 +104,24 @@ export default class extends Controller {
     this.element.querySelectorAll(`.${klass}`).forEach((b) => b.classList.toggle("is-on", b === el))
   }
 
-  // ---------- Toggles décoratifs (bonus / sms / cgv / confirmation) ----------
+  // ---------- Toggles décoratifs (sms / cgv / confirmation) ----------
   toggleSwitch(event) { event.currentTarget.classList.toggle("is-on") }
+
+  // ---------- Réduction ----------
+  showDiscount() {
+    this.discountBoxTarget.classList.remove("d-none")
+    if (this.hasDiscountToggleTarget) this.discountToggleTarget.classList.add("d-none")
+    this.discountInputTarget.focus()
+  }
+  removeDiscount() {
+    this.discountInputTarget.value = ""
+    this.discountBoxTarget.classList.add("d-none")
+    if (this.hasDiscountToggleTarget) this.discountToggleTarget.classList.remove("d-none")
+    this.render()
+  }
+  discount() {
+    return this.hasDiscountInputTarget ? Math.max(0, parseFloat(this.discountInputTarget.value) || 0) : 0
+  }
 
   // ---------- Étape 5 : reçu ----------
   generateReceipt() {
@@ -216,6 +233,8 @@ export default class extends Controller {
 
     const tva = ht * 0.2
     const ttc = ht + tva
+    const discount = Math.min(this.discount(), ttc) // ne dépasse pas le total
+    const totalDue = ttc - discount
 
     // ticket lines
     if (this.hasTicketLinesTarget) this.ticketLinesTarget.innerHTML = ticketHtml.join("")
@@ -232,14 +251,18 @@ export default class extends Controller {
     this.subtotalTargets.forEach((e) => (e.textContent = this.money(ht)))
     this.vatTargets.forEach((e) => (e.textContent = this.money(tva)))
     this.ttcTargets.forEach((e) => (e.textContent = this.money(ttc)))
-    this.totalTargets.forEach((e) => (e.textContent = this.money(ttc)))
+    this.totalTargets.forEach((e) => (e.textContent = this.money(totalDue)))
+
+    // ligne réduction (panier / récap / reçu)
+    this.discountRowTargets.forEach((row) => row.classList.toggle("d-none", discount <= 0))
+    this.discountAmountTargets.forEach((e) => (e.textContent = `− ${this.money(discount)}`))
 
     // bouton "Continuer · total" et "Valider · total"
-    this._total = ttc
     if (this.hasNextTarget && this.step === 1 && ids.length > 0) {
-      this.nextTarget.querySelector("[data-amount]") && (this.nextTarget.querySelector("[data-amount]").textContent = ` · ${this.money(ttc)}`)
+      const amount = this.nextTarget.querySelector("[data-amount]")
+      if (amount) amount.textContent = ` · ${this.money(totalDue)}`
     }
-    this.element.querySelectorAll("[data-total-amount]").forEach((e) => (e.textContent = this.money(ttc)))
+    this.element.querySelectorAll("[data-total-amount]").forEach((e) => (e.textContent = this.money(totalDue)))
   }
 
   money(n) { return n.toFixed(2).replace(".", ",") + " €" }

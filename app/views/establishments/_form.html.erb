@@ -6,7 +6,7 @@
       </div>
 
       <div>
-        <h2>Informations de l’atelier</h2>
+        <h2>Informations de l’établissement</h2>
         <p>Renseignez les informations principales de votre établissement.</p>
       </div>
     </div>
@@ -25,10 +25,10 @@
       <% end %>
 
       <div class="establishment-form-section">
-        <h3>Identité de l’atelier</h3>
+        <h3>Identité de l’établissement</h3>
 
         <div class="establishment-form-field">
-          <%= f.label :photo, "Photo de l’atelier" %>
+          <%= f.label :photo, "Photo de l’établissement" %>
 
           <div class="establishment-photo-upload">
             <% if establishment.photo.attached? %>
@@ -42,7 +42,7 @@
 
             <div>
               <%= f.file_field :photo, class: "establishment-file-input" %>
-              <p>Ajoutez une photo claire de votre atelier.</p>
+              <p>Ajoutez une photo claire de votre établissement.</p>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
           <%= f.text_area :description,
             rows: 5,
             class: "establishment-input establishment-textarea",
-            placeholder: "Décrivez votre atelier, vos prestations et votre savoir-faire." %>
+            placeholder: "Décrivez votre établissement, vos prestations et votre savoir-faire." %>
         </div>
       </div>
 
@@ -102,7 +102,7 @@
 
           <div>
             <h3>Horaires d’ouverture</h3>
-            <p>Indiquez simplement les horaires habituels de votre atelier.</p>
+            <p>Indiquez simplement les horaires habituels de votre établissement.</p>
           </div>
         </div>
 
@@ -166,13 +166,13 @@
     <h3>Conseil</h3>
 
     <p>
-      Une fiche établissement complète rend votre atelier plus clair et facilite la gestion des commandes.
+      Une fiche établissement complète rend votre établissement plus clair et facilite la gestion des commandes.
     </p>
 
     <div class="establishment-form-tips">
       <div>
         <i class="fa fa-check"></i>
-        <span>Photo d’atelier rassurante</span>
+        <span>Photo d’établissement rassurante</span>
       </div>
 
       <div>

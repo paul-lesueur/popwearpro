@@ -28,7 +28,7 @@
 
   payment_status_labels = {
     "paid" => "Payé",
-    "unpaid" => "Non payé",
+    "unpaid" => "En attente de paiement",
     "pending" => "En attente",
     "partial" => "Partiel",
     "refunded" => "Remboursé",
@@ -49,7 +49,7 @@
     <div class="customers-header">
       <div>
         <h1>Clients</h1>
-        <p>Retrouvez les clients de votre atelier, leurs coordonnées et leur historique de commandes.</p>
+        <p>Retrouvez les clients de votre établissement, leurs coordonnées et leur historique de commandes.</p>
       </div>
 
       <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
@@ -212,7 +212,7 @@
       <% else %>
         <div class="customers-empty-state">
           <h3>Aucun client pour le moment</h3>
-          <p>Ajoutez votre premier client pour commencer à organiser votre atelier.</p>
+          <p>Ajoutez votre premier client pour commencer à organiser votre établissement.</p>
           <%= link_to "Créer un client", new_customer_path, class: "btn btn-primary" %>
         </div>
       <% end %>
