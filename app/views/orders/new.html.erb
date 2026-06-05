@@ -109,9 +109,9 @@
               <% @items.each do |item| %>
                 <button type="button" class="postile" data-order-wizard-target="tile"
                         data-item-id="<%= item.id %>" data-price-ht="<%= item.price_ht %>"
-                        data-name="<%= item.name %>" data-thumb="<%= item.photo_url %>"
+                        data-name="<%= item.name %>" data-icon="<%= catalog_icon_source(item.icon) %>"
                         data-action="order-wizard#addItem">
-                  <% if item.photo_url.present? %><img class="postile__thumb" src="<%= item.photo_url %>" alt=""><% else %><span class="postile__thumb"></span><% end %>
+                  <span class="catalog-icon-halo" style="width:46px;height:46px"><%= catalog_icon(item.icon) %></span>
                   <div style="flex:1;min-width:0">
                     <div class="postile__name"><%= item.name %></div>
                     <div class="postile__cat"><%= item.repair_bonus? ? "Éligible Bonus Réparation" : "Prestation" %></div>
