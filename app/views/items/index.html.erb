@@ -12,19 +12,18 @@
     <% @items.each do |item| %>
       <div class="col-md-4 mb-3">
         <div class="card h-100 shadow-sm">
-          <% if item.photo_url.present? %>
-            <%= image_tag item.photo_url, class: "card-img-top", style: "height: 180px; object-fit: cover;" %>
-          <% end %>
-
           <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <h5 class="card-title mb-0"><%= item.name %></h5>
+            <div class="d-flex align-items-start gap-3 mb-2">
+              <span class="catalog-icon-halo" style="width:48px;height:48px;"><%= catalog_icon(item.icon) %></span>
+              <div class="d-flex justify-content-between align-items-start flex-grow-1">
+                <h5 class="card-title mb-0"><%= item.name %></h5>
 
-              <% if item.active? %>
-                <span class="badge bg-success">Actif</span>
-              <% else %>
-                <span class="badge bg-secondary">Inactif</span>
-              <% end %>
+                <% if item.active? %>
+                  <span class="badge bg-success">Actif</span>
+                <% else %>
+                  <span class="badge bg-secondary">Inactif</span>
+                <% end %>
+              </div>
             </div>
 
             <p class="mb-1">

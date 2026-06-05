@@ -131,55 +131,44 @@ customer_10 = customers[9]
 
 puts "Creating catalog items..."
 
-ourlet = Item.create!(
-  establishment: establishment,
-  name: "Ourlet pantalon",
-  price_ht: 18.00,
-  vat_rate: 20.00,
-  repair_bonus: true,
-  photo_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea",
-  active: true
-)
+# Catalogue de prestations (cordonnerie) + icône de la bibliothèque Popwear.
+PRESTATIONS = [
+  { name: "Entretien cuir (nettoyage & cirage)",             price_ht: 25,  bonus: false, icon: "cirage" },
+  { name: "Cirage & glaçage",                                price_ht: 29,  bonus: false, icon: "cirage" },
+  { name: "Rénovation complète cuir",                        price_ht: 55,  bonus: false, icon: "finition" },
+  { name: "Changement de lacets",                            price_ht: 5,   bonus: false, icon: "reparer" },
+  { name: "Pose de patins (x2)",                             price_ht: 26,  bonus: true,  icon: "patins-fers" },
+  { name: "Pose de fers (x2)",                               price_ht: 21,  bonus: false, icon: "patins-fers" },
+  { name: "Mise en forme – coup de pied",                    price_ht: 29,  bonus: false, icon: "elargir" },
+  { name: "Ressemelage collé caoutchouc (semelle complète)", price_ht: 83,  bonus: true,  icon: "ressemelage" },
+  { name: "Ressemelage sneakers",                            price_ht: 70,  bonus: true,  icon: "ressemelage" },
+  { name: "Ressemelage cousu rainette (semelle complète)",   price_ht: 130, bonus: true,  icon: "ressemelage" },
+  { name: "Ressemelage Birkenstock",                         price_ht: 54,  bonus: true,  icon: "ressemelage" },
+  { name: "Recollage semelle",                               price_ht: 30,  bonus: true,  icon: "ressemelage" },
+  { name: "Bonbout – talons aiguille",                       price_ht: 15,  bonus: true,  icon: "talon-bonbout" },
+  { name: "Talon complet (chaussures plates)",               price_ht: 65,  bonus: false, icon: "talon-bonbout" },
+  { name: "Glissoirs (changement)",                          price_ht: 35,  bonus: true,  icon: "patins-fers" },
+  { name: "Redresse avant / arrière",                        price_ht: 17,  bonus: true,  icon: "reparer" },
+  { name: "Trou – rustine intérieure",                       price_ht: 20,  bonus: true,  icon: "dechirure" },
+  { name: "Couture décousue",                                price_ht: 20,  bonus: true,  icon: "reparer" },
+  { name: "Zip – changement (x1)",                           price_ht: 45,  bonus: true,  icon: "zip" },
+  { name: "Zip de bottes – changement (x1)",                 price_ht: 55,  bonus: true,  icon: "zip" }
+].freeze
 
-fermeture = Item.create!(
-  establishment: establishment,
-  name: "Réparation fermeture éclair",
-  price_ht: 35.00,
-  vat_rate: 20.00,
-  repair_bonus: true,
-  photo_url: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2",
-  active: true
-)
+items_by_name = {}
+PRESTATIONS.each do |p|
+  items_by_name[p[:name]] = establishment.items.create!(
+    name: p[:name], price_ht: p[:price_ht], vat_rate: 20,
+    repair_bonus: p[:bonus], active: true, icon: p[:icon]
+  )
+end
 
-robe = Item.create!(
-  establishment: establishment,
-  name: "Retouche robe",
-  price_ht: 55.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1595777457583-95e059d581b8",
-  active: true
-)
-
-veste = Item.create!(
-  establishment: establishment,
-  name: "Ajustement veste",
-  price_ht: 48.00,
-  vat_rate: 20.00,
-  repair_bonus: false,
-  photo_url: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35",
-  active: true
-)
-
-sac_cuir = Item.create!(
-  establishment: establishment,
-  name: "Réparation sac cuir",
-  price_ht: 42.00,
-  vat_rate: 20.00,
-  repair_bonus: true,
-  photo_url: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7",
-  active: true
-)
+# Variables réutilisées par les commandes de démo ci-dessous.
+ourlet    = items_by_name["Ressemelage sneakers"]
+fermeture = items_by_name["Zip – changement (x1)"]
+robe      = items_by_name["Entretien cuir (nettoyage & cirage)"]
+veste     = items_by_name["Pose de patins (x2)"]
+sac_cuir  = items_by_name["Recollage semelle"]
 
 puts "Creating orders..."
 
