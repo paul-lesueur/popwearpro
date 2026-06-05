@@ -5,13 +5,22 @@ class Order < ApplicationRecord
   belongs_to :establishment
   belongs_to :customer
 
+  has_many :order_lines, dependent: :destroy
+  has_many :communications, dependent: :destroy
+
+  accepts_nested_attributes_for :order_lines,
+                                reject_if: proc { |attributes| attributes["item_id"].blank? },
+                                allow_destroy: true
+
   scope :archived,     -> { where.not(archived_at: nil) }
   scope :not_archived, -> { where(archived_at: nil) }
 
+  before_validation :set_default_discount
   before_save :set_completed_at
 
   def self.auto_archive_done!(establishment)
     threshold = ARCHIVE_THRESHOLD_DAYS.days.ago
+
     establishment.orders
                  .where(status: DONE_STATUSES, archived_at: nil)
                  .where(
@@ -28,13 +37,6 @@ class Order < ApplicationRecord
   def unarchive!
     update!(archived_at: nil)
   end
-
-  has_many :order_lines, dependent: :destroy
-  has_many :communications, dependent: :destroy
-
-  accepts_nested_attributes_for :order_lines,
-                                reject_if: proc { |attributes| attributes["item_id"].blank? },
-                                allow_destroy: true
 
   def total_ht
     order_lines.sum(&:total_ht)
@@ -77,8 +79,13 @@ class Order < ApplicationRecord
 
   private
 
+  def set_default_discount
+    self.discount = 0 if discount.blank?
+  end
+
   def set_completed_at
     return unless status_changed? && DONE_STATUSES.include?(status)
+
     self.completed_at ||= Time.current
   end
 end
