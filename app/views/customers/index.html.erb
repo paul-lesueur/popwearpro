@@ -1,3 +1,49 @@
+<%
+  current_sort = params[:sort].presence
+  current_direction = params[:direction] == "asc" ? "asc" : "desc"
+
+  next_direction_for = lambda do |column|
+    current_sort == column && current_direction == "asc" ? "desc" : "asc"
+  end
+
+  sort_icon_for = lambda do |column|
+    if current_sort == column
+      current_direction == "asc" ? "↑" : "↓"
+    else
+      ""
+    end
+  end
+
+  order_status_labels = {
+    "new" => "Nouvelle",
+    "pending" => "En attente",
+    "in_progress" => "En cours",
+    "recollect" => "À récupérer",
+    "done" => "Terminée",
+    "completed" => "Terminée",
+    "delivered" => "Livrée",
+    "sent" => "Envoyée",
+    "cancelled" => "Annulée"
+  }
+
+  payment_status_labels = {
+    "paid" => "Payé",
+    "unpaid" => "Non payé",
+    "pending" => "En attente",
+    "partial" => "Partiel",
+    "refunded" => "Remboursé",
+    "cancelled" => "Annulé"
+  }
+
+  priority_labels = {
+    "low" => "Faible",
+    "normal" => "Normale",
+    "medium" => "Moyenne",
+    "high" => "Haute",
+    "urgent" => "Urgent"
+  }
+%>
+
 <div class="customers-page" data-controller="customer-panel">
   <section class="customers-main">
     <div class="customers-header">
@@ -10,28 +56,72 @@
     </div>
 
     <div class="customers-stats">
-      <div class="customer-stat-card">
+      <div class="customer-stat-card customer-stat-card--orange">
+        <div class="customer-stat-icon customer-stat-icon--orange">
+          <i class="fa-solid fa-users"></i>
+        </div>
+
         <span class="customer-stat-label">Clients</span>
         <strong><%= @customers_count %></strong>
       </div>
 
-      <div class="customer-stat-card">
+      <div class="customer-stat-card customer-stat-card--green">
+        <div class="customer-stat-icon customer-stat-icon--green">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+
         <span class="customer-stat-label">Nouveaux ce mois</span>
         <strong><%= @new_customers_this_month %></strong>
       </div>
     </div>
 
-    <div class="customers-toolbar">
-      <input type="text" class="customers-search" placeholder="Rechercher un client">
-      <button type="button" class="customers-filter">Filtrer</button>
+    <div data-controller="search">
+      <%= form_with url: customers_path, method: :get, data: { search_target: "form" }, class: "mb-4" do |f| %>
+        <%= hidden_field_tag :sort, params[:sort] if params[:sort].present? %>
+        <%= hidden_field_tag :direction, params[:direction] if params[:direction].present? %>
+
+        <div class="input-group" style="max-width: 380px;">
+          <span class="input-group-text bg-white border-end-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+            </svg>
+          </span>
+
+          <%= f.text_field :query,
+            value: params[:query],
+            placeholder: "Rechercher un client ou N° de téléphone…",
+            class: "form-control border-start-0 ps-0",
+            autocomplete: "off",
+            data: { action: "input->search#submit" } %>
+        </div>
+      <% end %>
     </div>
 
     <div class="customers-list-card">
       <div class="customers-list-header">
-        <span>Client</span>
-        <span>Contact</span>
-        <span>Commandes</span>
-        <span>Depuis</span>
+        <span>
+          <%= link_to customers_path(request.query_parameters.merge(sort: "lastname", direction: next_direction_for.call("lastname"))), class: "text-reset text-decoration-none" do %>
+            Client <%= sort_icon_for.call("lastname") %>
+          <% end %>
+        </span>
+
+        <span>
+          <%= link_to customers_path(request.query_parameters.merge(sort: "email", direction: next_direction_for.call("email"))), class: "text-reset text-decoration-none" do %>
+            Contact <%= sort_icon_for.call("email") %>
+          <% end %>
+        </span>
+
+        <span>
+          <%= link_to customers_path(request.query_parameters.merge(sort: "orders_count", direction: next_direction_for.call("orders_count"))), class: "text-reset text-decoration-none" do %>
+            Commandes <%= sort_icon_for.call("orders_count") %>
+          <% end %>
+        </span>
+
+        <span>
+          <%= link_to customers_path(request.query_parameters.merge(sort: "created_at", direction: next_direction_for.call("created_at"))), class: "text-reset text-decoration-none" do %>
+            Depuis <%= sort_icon_for.call("created_at") %>
+          <% end %>
+        </span>
       </div>
 
       <% if @customers.any? %>
@@ -95,15 +185,21 @@
 
                   <div class="customer-panel-order-badges">
                     <% if order.respond_to?(:status) && order.status.present? %>
-                      <span class="customer-badge"><%= order.status %></span>
+                      <span class="customer-badge">
+                        <%= order_status_labels[order.status.to_s] || order.status.to_s.humanize %>
+                      </span>
                     <% end %>
 
                     <% if order.respond_to?(:payment_status) && order.payment_status.present? %>
-                      <span class="customer-badge customer-badge-payment"><%= order.payment_status %></span>
+                      <span class="customer-badge customer-badge-payment">
+                        <%= payment_status_labels[order.payment_status.to_s] || order.payment_status.to_s.humanize %>
+                      </span>
                     <% end %>
 
                     <% if order.respond_to?(:priority) && order.priority.present? %>
-                      <span class="customer-badge customer-badge-priority"><%= order.priority %></span>
+                      <span class="customer-badge customer-badge-priority">
+                        <%= priority_labels[order.priority.to_s] || order.priority.to_s.humanize %>
+                      </span>
                     <% end %>
                   </div>
                 </div>

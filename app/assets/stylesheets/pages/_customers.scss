@@ -67,6 +67,35 @@
   }
 }
 
+.customer-stat-card--orange {
+  border-top: 4px solid $primary;
+}
+
+.customer-stat-card--green {
+  border-top: 4px solid $success;
+}
+
+.customer-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.customer-stat-icon--orange {
+  background: rgba($primary, 0.12);
+  color: $primary;
+}
+
+.customer-stat-icon--green {
+  background: rgba($success, 0.12);
+  color: $success;
+}
+
 .customers-toolbar {
   display: flex;
   gap: 14px;

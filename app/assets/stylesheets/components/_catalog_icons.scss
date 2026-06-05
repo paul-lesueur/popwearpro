@@ -1,0 +1,21 @@
+// Icônes du catalogue (bibliothèque SVG Popwear).
+.catalog-icon {
+  display: inline-block;
+  line-height: 0;
+
+  svg { width: 100%; height: 100%; display: block; }
+}
+
+// Halo crème autour de l'icône (style maquette).
+.catalog-icon-halo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: #FCEDE4;
+  border-radius: 12px;
+
+  // SVG via le helper (.catalog-icon) ou injecté directement (panier en JS).
+  .catalog-icon { width: 56%; height: 56%; }
+  > svg { width: 56%; height: 56%; }
+}

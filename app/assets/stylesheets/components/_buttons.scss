@@ -10,6 +10,13 @@
     color: #fff;
     opacity: .92;
   }
+
+  // Désactivé : on garde le texte blanc, fond atténué.
+  &:disabled, &.disabled {
+    background: $gradient-orange;
+    color: #fff;
+    opacity: .55;
+  }
 }
 
 .btn-success {
@@ -20,6 +27,12 @@
   &:hover, &:focus, &:active {
     color: #fff;
     opacity: .92;
+  }
+
+  &:disabled, &.disabled {
+    background: $gradient-green;
+    color: #fff;
+    opacity: .55;
   }
 }
 

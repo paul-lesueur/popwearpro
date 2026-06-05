@@ -182,12 +182,12 @@ export default class extends Controller {
       const qty = this.cart[id]
       const price = parseFloat(tile.dataset.priceHt) || 0
       const name = tile.dataset.name
-      const thumb = tile.dataset.thumb
+      const icon = tile.dataset.icon || ""
       ht += price * qty
 
       recapHtml.push(`
         <div class="recap__line">
-          <span class="recap__line-name">${thumb ? `<img class="recap__thumb" src="${thumb}" alt="">` : `<span class="recap__thumb"></span>`}<span>${qty}× ${name}</span></span>
+          <span class="recap__line-name"><span class="catalog-icon-halo" style="width:34px;height:34px">${icon}</span><span>${qty}× ${name}</span></span>
           <span style="font-family:var(--font-heading,inherit);font-weight:600">${this.money(price * qty)}</span>
         </div>`)
 
@@ -196,7 +196,7 @@ export default class extends Controller {
 
       ticketHtml.push(`
         <div class="ticket__line">
-          ${thumb ? `<img class="ticket__line-thumb" src="${thumb}" alt="">` : `<span class="ticket__line-thumb"></span>`}
+          <span class="catalog-icon-halo" style="width:34px;height:34px">${icon}</span>
           <div style="flex:1;min-width:0">
             <div class="ticket__line-name">${name}</div>
             <div class="ticket__line-unit">${this.money(price)} · ${this.money(price * qty)}</div>
