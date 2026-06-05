@@ -16,17 +16,17 @@ puts "Creating user..."
 user = User.create!(
   email: "demo@popwearpro.com",
   password: "password",
-  name: "Marie Dupont"
+  name: "Claude Codin"
 )
 
 puts "Creating establishment..."
 
 establishment = Establishment.create!(
   user: user,
-  name: "Atelier Popwear",
-  description: "Atelier de retouche, couture et réparation textile.",
+  name: "Atelier Claude",
+  description: "Atelier de Cordonnerie.",
   address: "12 rue des Artisans, 75011 Paris",
-  category: "couture",
+  category: "Cordonnier",
   payment_methods: "Carte bancaire, espèces, virement",
   opening_hours: "Lundi au samedi, 9h30 - 18h30",
   siret_siren: "12345678900012"
