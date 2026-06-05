@@ -82,6 +82,7 @@ Import (Google Fonts) à placer dans le `<head>` :
 - *Primaire* : fond `Main Gradient` (orange), texte blanc — actions « Créer… »
 - *Outline* : fond blanc, bordure + texte `primary` — Annuler, Voir le détail, Ajouter…
 - *Succès* : fond `Alert Gradient` (vert), texte blanc — Finaliser / Enregistrer
+- *Désactivé* (primaire / succès) : **toujours texte blanc**, fond dégradé atténué (`opacity: .55`). Jamais de texte sombre.
 
 **Sidebar** : blanche, largeur ~240px. Logo « popwear » (League Spartan bold, `text-primary`) + pill « PRO » en `Main Gradient`. Item actif = fond `Main Gradient`, texte + icône blancs, radius 12.
 
