@@ -1,18 +1,45 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: %i[show edit update destroy]
 
+  SORT_COLUMNS = %w[lastname email created_at orders_count].freeze
+
   def index
-    @customers = current_establishment
-                 .customers
-                 .named
-                 .includes(:orders)
-                 .order(created_at: :desc)
+    base_customers = current_establishment
+                     .customers
+                     .named
 
-    @customers_count = @customers.size
+    @customers_count = base_customers.count
 
-    @new_customers_this_month = @customers.select do |customer|
-      customer.created_at >= Time.current.beginning_of_month
-    end.count
+    @new_customers_this_month = base_customers
+                                .where("customers.created_at >= ?", Time.current.beginning_of_month)
+                                .count
+
+    @customers = base_customers
+                 .left_joins(:orders)
+                 .select("customers.*, COUNT(orders.id) AS orders_count")
+                 .group("customers.id")
+
+    if params[:query].present?
+      query = params[:query].strip
+      search_query = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
+      search_query_without_spaces = "%#{ActiveRecord::Base.sanitize_sql_like(query.delete(' '))}%"
+
+      @customers = @customers.where(
+        <<~SQL,
+          customers.firstname ILIKE :query
+          OR customers.lastname ILIKE :query
+          OR customers.email ILIKE :query
+          OR customers.phone ILIKE :query
+          OR REPLACE(customers.phone, ' ', '') ILIKE :query_without_spaces
+          OR CONCAT(customers.firstname, ' ', customers.lastname) ILIKE :query
+          OR CONCAT(customers.lastname, ' ', customers.firstname) ILIKE :query
+        SQL
+        query: search_query,
+        query_without_spaces: search_query_without_spaces
+      )
+    end
+
+    @customers = sort_customers(@customers).preload(:orders)
   end
 
   def show
@@ -56,5 +83,28 @@ class CustomersController < ApplicationController
 
   def customer_params
     params.require(:customer).permit(:firstname, :lastname, :email, :phone, :notes)
+  end
+
+  def sort_customers(customers)
+    direction = sort_direction.upcase
+
+    case sort_column
+    when "lastname"
+      customers.reorder(Arel.sql("customers.lastname #{direction}, customers.firstname #{direction}"))
+    when "email"
+      customers.reorder(Arel.sql("customers.email #{direction}"))
+    when "orders_count"
+      customers.reorder(Arel.sql("COUNT(orders.id) #{direction}"))
+    else
+      customers.reorder(Arel.sql("customers.created_at #{direction}"))
+    end
+  end
+
+  def sort_column
+    SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : "created_at"
+  end
+
+  def sort_direction
+    params[:direction] == "asc" ? "asc" : "desc"
   end
 end
