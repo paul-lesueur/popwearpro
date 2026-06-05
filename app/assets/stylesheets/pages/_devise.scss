@@ -1,0 +1,102 @@
+.devise-page {
+  min-height: 100vh;
+  display: flex;
+  background-color: $bg-page;
+}
+
+.devise-page__brand {
+  flex: 0 0 38%;
+  background: $gradient-orange;
+  border-top-right-radius: 80px;
+  border-bottom-right-radius: 80px;
+  padding: 48px 56px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.devise-page__content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 80px;
+  background-color: $bg-page;
+}
+
+.devise-card {
+  width: 100%;
+  max-width: 420px;
+  background: $bg-card;
+  border-radius: $radius;
+  box-shadow: $shadow-card;
+  padding: 40px;
+}
+
+.devise-card__title {
+  font-family: $headers-font;
+  font-weight: 800;
+  font-size: 2.25rem;
+  color: $text-primary;
+  margin-bottom: 16px;
+}
+
+.devise-card__subtitle {
+  color: $secondary;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.devise-card .form-control {
+  border-radius: $radius;
+  border: 1px solid $border;
+  padding: 14px 18px;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.15);
+  }
+}
+
+.devise-card .form-actions .btn {
+  background: $gradient-orange;
+  border: none;
+  border-radius: $radius;
+  width: 100%;
+  padding: 14px 24px;
+  font-weight: 700;
+  color: white;
+  margin-top: 8px;
+}
+
+.devise-card__footer,
+.devise-card__links {
+  margin-top: 24px;
+  color: $secondary;
+
+  a {
+    color: $primary;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .devise-page {
+    flex-direction: column;
+  }
+
+  .devise-page__brand {
+    border-radius: 0 0 40px 40px;
+    min-height: 120px;
+  }
+
+  .devise-page__content {
+    padding: 32px 24px;
+  }
+}
