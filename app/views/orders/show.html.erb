@@ -14,15 +14,14 @@
   <%# Statut de la commande %>
   <h5 class="fw-bold text-secondary mb-3">Statut de la commande</h5>
   <% status_labels = {
-    "draft"       => "Brouillon",
-    "pending"     => "En attente de validation",
+    "pending"     => "Nouvelle commande",
     "in_progress" => "En cours",
-    "sent"        => "Envoyée",
+    "sent"        => "En attente de re-collecte",
     "completed"   => "Terminée",
-    "delivered"   => "Livrée"
+    "delivered"   => "Terminée"
   } %>
   <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "bank_transfer" => "Virement", "other" => "Autre" } %>
-  <% payment_status_labels = { "unpaid" => "En attente de paiement", "paid" => "Payé" } %>
+  <% payment_status_labels = { "unpaid" => "En attente de règlement", "paid" => "Payé" } %>
   <div class="d-flex flex-column gap-2 mb-4">
     <span class="badge rounded-pill px-3 py-2 align-self-start bg-warning text-white d-inline-flex align-items-center gap-1">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">

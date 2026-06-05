@@ -18,8 +18,12 @@ Rails.application.routes.draw do
 
   resources :orders do
     resources :communications, only: [:create]
+    collection do
+      get :archives
+    end
     member do
       patch :move
+      patch :unarchive
       get :confirmation
     end
   end
