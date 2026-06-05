@@ -3,11 +3,11 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   dragstart(event) {
     event.dataTransfer.setData("text/plain", event.currentTarget.dataset.orderId)
-    event.currentTarget.classList.add("opacity-50")
+    event.currentTarget.classList.add("opacity-50", "kanban-card--dragging")
   }
 
   dragend(event) {
-    event.currentTarget.classList.remove("opacity-50")
+    event.currentTarget.classList.remove("opacity-50", "kanban-card--dragging")
   }
 
   dragover(event) {
