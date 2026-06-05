@@ -103,7 +103,7 @@
   <h5 class="fw-bold text-secondary mb-3 mt-4">Informations</h5>
   <p class="fw-semibold mb-1">Commentaires</p>
   <p class="text-muted"><%= @order.internal_notes.presence || "Aucune note." %></p>
-  <p class="fw-semibold mb-1">Date de re-collecte</p>
+  <p class="fw-semibold mb-1">Date de retrait</p>
   <p class="text-muted"><%= @order.due_date.present? ? l(@order.due_date) : "Date à fixer" %></p>
 
   <hr style="border-color: #EAE4DF;">
