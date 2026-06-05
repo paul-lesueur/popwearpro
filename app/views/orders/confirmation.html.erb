@@ -21,7 +21,7 @@
           <div>
             <div class="cmddone__card-title"><%= @order.document_label %></div>
             <div class="cmddone__card-desc">
-              <%= number_to_currency(@order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              <%= number_to_currency(@order.total_due, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               · <%= @order.payment_method.presence || "—" %>
               · <%= @order.paid? ? "payé" : "à régler au retrait" %>.
             </div>

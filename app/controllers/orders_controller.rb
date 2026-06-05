@@ -130,6 +130,7 @@ class OrdersController < ApplicationController
       :paid_at,
       :collected_at,
       :internal_notes,
+      :discount,
       order_lines_attributes: [
         :id,
         :item_id,

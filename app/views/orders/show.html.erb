@@ -66,16 +66,18 @@
       <span class="text-muted"><%= number_to_currency(total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> HT</span>
     </div>
     <div class="d-flex justify-content-between mb-1">
-      <span class="text-muted">Réduction</span>
-      <span class="text-muted">0,00 €</span>
-    </div>
-    <div class="d-flex justify-content-between mb-1">
       <span class="text-muted">TVA</span>
       <span class="text-muted"><%= number_to_currency(tva, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></span>
     </div>
+    <% if @order.discount.to_f.positive? %>
+      <div class="d-flex justify-content-between mb-1">
+        <span class="text-muted">Réduction</span>
+        <span class="text-muted">− <%= number_to_currency(@order.discount, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></span>
+      </div>
+    <% end %>
     <div class="d-flex justify-content-between mt-2 pt-2" style="border-top: 1px solid #EAE4DF;">
       <span class="fw-bold">Montant total</span>
-      <span class="fw-bold text-secondary"><%= number_to_currency(total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC</span>
+      <span class="fw-bold text-secondary"><%= number_to_currency(@order.total_due, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC</span>
     </div>
   </div>
   <% if @order.payment_status.present? %>

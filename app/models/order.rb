@@ -17,6 +17,11 @@ class Order < ApplicationRecord
     order_lines.sum(&:total_ttc)
   end
 
+  # Total réellement dû après réduction (jamais négatif).
+  def total_due
+    [total_ttc - discount.to_f, 0].max
+  end
+
   def urgent?
     due_date.present? && due_date <= Date.current + 2.days && status != "delivered"
   end
