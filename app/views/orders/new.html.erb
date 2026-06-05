@@ -15,7 +15,6 @@
       <%# ---- HEADER ---- %>
       <div class="wizhead">
         <div class="wizhead__title">
-          <%= link_to orders_path, class: "wizhead__close", aria: { label: "Fermer" } do %><i class="fa-solid fa-xmark"></i><% end %>
           Créer une commande
         </div>
         <%= link_to "Annuler", orders_path, class: "btn btn-outline-primary" %>
@@ -202,8 +201,10 @@
 
         <div style="max-width:720px">
           <div class="mb-4">
-            <label class="form-label">Date d'échéance (retrait)</label>
-            <%= form.date_field :due_date, class: "form-control", style: "max-width:320px" %>
+            <label class="form-label">Date de retrait</label>
+            <div class="wiz-date">
+              <%= form.date_field :due_date, class: "form-control wiz-date__input" %>
+            </div>
           </div>
           <div class="mb-2">
             <label class="form-label">Commentaire <span class="text-subtext">(facultatif)</span></label>
