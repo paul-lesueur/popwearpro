@@ -1,9 +1,9 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy, :move]
+  before_action :set_order, only: [:show, :edit, :update, :destroy, :move, :unarchive]
   before_action :set_form_data, only: [:new, :create, :edit, :update]
 
   KANBAN_COLUMNS = [
-    { key: "new",         label: "Nouvelles commandes",       statuses: %w[draft pending],       target_status: "pending" },
+    { key: "new",         label: "Nouvelles commandes",       statuses: %w[pending],             target_status: "pending" },
     { key: "in_progress", label: "En cours",                  statuses: %w[in_progress],         target_status: "in_progress" },
     { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent],                target_status: "sent" },
     { key: "done",        label: "Terminées",                 statuses: %w[completed delivered], target_status: "completed" }
@@ -12,7 +12,10 @@ class OrdersController < ApplicationController
   ALLOWED_STATUSES = KANBAN_COLUMNS.map { |col| col[:target_status] }.freeze
 
   def index
+    Order.auto_archive_done!(current_establishment)
+
     orders = current_establishment.orders
+                                  .not_archived
                                   .includes(:customer, order_lines: :item)
                                   .order(created_at: :desc)
 
@@ -24,6 +27,9 @@ class OrdersController < ApplicationController
         q: pattern
       )
     end
+
+    @archived_count = current_establishment.orders.archived.count
+
     @columns = KANBAN_COLUMNS.map do |col|
       col.merge(orders: orders.select { |o| col[:statuses].include?(o.status) })
     end
@@ -69,6 +75,18 @@ class OrdersController < ApplicationController
       @order.order_lines.build if @order.order_lines.empty?
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def archives
+    @archived_orders = current_establishment.orders
+                                            .archived
+                                            .includes(:customer, order_lines: :item)
+                                            .order(archived_at: :desc)
+  end
+
+  def unarchive
+    @order.unarchive!
+    redirect_to archives_orders_path, notice: "Commande remise dans les terminées."
   end
 
   def move
