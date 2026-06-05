@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   before_action :set_form_data, only: [:new, :create, :edit, :update]
 
   KANBAN_COLUMNS = [
-    { key: "new",         label: "Nouvelles commandes",       statuses: %w[draft pending],       target_status: "pending" },
+    { key: "new",         label: "Nouvelles commandes",       statuses: %w[pending],             target_status: "pending" },
     { key: "in_progress", label: "En cours",                  statuses: %w[in_progress],         target_status: "in_progress" },
     { key: "recollect",   label: "En attente de re-collecte", statuses: %w[sent],                target_status: "sent" },
     { key: "done",        label: "Terminées",                 statuses: %w[completed delivered], target_status: "completed" }

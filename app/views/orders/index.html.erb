@@ -3,7 +3,10 @@
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1>Commandes</h1>
-      <%= link_to "+ Créer une commande", new_order_path, class: "btn btn-primary" %>
+      <%= link_to new_order_path, class: "app-sidebar__cta", style: "width: auto; padding: 0 1.25rem;" do %>
+        <i class="fa-solid fa-plus"></i>
+        <span>Nouvelle commande</span>
+      <% end %>
     </div>
 
     <div data-controller="search">
@@ -17,7 +20,7 @@
           <%= f.text_field :q,
               value: @search_query,
               placeholder: "Rechercher un client ou N° de commande…",
-              class: "form-control border-start-0 ps-0",
+              class: "form-control border-start-0 ps-0 bg-white",
               autocomplete: "off",
               data: { action: "input->search#submit" } %>
         </div>

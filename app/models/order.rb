@@ -45,7 +45,7 @@ class Order < ApplicationRecord
   end
 
   def urgent?
-    due_date.present? && due_date <= Date.current + 2.days && status != "delivered"
+    due_date.present? && due_date <= Date.current + 2.days && !DONE_STATUSES.include?(status)
   end
 
   def paid?
