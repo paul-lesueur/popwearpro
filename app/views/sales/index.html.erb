@@ -1,0 +1,294 @@
+<div class="sales-page">
+  <div class="sales-header">
+    <div>
+      <h1>Ventes</h1>
+
+      <div class="sales-tabs">
+        <%= link_to "Tableau de bord", sales_path(period: @period), class: "sales-tab is-active" %>
+        <%= link_to "Transactions", sales_transactions_path, class: "sales-tab" %>
+        <%= link_to "Prestations et Produits", items_path, class: "sales-tab" %>
+      </div>
+    </div>
+
+    <details class="sales-period-dropdown">
+      <summary class="sales-period">
+        <%= @period_label %>
+        <i class="fa-solid fa-chevron-down"></i>
+      </summary>
+
+      <div class="sales-period-menu">
+        <% @period_options.each do |value, label| %>
+          <%= link_to label,
+            sales_path(period: value),
+            class: "sales-period-link #{'is-active' if @period == value}" %>
+        <% end %>
+      </div>
+    </details>
+  </div>
+
+  <section class="sales-summary">
+    <h2>Résumé des ventes</h2>
+
+    <div class="sales-summary-grid">
+      <div class="sales-summary-card">
+        <div>
+          <p class="sales-summary-value">
+            <%= number_to_currency(@total_sales, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </p>
+
+          <p class="sales-summary-label">Total des ventes</p>
+
+          <p class="sales-summary-trend is-positive">
+            <%= @orders_count %> commande<%= "s" if @orders_count > 1 %>
+          </p>
+        </div>
+
+        <div class="sales-summary-icon">
+          <i class="fa-solid fa-euro-sign"></i>
+        </div>
+      </div>
+
+      <div class="sales-summary-card">
+        <div>
+          <p class="sales-summary-value">
+            <%= number_to_currency(@average_order, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </p>
+
+          <p class="sales-summary-label">Panier moyen</p>
+
+          <p class="sales-summary-trend is-positive">
+            Calculé depuis les commandes
+          </p>
+        </div>
+
+        <div class="sales-summary-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+      </div>
+
+      <div class="sales-summary-card">
+        <div>
+          <p class="sales-summary-value"><%= @services_percentage %> %</p>
+
+          <p class="sales-summary-label">Vente de prestations</p>
+
+          <p class="sales-summary-trend is-positive">
+            Répartition actuelle
+          </p>
+        </div>
+
+        <div class="sales-summary-icon">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+        </div>
+      </div>
+
+      <div class="sales-summary-card">
+        <div>
+          <p class="sales-summary-value"><%= @articles_percentage %> %</p>
+
+          <p class="sales-summary-label">Vente d’articles</p>
+
+          <p class="sales-summary-trend is-positive">
+            <%= @items_count %> élément<%= "s" if @items_count > 1 %> en caisse
+          </p>
+        </div>
+
+        <div class="sales-summary-icon">
+          <i class="fa-regular fa-calendar"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sales-dashboard-grid">
+    <div class="sales-panel sales-week">
+      <div class="sales-panel-header">
+        <div>
+          <h2>Ventes de la semaine</h2>
+
+          <p>
+            <strong><%= @weekly_orders_count %></strong>
+            Commandes cette semaine
+          </p>
+
+          <p>
+            <strong>
+              <%= number_to_currency(@weekly_total, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+            </strong>
+            Chiffre d’affaires de la semaine
+          </p>
+        </div>
+      </div>
+
+      <% max_weekly_sales = (@weekly_sales.map { |sale| sale[:value].to_f }.max || 0).to_f %>
+      <% max_weekly_sales = 1 if max_weekly_sales.zero? %>
+
+      <div class="sales-bars">
+        <% @weekly_sales.each do |sale| %>
+          <% bar_height = sale[:value].positive? ? ((sale[:value].to_f / max_weekly_sales) * 120).round : 6 %>
+
+          <div class="sales-bar-item">
+            <div class="sales-bar-wrapper">
+              <span class="sales-bar-tooltip">
+                <%= number_to_currency(sale[:value], unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </span>
+
+              <div class="sales-bar" style="height: <%= bar_height %>px;"></div>
+            </div>
+
+            <span><%= sale[:day] %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="sales-panel sales-orders-chart">
+      <div class="sales-panel-header">
+        <div>
+          <h2>Commandes au fil du temps</h2>
+
+          <div class="sales-chart-stats">
+            <span>
+              <strong><%= @current_period_orders_count %></strong>
+              Commandes — <%= @period_label %>
+            </span>
+
+            <span>
+              <strong><%= @previous_period_orders_count %></strong>
+              Commandes — <%= @previous_period_label %>
+            </span>
+          </div>
+        </div>
+
+        <details class="sales-period-dropdown">
+          <summary class="sales-period">
+            <%= @period_label %>
+            <i class="fa-solid fa-chevron-down"></i>
+          </summary>
+
+          <div class="sales-period-menu">
+            <% @period_options.each do |value, label| %>
+              <%= link_to label,
+                sales_path(period: value),
+                class: "sales-period-link #{'is-active' if @period == value}" %>
+            <% end %>
+          </div>
+        </details>
+      </div>
+
+      <div class="sales-line-chart">
+        <svg viewBox="0 0 680 220" preserveAspectRatio="none">
+          <polyline
+            points="<%= @previous_period_points %>"
+            class="sales-line-muted"
+          />
+
+          <polyline
+            points="<%= @current_period_points %>"
+            class="sales-line-main"
+          />
+        </svg>
+
+        <% if @best_period_day[:date].present? && @best_period_day[:count].positive? %>
+          <div class="sales-chart-bubble">
+            <strong>
+              <%= @best_period_day[:count] %>
+              commande<%= "s" if @best_period_day[:count] > 1 %>
+            </strong>
+
+            <span>
+              <%= l(@best_period_day[:date], format: "%d/%m/%Y") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="sales-chart-legend">
+        <span><i></i> <%= @previous_period_label %></span>
+        <span><i></i> <%= @period_label %></span>
+      </div>
+    </div>
+
+    <div class="sales-panel sales-best">
+      <h2>Meilleures ventes</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Articles / prestations</th>
+            <th>Prix</th>
+            <th>Unités vendues</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @best_sales.any? %>
+            <% @best_sales.each do |sale| %>
+              <tr>
+                <td>
+                  <div class="sales-product">
+                    <span class="catalog-icon-halo sales-product-icon-halo">
+                      <%= catalog_icon(sale[:icon]) %>
+                    </span>
+
+                    <span class="sales-product-name"><%= sale[:name] %></span>
+                  </div>
+                </td>
+
+                <td>
+                  <%= number_to_currency(sale[:price], unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                </td>
+
+                <td><%= sale[:units] %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="3">Aucune vente enregistrée pour le moment.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sales-panel sales-split">
+      <div class="sales-panel-header">
+        <h2>Répartition des ventes</h2>
+
+        <details class="sales-period-dropdown">
+          <summary class="sales-period">
+            <%= @period_label %>
+            <i class="fa-solid fa-chevron-down"></i>
+          </summary>
+
+          <div class="sales-period-menu">
+            <% @period_options.each do |value, label| %>
+              <%= link_to label,
+                sales_path(period: value),
+                class: "sales-period-link #{'is-active' if @period == value}" %>
+            <% end %>
+          </div>
+        </details>
+      </div>
+
+      <div
+        class="sales-donut"
+        style="background: conic-gradient(#ff6b35 0 <%= @services_percentage %>%, #fff1ec <%= @services_percentage %>% 100%);"
+      ></div>
+
+      <div class="sales-split-list">
+        <div>
+          <span class="sales-dot is-orange"></span>
+          Prestations
+          <strong><%= @services_percentage %> %</strong>
+        </div>
+
+        <div>
+          <span class="sales-dot is-soft"></span>
+          Articles
+          <strong><%= @articles_percentage %> %</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

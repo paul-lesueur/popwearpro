@@ -19,8 +19,7 @@
     <% end %>
   <% end %>
 
-  <%# TODO route à câbler : Ventes (aucune route pour l'instant) %>
-  <%= link_to "#", class: "app-sidebar__item" do %>
+  <%= link_to sales_path, class: "app-sidebar__item #{'is-active' if nav == 'sales'}" do %>
     <i class="fa-solid fa-list app-sidebar__icon"></i>
     <span class="app-sidebar__label">Ventes</span>
   <% end %>

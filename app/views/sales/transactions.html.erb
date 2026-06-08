@@ -1,0 +1,229 @@
+<div class="sales-page">
+  <div class="sales-header">
+    <div>
+      <h1>Ventes</h1>
+
+      <div class="sales-tabs">
+        <%= link_to "Tableau de bord", sales_path, class: "sales-tab" %>
+        <%= link_to "Transactions", sales_transactions_path, class: "sales-tab is-active" %>
+        <%= link_to "Prestations et Produits", items_path, class: "sales-tab" %>
+      </div>
+    </div>
+  </div>
+
+  <section class="sales-transactions-clean">
+    <div class="sales-transactions-toolbar">
+      <%= form_with url: sales_transactions_path,
+                    method: :get,
+                    class: "sales-transactions-search",
+                    data: { turbo: false } do %>
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <%= text_field_tag :query,
+          @query,
+          placeholder: "Rechercher une transaction",
+          autocomplete: "off"
+        %>
+
+        <button type="submit" class="sales-search-button">
+          Rechercher
+        </button>
+      <% end %>
+
+      <details class="sales-export-dropdown">
+        <summary class="sales-report-btn">
+          <i class="fa-solid fa-download"></i>
+          Télécharger un rapport des ventes
+        </summary>
+
+        <div class="sales-export-panel">
+          <p class="sales-export-title">Choisir une période</p>
+
+          <%= form_with url: sales_report_path(format: :csv),
+                        method: :get,
+                        class: "sales-export-form",
+                        data: { turbo: false } do %>
+            <%= hidden_field_tag :query, @query %>
+
+            <div class="sales-export-date">
+              <label for="start_date">Date de début</label>
+              <%= date_field_tag :start_date, @export_start_date %>
+            </div>
+
+            <div class="sales-export-date">
+              <label for="end_date">Date de fin</label>
+              <%= date_field_tag :end_date, @export_end_date %>
+            </div>
+
+            <button type="submit" class="sales-export-submit">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              Exporter le rapport
+            </button>
+          <% end %>
+        </div>
+      </details>
+    </div>
+
+    <div class="sales-transactions-layout">
+      <div class="sales-clean-table">
+        <div class="sales-clean-table-head">
+          <div>Référence</div>
+          <div>Client</div>
+          <div>Prix TTC</div>
+          <div>Paiement</div>
+        </div>
+
+        <% if @transactions_by_date.any? %>
+          <% @transactions_by_date.each do |date, transactions| %>
+            <% day_total = transactions.sum { |transaction| transaction[:total] } %>
+
+            <div class="sales-transaction-day">
+              <span>
+                <% if date == Date.current %>
+                  Aujourd’hui
+                <% else %>
+                  <%= l(date, format: "%d %B %Y") %>
+                <% end %>
+                ·
+                <%= number_to_currency(day_total, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </span>
+            </div>
+
+            <% transactions.each do |transaction| %>
+              <% order = transaction[:order] %>
+
+              <%= link_to sales_transactions_path(query: @query, order_id: order.id),
+                class: "sales-clean-row #{'is-selected' if @selected_order == order}" do %>
+
+                <div class="sales-reference">
+                  <%= transaction[:reference] %>
+                </div>
+
+                <div>
+                  <%= transaction[:customer_name] %>
+                </div>
+
+                <div>
+                  <%= number_to_currency(transaction[:total], unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                </div>
+
+                <div>
+                  <%= transaction[:payment_method] %>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <div class="sales-clean-empty">
+            Aucune transaction trouvée.
+          </div>
+        <% end %>
+      </div>
+
+      <aside class="sales-transaction-detail">
+        <% if @selected_order.present? %>
+          <% customer = @selected_order.customer %>
+
+          <div class="sales-detail-header">
+            <div>
+              <p>Détail commande</p>
+              <h2>Commande <%= order_reference(@selected_order) %></h2>
+            </div>
+
+            <%= link_to sales_transactions_path(query: @query), class: "sales-detail-close" do %>
+              <i class="fa-solid fa-xmark"></i>
+            <% end %>
+          </div>
+
+          <div class="sales-detail-block">
+            <span class="sales-detail-label">Client</span>
+            <strong><%= customer_name(customer) %></strong>
+
+            <% if customer.present? && !customer.is_anonymous? %>
+              <small><%= customer.phone.presence || customer.email.presence || "Aucun contact renseigné" %></small>
+            <% end %>
+          </div>
+
+          <div class="sales-detail-block">
+            <span class="sales-detail-label">Date</span>
+            <strong><%= l(@selected_order.created_at, format: "%d/%m/%Y à %H:%M") %></strong>
+          </div>
+
+          <div class="sales-detail-block">
+            <span class="sales-detail-label">Paiement</span>
+            <strong><%= payment_method_label(@selected_order.payment_method) %></strong>
+            <small><%= payment_status_label(@selected_order.payment_status) %></small>
+          </div>
+
+          <div class="sales-detail-lines">
+            <span class="sales-detail-label">Articles / prestations</span>
+
+            <% @selected_order.order_lines.each do |line| %>
+              <% quantity = line.quantity.to_i.zero? ? 1 : line.quantity.to_i %>
+
+              <div class="sales-detail-line">
+                <div>
+                  <strong><%= line.item.name %></strong>
+
+                  <small>
+                    <%= quantity %> ×
+                    <%= number_to_currency(line.unit_price_ht, unit: "€ HT", separator: ",", delimiter: " ", format: "%n %u") %>
+                  </small>
+                </div>
+
+                <span>
+                  <%= number_to_currency(line_total_ttc(line), unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @selected_order.discount.to_f.positive? %>
+            <div class="sales-detail-total-line">
+              <span>Remise</span>
+
+              <strong>
+                -<%= number_to_currency(@selected_order.discount, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </strong>
+            </div>
+          <% end %>
+
+          <div class="sales-detail-total">
+            <span>Total TTC</span>
+
+            <strong>
+              <%= number_to_currency(order_total_ttc(@selected_order), unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+            </strong>
+          </div>
+
+          <%= link_to order_path(@selected_order), class: "sales-detail-order-link" do %>
+            Ouvrir la commande complète
+            <i class="fa-solid fa-arrow-right"></i>
+          <% end %>
+        <% else %>
+          <div class="sales-detail-empty">
+            <i class="fa-solid fa-receipt"></i>
+            <strong>Sélectionne une transaction</strong>
+            <span>Le détail de la commande s’affichera ici.</span>
+          </div>
+        <% end %>
+      </aside>
+    </div>
+
+    <div class="sales-clean-pagination">
+      <div class="sales-pages">
+        <span class="is-active">1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>...</span>
+        <span>12</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <div class="sales-results-count">
+        <%= @transactions_count %> résultat<%= "s" if @transactions_count > 1 %>
+      </div>
+    </div>
+  </section>
+</div>
