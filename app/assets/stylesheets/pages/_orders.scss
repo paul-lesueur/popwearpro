@@ -14,11 +14,15 @@
   display: none;
   position: sticky;
   top: 24px;
+  align-self: start;
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
   animation: orderPanelIn 0.2s ease;
 }
 
 .order-panel.is-open {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes orderPanelIn {
@@ -43,6 +47,7 @@
   align-items: center;
   padding: 20px 24px;
   margin-bottom: 16px;
+  flex-shrink: 0;
 
   h2 {
     margin: 0;
@@ -68,6 +73,40 @@
   border-radius: $radius;
   box-shadow: $shadow-card;
   padding: 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.order-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.order-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.order-panel-body::-webkit-scrollbar-thumb {
+  background: #eadbd2;
+  border-radius: 999px;
+}
+
+.order-panel-body::-webkit-scrollbar-thumb:hover {
+  background: #d8c4b8;
+}
+
+turbo-frame#order-detail {
+  display: block;
+}
+
+turbo-frame#order-detail .ai-client-overlay {
+  position: fixed;
+}
+
+turbo-frame#order-detail .ai-client-card {
+  margin-bottom: 14px;
 }
 
 .order-timeline-item {
@@ -130,10 +169,22 @@
     position: fixed;
     inset: 16px;
     z-index: 1000;
-    overflow-y: auto;
+    max-height: none;
+    overflow: hidden;
     border-radius: $radius;
     box-shadow: 0 20px 60px rgba(19, 21, 35, 0.18);
     background: $bg-page;
+  }
+
+  .order-panel.is-open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .order-panel-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 
