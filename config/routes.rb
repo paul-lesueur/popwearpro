@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   # Dashboard
   get "dashboard", to: "dashboards#show", as: :dashboard
 
+  # Profil utilisateur
+  resource :profile, only: [:show, :update]
+
   # Établissement : un seul établissement par user
   resource :establishment, only: [:show, :edit, :update]
 

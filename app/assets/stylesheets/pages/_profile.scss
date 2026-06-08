@@ -1,0 +1,108 @@
+.profile-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+// ---- Header ----
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.profile-header__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: $radius-pill;
+  background: $neutral-soft;
+  color: $subtext;
+  font-family: $font-heading;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-header__name {
+  font-family: $font-heading;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0 0 0.2rem;
+}
+
+.profile-header__email {
+  color: $subtext;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+// ---- Cards ----
+.profile-card {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: $shadow-card;
+}
+
+.profile-card__title {
+  font-family: $font-heading;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin-bottom: 1.25rem;
+}
+
+.profile-card__hint {
+  color: $subtext;
+  font-size: 0.85rem;
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+// ---- Fields ----
+.profile-field {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.profile-field__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $secondary;
+  margin-bottom: 0.4rem;
+}
+
+.profile-field__input {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid $border;
+  border-radius: $radius;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  color: $text-primary;
+  background: $bg-page;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+// ---- Actions ----
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+}
