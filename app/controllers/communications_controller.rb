@@ -43,10 +43,6 @@ class CommunicationsController < ApplicationController
     params.require(:communication).permit(:kind, :subject, :body)
   end
 
-  # ==================================================
-  # BRANCHE 1 : MESSAGE IA CLIENT
-  # ==================================================
-
   def create_ai_client_message
     content = AiClientMessageGenerator.new(
       order: @order,
@@ -113,11 +109,6 @@ class CommunicationsController < ApplicationController
       body
     end
   end
-
-  # ==================================================
-  # BRANCHE 2 : SMS KANBAN
-  # utilisée quand on drag une commande en "En attente de retrait"
-  # ==================================================
 
   def create_sms_communication
     communication = @order.communications.create!(
