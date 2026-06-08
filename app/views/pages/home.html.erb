@@ -1,2 +1,99 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="home-page">
+
+  <%# Navbar %>
+  <nav class="home-nav">
+    <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "home-nav__logo" %>
+    <div class="home-nav__actions">
+      <% if user_signed_in? %>
+        <%= link_to "Accéder à l'app", dashboard_path, class: "btn btn-primary btn-sm" %>
+      <% else %>
+        <%= link_to "Se connecter", new_user_session_path, class: "btn btn-outline-primary btn-sm" %>
+        <%= link_to "S'inscrire", new_user_registration_path, class: "btn btn-primary btn-sm" %>
+      <% end %>
+    </div>
+  </nav>
+
+  <%# Hero %>
+  <section class="home-hero">
+    <div class="home-hero__content">
+      <h1 class="home-hero__title">
+        Gérez votre atelier,<br>
+        <span>sans friction.</span>
+      </h1>
+      <p class="home-hero__subtitle">
+        Popwear Pro centralise vos commandes, vos clients et votre catalogue de prestations — pour que vous puissiez vous concentrer sur votre métier.
+      </p>
+      <div class="home-hero__ctas">
+        <% if user_signed_in? %>
+          <%= link_to "Accéder à l'app", dashboard_path, class: "btn btn-primary" %>
+        <% else %>
+          <%= link_to "Commencer gratuitement", new_user_registration_path, class: "btn btn-primary" %>
+          <%= link_to "Se connecter", new_user_session_path, class: "btn btn-outline-primary" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="home-hero__visual">
+      <div class="home-hero__blob">
+        <%= image_tag "home-illustration.png", alt: "Illustration atelier", class: "home-hero__illustration" %>
+      </div>
+    </div>
+  </section>
+
+  <%# Features %>
+  <section class="home-features">
+    <div class="home-features__inner">
+      <p class="home-features__label">Fonctionnalités</p>
+      <h2 class="home-features__title">Tout ce dont votre atelier a besoin</h2>
+
+      <div class="home-features__grid">
+
+        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="0">
+          <div class="home-feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M2.5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11zm5 2h5.5v1H7.5V2zm-5 0h3.5v3h-3.5V2zm0 5h3.5v3h-3.5V7zm0 5h3.5v2h-3.5v-2zm5-5h5.5v1H7.5V7zm0 3h5.5v1H7.5v-1zm0 3h5.5v1H7.5v-1z"/>
+            </svg>
+          </div>
+          <h3 class="home-feature-card__title">Kanban des commandes</h3>
+          <p class="home-feature-card__desc">Visualisez et faites avancer vos commandes d'un simple glisser-déposer, du devis à la livraison.</p>
+        </div>
+
+        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="240">
+          <div class="home-feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+            </svg>
+          </div>
+          <h3 class="home-feature-card__title">Gestion des clients</h3>
+          <p class="home-feature-card__desc">Retrouvez l'historique complet de chaque client, ses notes et ses coordonnées en un clin d'œil.</p>
+        </div>
+
+        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="480">
+          <div class="home-feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V2zm0 4h16v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6zm3 1a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H3zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H3z"/>
+            </svg>
+          </div>
+          <h3 class="home-feature-card__title">Catalogue &amp; tarifs</h3>
+          <p class="home-feature-card__desc">Définissez vos prestations, vos prix HT/TTC et vos réductions. La facturation se calcule automatiquement.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <%# CTA finale %>
+  <% cta_title    = user_signed_in? ? "Bon retour, #{current_user.name} !" : "Prêt à simplifier votre quotidien ?" %>
+  <% cta_subtitle = user_signed_in? ? "Votre atelier vous attend." : "Rejoignez les ateliers qui gèrent leurs commandes avec Popwear Pro." %>
+  <section class="home-cta">
+    <h2 class="home-cta__title"><%= cta_title %></h2>
+    <p class="home-cta__subtitle"><%= cta_subtitle %></p>
+    <% if user_signed_in? %>
+      <%= link_to "Accéder à l'app", dashboard_path, class: "btn" %>
+    <% else %>
+      <%= link_to "Commencer gratuitement", new_user_registration_path, class: "btn" %>
+    <% end %>
+  </section>
+
+</div>
