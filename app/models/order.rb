@@ -1,4 +1,6 @@
 class Order < ApplicationRecord
+  include OrderTotals
+
   ARCHIVE_THRESHOLD_DAYS = 14
   DONE_STATUSES = %w[completed delivered].freeze
 
@@ -18,6 +20,9 @@ class Order < ApplicationRecord
   before_validation :set_default_discount
   before_save :set_completed_at
 
+  # Email de confirmation transactionnel, uniquement si le client a un email.
+  after_create_commit :send_confirmation_email
+
   def self.auto_archive_done!(establishment)
     threshold = ARCHIVE_THRESHOLD_DAYS.days.ago
 
@@ -36,14 +41,6 @@ class Order < ApplicationRecord
 
   def unarchive!
     update!(archived_at: nil)
-  end
-
-  def total_ht
-    order_lines.sum(&:total_ht)
-  end
-
-  def total_ttc
-    order_lines.sum(&:total_ttc)
   end
 
   # Total réellement dû après réduction (jamais négatif).
@@ -78,6 +75,12 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def send_confirmation_email
+    return if customer.email.blank?
+
+    OrderMailer.confirmation(self).deliver_later
+  end
 
   def set_default_discount
     self.discount = 0 if discount.blank?

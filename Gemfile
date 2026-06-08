@@ -47,6 +47,12 @@ gem "font-awesome-sass", "~> 6.1"
 gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 
+# Localisation française des dates / libellés (l(..., format: :long))
+gem "rails-i18n"
+
+# Génération du reçu PDF joint aux emails de confirmation
+gem "receipts"
+
 group :development, :test do
   gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -65,6 +71,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Prévisualise les emails dans le navigateur en dev au lieu de les envoyer
+  gem "letter_opener"
 end
 
 group :test do
