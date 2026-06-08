@@ -1,0 +1,65 @@
+<div class="profile-page">
+
+  <div class="profile-header">
+    <div class="profile-header__avatar">
+      <%= user_initials(current_user) %>
+    </div>
+    <div>
+      <h1 class="profile-header__name"><%= current_user.name.presence || current_user.email %></h1>
+      <p class="profile-header__email"><%= current_user.email %></p>
+    </div>
+  </div>
+
+  <%= form_with model: current_user, url: profile_path, method: :patch do |f| %>
+
+    <div class="profile-card">
+      <h2 class="profile-card__title">Informations personnelles</h2>
+
+      <% if current_user.errors.any? %>
+        <div class="alert alert-danger mb-4">
+          <ul class="mb-0">
+            <% current_user.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="profile-field">
+        <%= f.label :name, "Nom", class: "profile-field__label" %>
+        <%= f.text_field :name, class: "profile-field__input", placeholder: "Votre nom" %>
+      </div>
+
+      <div class="profile-field">
+        <%= f.label :email, "Adresse e-mail", class: "profile-field__label" %>
+        <%= f.email_field :email, class: "profile-field__input" %>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <h2 class="profile-card__title">Changer de mot de passe</h2>
+      <p class="profile-card__hint">Laissez vide si vous ne souhaitez pas modifier votre mot de passe.</p>
+
+      <div class="profile-field">
+        <%= f.label :current_password, "Mot de passe actuel", class: "profile-field__label" %>
+        <%= f.password_field :current_password, class: "profile-field__input", autocomplete: "current-password" %>
+      </div>
+
+      <div class="profile-field">
+        <%= f.label :password, "Nouveau mot de passe", class: "profile-field__label" %>
+        <%= f.password_field :password, class: "profile-field__input", autocomplete: "new-password" %>
+      </div>
+
+      <div class="profile-field">
+        <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "profile-field__label" %>
+        <%= f.password_field :password_confirmation, class: "profile-field__input", autocomplete: "new-password" %>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <%= f.submit "Enregistrer les modifications", class: "btn btn-primary" %>
+    </div>
+
+  <% end %>
+
+</div>
