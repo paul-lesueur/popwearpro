@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   # Dashboard
   get "dashboard", to: "dashboards#show", as: :dashboard
 
+  # Ventes
+  get "ventes", to: "sales#index", as: :sales
+  get "ventes/transactions", to: "sales#transactions", as: :sales_transactions
+  get "ventes/rapport", to: "sales#report", as: :sales_report
+
   # Profil utilisateur
   resource :profile, only: [:show, :update]
 
@@ -21,9 +26,11 @@ Rails.application.routes.draw do
 
   resources :orders do
     resources :communications, only: [:create]
+
     collection do
       get :archives
     end
+
     member do
       patch :move
       patch :unarchive

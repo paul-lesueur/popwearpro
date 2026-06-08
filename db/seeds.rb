@@ -24,10 +24,10 @@ puts "Creating establishment..."
 establishment = Establishment.create!(
   user: user,
   name: "Atelier Claude",
-  description: "Atelier de Cordonnerie.",
+  description: "Atelier de cordonnerie artisanale parisien spécialisé dans la réparation, l’entretien et la rénovation de chaussures et articles en cuir.",
   address: "12 rue des Artisans, 75011 Paris",
   category: "Cordonnier",
-  payment_methods: "Carte bancaire, espèces, virement",
+  payment_methods: "Carte bancaire, espèces, chèque",
   opening_hours: "Lundi au samedi, 9h30 - 18h30",
   siret_siren: "12345678900012"
 )
@@ -35,144 +35,105 @@ establishment = Establishment.create!(
 puts "Creating customers..."
 
 customers_data = [
-  {
-    firstname: "Camille",
-    lastname: "Martin",
-    email: "camille.martin@email.com",
-    phone: "06 12 34 56 78",
-    notes: "Cliente régulière. Préfère être contactée par SMS."
-  },
-  {
-    firstname: "Thomas",
-    lastname: "Bernard",
-    email: "thomas.bernard@email.com",
-    phone: "06 98 76 54 32",
-    notes: "Commande souvent des réparations urgentes."
-  },
-  {
-    firstname: "Sophie",
-    lastname: "Leroy",
-    email: "sophie.leroy@email.com",
-    phone: "07 22 44 66 88",
-    notes: "Aime les finitions premium."
-  },
-  {
-    firstname: "Nadia",
-    lastname: "Lefèvre",
-    email: "nadia.lefevre@email.com",
-    phone: "06 45 18 92 30",
-    notes: "Cliente fidèle. Préfère être appelée en fin de journée."
-  },
-  {
-    firstname: "Karim",
-    lastname: "Benali",
-    email: "karim.benali@email.com",
-    phone: "07 11 23 45 67",
-    notes: "Dépose souvent plusieurs articles en même temps."
-  },
-  {
-    firstname: "Inès",
-    lastname: "Moreau",
-    email: "ines.moreau@email.com",
-    phone: "06 77 88 99 10",
-    notes: "Préfère être contactée par email. Retouches robes et vestes."
-  },
-  {
-    firstname: "Lucas",
-    lastname: "Garnier",
-    email: "lucas.garnier@email.com",
-    phone: "07 34 56 78 90",
-    notes: "Réparations cuir. Demande souvent des délais rapides."
-  },
-  {
-    firstname: "Fatima",
-    lastname: "Cherif",
-    email: "fatima.cherif@email.com",
-    phone: "06 10 20 30 40",
-    notes: "Très attentive aux délais. Prévenir en cas de retard."
-  },
-  {
-    firstname: "Antoine",
-    lastname: "Rousseau",
-    email: "antoine.rousseau@email.com",
-    phone: "06 44 55 66 77",
-    notes: "Client occasionnel. À relancer quand la commande est prête."
-  },
-  {
-    firstname: "Julie",
-    lastname: "Petit",
-    email: "julie.petit@email.com",
-    phone: "07 90 12 34 56",
-    notes: "Cliente récente. Commandes simples, surtout ourlets et retouches."
-  }
+  ["Camille", "Martin", "camille.martin@email.com", "06 12 34 56 78", "Cliente régulière. Préfère être contactée par SMS."],
+  ["Thomas", "Bernard", "thomas.bernard@email.com", "06 98 76 54 32", "Commande souvent des réparations urgentes."],
+  ["Sophie", "Leroy", "sophie.leroy@email.com", "07 22 44 66 88", "Aime les finitions premium."],
+  ["Nadia", "Lefèvre", "nadia.lefevre@email.com", "06 45 18 92 30", "Cliente fidèle. Préfère être appelée en fin de journée."],
+  ["Karim", "Benali", "karim.benali@email.com", "07 11 23 45 67", "Dépose souvent plusieurs articles en même temps."],
+  ["Inès", "Moreau", "ines.moreau@email.com", "06 77 88 99 10", "Préfère être contactée par email."],
+  ["Lucas", "Garnier", "lucas.garnier@email.com", "07 34 56 78 90", "Réparations cuir. Demande souvent des délais rapides."],
+  ["Fatima", "Cherif", "fatima.cherif@email.com", "06 10 20 30 40", "Très attentive aux délais. Prévenir en cas de retard."],
+  ["Antoine", "Rousseau", "antoine.rousseau@email.com", "06 44 55 66 77", "Client occasionnel. À relancer quand la commande est prête."],
+  ["Julie", "Petit", "julie.petit@email.com", "07 90 12 34 56", "Cliente récente. Commandes simples."],
+  ["Bastien", "Delafontaine", "bastien.delafontaine@email.com", "06 21 45 78 12", "Dépose souvent des sneakers."],
+  ["Thomas", "Dumas", "thomas.dumas@email.com", "06 52 18 74 90", "Préfère payer en espèces."],
+  ["Élise", "Robert", "elise.robert@email.com", "07 15 82 44 31", "Cliente régulière pour entretien cuir."],
+  ["Mathieu", "Girard", "mathieu.girard@email.com", "06 78 11 23 45", "Souhaite des réparations solides avant l’esthétique."],
+  ["Sarah", "Dubois", "sarah.dubois@email.com", "07 41 22 33 44", "Aime être prévenue par SMS."],
+  ["Olivier", "Mercier", "olivier.mercier@email.com", "06 61 72 83 94", "Client professionnel. Délais importants."],
+  ["Claire", "Bousquet", "claire.bousquet@email.com", "07 19 28 37 46", "Commandes souvent des travaux simples."],
+  ["Jérôme", "Racine", "jerome.racine@email.com", "06 90 81 72 63", "Dépose souvent des chaussures de ville."],
+  ["Pauline", "Laurent", "pauline.laurent@email.com", "06 14 25 36 47", "Préfère les finitions discrètes."],
+  ["Jean", "Paquet", "jean.paquet@email.com", "07 33 44 55 66", "Client fidèle. Paiement souvent par carte."],
+  ["Marie", "Colin", "marie.colin@email.com", "06 88 77 66 55", "Demande régulièrement du cirage premium."],
+  ["Hugo", "Renard", "hugo.renard@email.com", "07 12 89 45 67", "Sneakers et zip principalement."],
+  ["Laura", "Simon", "laura.simon@email.com", "06 32 14 58 79", "Prévenir dès que la commande est prête."],
+  ["Romain", "Masson", "romain.masson@email.com", "07 48 59 60 71", "Souvent pressé. Délais courts."],
+  ["Amandine", "Perrot", "amandine.perrot@email.com", "06 73 84 95 16", "Articles cuir et petites réparations."],
+  ["Mehdi", "Kacem", "mehdi.kacem@email.com", "07 26 37 48 59", "Client régulier pour ressemelage."],
+  ["Chloé", "Vidal", "chloe.vidal@email.com", "06 97 86 75 64", "Préfère être contactée par email."],
+  ["Vincent", "Aubert", "vincent.aubert@email.com", "07 65 54 43 32", "Dépôts fréquents le samedi."],
+  ["Lina", "Fontaine", "lina.fontaine@email.com", "06 11 22 33 44", "Cliente récente."],
+  ["Alexandre", "Noël", "alexandre.noel@email.com", "07 99 88 77 66", "Réparations chaussures haut de gamme."]
 ]
 
-customers = customers_data.map do |customer_data|
+customers = customers_data.map do |firstname, lastname, email, phone, notes|
   Customer.create!(
     establishment: establishment,
-    firstname: customer_data[:firstname],
-    lastname: customer_data[:lastname],
-    email: customer_data[:email],
-    phone: customer_data[:phone],
-    notes: customer_data[:notes]
+    firstname: firstname,
+    lastname: lastname,
+    email: email,
+    phone: phone,
+    notes: notes
   )
 end
-
-customer_1 = customers[0]
-customer_2 = customers[1]
-customer_3 = customers[2]
-customer_4 = customers[3]
-customer_5 = customers[4]
-customer_6 = customers[5]
-customer_7 = customers[6]
-customer_8 = customers[7]
-customer_9 = customers[8]
-customer_10 = customers[9]
 
 puts "Creating catalog items..."
 
-# Catalogue de prestations (cordonnerie) + icône de la bibliothèque Popwear.
-PRESTATIONS = [
-  { name: "Entretien cuir (nettoyage & cirage)",             price_ht: 25,  bonus: false, icon: "cirage" },
-  { name: "Cirage & glaçage",                                price_ht: 29,  bonus: false, icon: "cirage" },
-  { name: "Rénovation complète cuir",                        price_ht: 55,  bonus: false, icon: "finition" },
-  { name: "Changement de lacets",                            price_ht: 5,   bonus: false, icon: "reparer" },
-  { name: "Pose de patins (x2)",                             price_ht: 26,  bonus: true,  icon: "patins-fers" },
-  { name: "Pose de fers (x2)",                               price_ht: 21,  bonus: false, icon: "patins-fers" },
-  { name: "Mise en forme – coup de pied",                    price_ht: 29,  bonus: false, icon: "elargir" },
-  { name: "Ressemelage collé caoutchouc (semelle complète)", price_ht: 83,  bonus: true,  icon: "ressemelage" },
-  { name: "Ressemelage sneakers",                            price_ht: 70,  bonus: true,  icon: "ressemelage" },
-  { name: "Ressemelage cousu rainette (semelle complète)",   price_ht: 130, bonus: true,  icon: "ressemelage" },
-  { name: "Ressemelage Birkenstock",                         price_ht: 54,  bonus: true,  icon: "ressemelage" },
-  { name: "Recollage semelle",                               price_ht: 30,  bonus: true,  icon: "ressemelage" },
-  { name: "Bonbout – talons aiguille",                       price_ht: 15,  bonus: true,  icon: "talon-bonbout" },
-  { name: "Talon complet (chaussures plates)",               price_ht: 65,  bonus: false, icon: "talon-bonbout" },
-  { name: "Glissoirs (changement)",                          price_ht: 35,  bonus: true,  icon: "patins-fers" },
-  { name: "Redresse avant / arrière",                        price_ht: 17,  bonus: true,  icon: "reparer" },
-  { name: "Trou – rustine intérieure",                       price_ht: 20,  bonus: true,  icon: "dechirure" },
-  { name: "Couture décousue",                                price_ht: 20,  bonus: true,  icon: "reparer" },
-  { name: "Zip – changement (x1)",                           price_ht: 45,  bonus: true,  icon: "zip" },
-  { name: "Zip de bottes – changement (x1)",                 price_ht: 55,  bonus: true,  icon: "zip" }
-].freeze
+prestations = [
+  { name: "Entretien cuir (nettoyage & cirage)", price_ht: 25, bonus: false, icon: "cirage" },
+  { name: "Cirage & glaçage", price_ht: 29, bonus: false, icon: "cirage" },
+  { name: "Rénovation complète cuir", price_ht: 55, bonus: false, icon: "finition" },
+  { name: "Changement de lacets", price_ht: 5, bonus: false, icon: "reparer" },
+  { name: "Pose de patins (x2)", price_ht: 26, bonus: true, icon: "patins-fers" },
+  { name: "Pose de fers (x2)", price_ht: 21, bonus: false, icon: "patins-fers" },
+  { name: "Mise en forme – coup de pied", price_ht: 29, bonus: false, icon: "elargir" },
+  { name: "Ressemelage collé caoutchouc (semelle complète)", price_ht: 83, bonus: true, icon: "ressemelage" },
+  { name: "Ressemelage sneakers", price_ht: 70, bonus: true, icon: "ressemelage" },
+  { name: "Ressemelage cousu rainette (semelle complète)", price_ht: 130, bonus: true, icon: "ressemelage" },
+  { name: "Ressemelage Birkenstock", price_ht: 54, bonus: true, icon: "ressemelage" },
+  { name: "Recollage semelle", price_ht: 30, bonus: true, icon: "ressemelage" },
+  { name: "Bonbout – talons aiguille", price_ht: 15, bonus: true, icon: "talon-bonbout" },
+  { name: "Talon complet (chaussures plates)", price_ht: 65, bonus: false, icon: "talon-bonbout" },
+  { name: "Glissoirs (changement)", price_ht: 35, bonus: true, icon: "patins-fers" },
+  { name: "Redresse avant / arrière", price_ht: 17, bonus: true, icon: "reparer" },
+  { name: "Trou – rustine intérieure", price_ht: 20, bonus: true, icon: "dechirure" },
+  { name: "Couture décousue", price_ht: 20, bonus: true, icon: "reparer" },
+  { name: "Zip – changement (x1)", price_ht: 45, bonus: true, icon: "zip" },
+  { name: "Zip de bottes – changement (x1)", price_ht: 55, bonus: true, icon: "zip" }
+]
 
 items_by_name = {}
-PRESTATIONS.each do |p|
-  items_by_name[p[:name]] = establishment.items.create!(
-    name: p[:name], price_ht: p[:price_ht], vat_rate: 20,
-    repair_bonus: p[:bonus], active: true, icon: p[:icon]
+
+prestations.each do |prest|
+  items_by_name[prest[:name]] = establishment.items.create!(
+    name: prest[:name],
+    price_ht: prest[:price_ht],
+    vat_rate: 20,
+    repair_bonus: prest[:bonus],
+    active: true,
+    icon: prest[:icon]
   )
 end
 
-# Variables réutilisées par les commandes de démo ci-dessous.
-ourlet    = items_by_name["Ressemelage sneakers"]
-fermeture = items_by_name["Zip – changement (x1)"]
-robe      = items_by_name["Entretien cuir (nettoyage & cirage)"]
-veste     = items_by_name["Pose de patins (x2)"]
-sac_cuir  = items_by_name["Recollage semelle"]
+items = items_by_name.values
 
-puts "Creating orders..."
+puts "Creating orders over several months..."
 
-def create_order_with_lines!(establishment:, customer:, status:, priority:, due_date:, payment_method:, payment_status:, paid_at:, collected_at:, internal_notes:, lines:)
+def create_order_with_lines!(
+  establishment:,
+  customer:,
+  status:,
+  priority:,
+  created_at:,
+  due_date:,
+  payment_method:,
+  payment_status:,
+  paid_at:,
+  collected_at:,
+  internal_notes:,
+  lines:
+)
   order = Order.create!(
     establishment: establishment,
     customer: customer,
@@ -183,7 +144,9 @@ def create_order_with_lines!(establishment:, customer:, status:, priority:, due_
     payment_status: payment_status,
     paid_at: paid_at,
     collected_at: collected_at,
-    internal_notes: internal_notes
+    internal_notes: internal_notes,
+    created_at: created_at,
+    updated_at: created_at
   )
 
   lines.each do |line|
@@ -194,223 +157,158 @@ def create_order_with_lines!(establishment:, customer:, status:, priority:, due_
       item: item,
       quantity: line[:quantity],
       unit_price_ht: item.price_ht,
-      vat_rate: item.vat_rate
+      vat_rate: item.vat_rate,
+      created_at: created_at,
+      updated_at: created_at
     )
   end
 
   order
 end
 
-order_1 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_1,
-  status: "in_progress",
-  priority: "high",
-  due_date: Date.current + 2.days,
-  payment_method: "card",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Robe à reprendre à la taille. Prévenir la cliente si retard.",
-  lines: [
-    { item: robe, quantity: 1 }
-  ]
-)
+srand(42)
 
-Communication.create!(
-  order: order_1,
-  channel: "sms",
-  status: "draft",
-  content: "Bonjour Camille, votre retouche est bien en cours. Je vous tiens informée dès qu'elle est prête.",
-  sent_at: nil
-)
+payment_methods = ["card", "cash", "check"]
+priorities = ["low", "medium", "high", "urgent"]
 
-order_2 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_2,
-  status: "pending",
-  priority: "urgent",
-  due_date: Date.current + 1.day,
-  payment_method: "cash",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Fermeture éclair à remplacer rapidement.",
-  lines: [
-    { item: fermeture, quantity: 1 }
-  ]
-)
+notes = [
+  "Prévenir le client dès que la commande est prête.",
+  "Client pressé. Faire attention au délai.",
+  "Vérifier la finition avant remise.",
+  "Demande une finition propre et discrète.",
+  "Commande déposée avec plusieurs articles.",
+  "Travail simple, à faire dans la semaine.",
+  "Réparation visible, expliquer le résultat au client.",
+  "Client fidèle, soigner la communication."
+]
 
-Communication.create!(
-  order: order_2,
-  channel: "email",
-  status: "sent",
-  content: "Bonjour Thomas, votre réparation de fermeture éclair est prévue en priorité. Je reviens vers vous dès que c'est terminé.",
-  sent_at: Time.current
-)
+# Répartition volontairement réaliste :
+# - Beaucoup de commandes sur le mois courant
+# - Quelques commandes sur les mois précédents
+# - Un pic le jour actuel pour que le dashboard ait du contexte
+months_offsets = [5, 4, 3, 2, 1, 0]
+orders_per_month = {
+  5 => 16,
+  4 => 18,
+  3 => 20,
+  2 => 24,
+  1 => 28,
+  0 => 34
+}
 
-order_3 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_3,
-  status: "completed",
-  priority: "medium",
-  due_date: Date.current - 1.day,
-  payment_method: "card",
-  payment_status: "paid",
-  paid_at: Time.current - 1.day,
-  collected_at: nil,
-  internal_notes: "Ourlets terminés. En attente de récupération.",
-  lines: [
-    { item: ourlet, quantity: 2 }
-  ]
-)
+created_orders = []
 
-order_4 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_1,
-  status: "delivered",
-  priority: "low",
-  due_date: Date.current - 5.days,
-  payment_method: "card",
-  payment_status: "paid",
-  paid_at: Time.current - 4.days,
-  collected_at: Time.current - 3.days,
-  internal_notes: "Commande livrée et payée.",
-  lines: [
-    { item: robe, quantity: 1 }
-  ]
-)
+months_offsets.each do |offset|
+  month_date = Date.current - offset.months
+  month_start = month_date.beginning_of_month
+  month_end = offset.zero? ? Date.current : month_date.end_of_month
 
-order_5 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_4,
-  status: "in_progress",
-  priority: "medium",
-  due_date: Date.current + 4.days,
-  payment_method: "card",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Ajustement veste. Cliente disponible en fin de journée.",
-  lines: [
-    { item: veste, quantity: 1 }
-  ]
-)
+  orders_per_month[offset].times do
+    order_date = rand(month_start..month_end)
+    created_at = order_date.to_time.change(hour: rand(9..17), min: [0, 15, 30, 45].sample)
 
-order_6 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_5,
-  status: "pending",
-  priority: "high",
-  due_date: Date.current + 3.days,
-  payment_method: "cash",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Lot de trois articles déposés. Commencer par la fermeture éclair.",
-  lines: [
-    { item: fermeture, quantity: 1 },
-    { item: ourlet, quantity: 2 }
-  ]
-)
+    customer = customers.sample
+    payment_method = payment_methods.sample
 
-order_7 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_6,
-  status: "completed",
-  priority: "medium",
-  due_date: Date.current,
-  payment_method: "card",
-  payment_status: "paid",
-  paid_at: Time.current,
-  collected_at: nil,
-  internal_notes: "Retouche robe terminée. Prévenir par email.",
-  lines: [
-    { item: robe, quantity: 1 }
-  ]
-)
+    if order_date < Date.current - 7.days
+      status = ["delivered", "completed"].sample
+      payment_status = "paid"
+      paid_at = created_at + rand(1..4).days
+      collected_at = status == "delivered" ? paid_at + rand(1..3).days : nil
+    elsif order_date < Date.current
+      status = ["completed", "in_progress", "delivered"].sample
+      payment_status = status == "delivered" ? "paid" : ["paid", "unpaid"].sample
+      paid_at = payment_status == "paid" ? created_at + rand(1..3).days : nil
+      collected_at = status == "delivered" ? created_at + rand(2..5).days : nil
+    else
+      status = ["pending", "in_progress"].sample
+      payment_status = "unpaid"
+      paid_at = nil
+      collected_at = nil
+    end
 
-order_8 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_7,
-  status: "in_progress",
-  priority: "urgent",
-  due_date: Date.current + 1.day,
-  payment_method: "card",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Réparation cuir urgente. Client souhaite un appel dès que terminé.",
-  lines: [
-    { item: sac_cuir, quantity: 1 }
-  ]
-)
+    lines_count = [1, 1, 1, 2, 2, 3].sample
 
-order_9 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_8,
-  status: "pending",
-  priority: "high",
-  due_date: Date.current + 6.days,
-  payment_method: "cash",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Cliente attentive aux délais. Prévenir si la date bouge.",
-  lines: [
-    { item: veste, quantity: 1 }
-  ]
-)
+    selected_items = items.sample(lines_count).map do |item|
+      {
+        item: item,
+        quantity: [1, 1, 1, 2].sample
+      }
+    end
 
-order_10 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_9,
-  status: "delivered",
-  priority: "low",
-  due_date: Date.current - 10.days,
-  payment_method: "card",
-  payment_status: "paid",
-  paid_at: Time.current - 9.days,
-  collected_at: Time.current - 8.days,
-  internal_notes: "Commande terminée sans problème.",
-  lines: [
-    { item: ourlet, quantity: 2 },
-    { item: robe, quantity: 1 }
-  ]
-)
+    order = create_order_with_lines!(
+      establishment: establishment,
+      customer: customer,
+      status: status,
+      priority: priorities.sample,
+      created_at: created_at,
+      due_date: order_date + rand(2..12).days,
+      payment_method: payment_method,
+      payment_status: payment_status,
+      paid_at: paid_at,
+      collected_at: collected_at,
+      internal_notes: notes.sample,
+      lines: selected_items
+    )
 
-order_11 = create_order_with_lines!(
-  establishment: establishment,
-  customer: customer_10,
-  status: "in_progress",
-  priority: "medium",
-  due_date: Date.current + 7.days,
-  payment_method: "card",
-  payment_status: "unpaid",
-  paid_at: nil,
-  collected_at: nil,
-  internal_notes: "Première commande. Faire une finition soignée.",
-  lines: [
-    { item: ourlet, quantity: 1 },
-    { item: fermeture, quantity: 1 }
-  ]
-)
+    created_orders << order
+  end
+end
 
-Communication.create!(
-  order: order_8,
-  channel: "sms",
-  status: "draft",
-  content: "Bonjour Lucas, votre réparation cuir est en cours. Je vous appelle dès que la pièce est prête.",
-  sent_at: nil
-)
+# Ajout d’un vrai pic de commandes aujourd’hui pour la page Transactions et le CA du jour.
+today_items_pool = [
+  items_by_name["Entretien cuir (nettoyage & cirage)"],
+  items_by_name["Pose de patins (x2)"],
+  items_by_name["Ressemelage sneakers"],
+  items_by_name["Recollage semelle"],
+  items_by_name["Zip – changement (x1)"],
+  items_by_name["Bonbout – talons aiguille"],
+  items_by_name["Couture décousue"]
+]
 
-Communication.create!(
-  order: order_9,
-  channel: "email",
-  status: "draft",
-  content: "Bonjour Fatima, votre veste est bien prise en charge. Je vous préviens immédiatement en cas de changement de délai.",
-  sent_at: nil
-)
+13.times do |index|
+  created_at = Time.current.change(hour: 9 + (index / 2), min: [0, 15, 30, 45].sample)
+
+  line_item = today_items_pool.sample
+  second_item = today_items_pool.sample
+
+  lines = [{ item: line_item, quantity: [1, 1, 2].sample }]
+  lines << { item: second_item, quantity: 1 } if index % 4 == 0
+
+  order = create_order_with_lines!(
+    establishment: establishment,
+    customer: customers[index % customers.length],
+    status: ["pending", "in_progress", "completed"].sample,
+    priority: ["medium", "high", "urgent"].sample,
+    created_at: created_at,
+    due_date: Date.current + rand(1..8).days,
+    payment_method: ["card", "cash"].sample,
+    payment_status: ["paid", "unpaid"].sample,
+    paid_at: [true, false].sample ? created_at + rand(10..90).minutes : nil,
+    collected_at: nil,
+    internal_notes: notes.sample,
+    lines: lines
+  )
+
+  created_orders << order
+end
+
+puts "Creating communications..."
+
+active_orders = created_orders.select { |order| ["pending", "in_progress"].include?(order.status) }.sample(8)
+
+active_orders.each_with_index do |order, index|
+  customer = order.customer
+  first_name = customer.firstname.presence || "Bonjour"
+
+  Communication.create!(
+    order: order,
+    channel: index.even? ? "sms" : "email",
+    status: index.even? ? "draft" : "sent",
+    content: "Bonjour #{first_name}, votre commande est bien prise en charge par l’Atelier Claude. Je vous préviens dès qu’elle est prête.",
+    sent_at: index.even? ? nil : Time.current - rand(1..4).hours
+  )
+end
 
 puts "Seeds finished!"
 puts "#{User.count} user created"
