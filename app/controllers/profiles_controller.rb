@@ -3,9 +3,9 @@ class ProfilesController < ApplicationController
   end
 
   def update
-    if profile_params[:password].present?
+    if changing_sensitive_fields?
       if current_user.update_with_password(profile_params)
-        bypass_sign_in(current_user)
+        sign_in(current_user, force: true)
         redirect_to profile_path, notice: "Profil mis à jour."
       else
         render :show, status: :unprocessable_entity
@@ -20,6 +20,11 @@ class ProfilesController < ApplicationController
   end
 
   private
+
+  def changing_sensitive_fields?
+    profile_params[:password].present? ||
+      (profile_params[:email].present? && profile_params[:email] != current_user.email)
+  end
 
   def profile_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
