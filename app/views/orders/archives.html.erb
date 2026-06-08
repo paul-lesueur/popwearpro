@@ -47,9 +47,6 @@
                     <%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC
                   </div>
                 </div>
-                <%= button_to "Désarchiver", unarchive_order_path(order), method: :patch,
-                      class: "btn btn-outline-secondary btn-sm",
-                      data: { turbo_confirm: "Remettre cette commande dans les terminées ?" } %>
               </div>
             </div>
           </div>
