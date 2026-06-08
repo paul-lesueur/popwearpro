@@ -48,6 +48,8 @@
             <div class="card mb-3 border-0 bg-white"
                  draggable="true"
                  data-order-id="<%= order.id %>"
+                 data-phone="<%= order.customer.phone %>"
+                 data-customer-name="<%= [order.customer.firstname, order.customer.lastname].compact.join(' ').presence || 'Client' %>"
                  data-action="dragstart->kanban#dragstart dragend->kanban#dragend"
                  style="box-shadow: 0 4px 16px rgba(19,21,35,.06); cursor: grab;">
               <div class="card-body">
