@@ -1,5 +1,5 @@
 <%
-  current_sort = params[:sort].presence
+  current_sort = params[:sort].presence || "created_at"
   current_direction = params[:direction] == "asc" ? "asc" : "desc"
 
   next_direction_for = lambda do |column|
@@ -10,15 +10,19 @@
     if current_sort == column
       current_direction == "asc" ? "↑" : "↓"
     else
-      ""
+      "↕"
     end
   end
 
+  sort_class_for = lambda do |column|
+    current_sort == column ? "customers-sort-link is-active" : "customers-sort-link"
+  end
+
   order_status_labels = {
-    "new" => "Nouvelle",
+    "new" => "Nouvelle commande",
     "pending" => "En attente",
     "in_progress" => "En cours",
-    "recollect" => "À récupérer",
+    "recollect" => "En attente de re-collecte",
     "done" => "Terminée",
     "completed" => "Terminée",
     "delivered" => "Livrée",
@@ -27,20 +31,12 @@
   }
 
   payment_status_labels = {
-    "paid" => "Payé",
+    "paid" => "Paiement Carte",
     "unpaid" => "Non payé",
-    "pending" => "En attente",
-    "partial" => "Partiel",
+    "pending" => "Paiement en attente",
+    "partial" => "Paiement partiel",
     "refunded" => "Remboursé",
-    "cancelled" => "Annulé"
-  }
-
-  priority_labels = {
-    "low" => "Faible",
-    "normal" => "Normale",
-    "medium" => "Moyenne",
-    "high" => "Haute",
-    "urgent" => "Urgent"
+    "cancelled" => "Paiement annulé"
   }
 %>
 
@@ -101,26 +97,26 @@
     <div class="customers-list-card">
       <div class="customers-list-header">
         <span>
-          <%= link_to customers_path(request.query_parameters.merge(sort: "lastname", direction: next_direction_for.call("lastname"))), class: "text-reset text-decoration-none" do %>
-            Client <%= sort_icon_for.call("lastname") %>
+          <%= link_to customers_path(request.query_parameters.except(:page).merge(sort: "lastname", direction: next_direction_for.call("lastname"))), class: sort_class_for.call("lastname") do %>
+            Client <span class="customers-sort-icon"><%= sort_icon_for.call("lastname") %></span>
           <% end %>
         </span>
 
         <span>
-          <%= link_to customers_path(request.query_parameters.merge(sort: "email", direction: next_direction_for.call("email"))), class: "text-reset text-decoration-none" do %>
-            Contact <%= sort_icon_for.call("email") %>
+          <%= link_to customers_path(request.query_parameters.except(:page).merge(sort: "email", direction: next_direction_for.call("email"))), class: sort_class_for.call("email") do %>
+            Contact <span class="customers-sort-icon"><%= sort_icon_for.call("email") %></span>
           <% end %>
         </span>
 
         <span>
-          <%= link_to customers_path(request.query_parameters.merge(sort: "orders_count", direction: next_direction_for.call("orders_count"))), class: "text-reset text-decoration-none" do %>
-            Commandes <%= sort_icon_for.call("orders_count") %>
+          <%= link_to customers_path(request.query_parameters.except(:page).merge(sort: "orders_count", direction: next_direction_for.call("orders_count"))), class: sort_class_for.call("orders_count") do %>
+            Commandes <span class="customers-sort-icon"><%= sort_icon_for.call("orders_count") %></span>
           <% end %>
         </span>
 
         <span>
-          <%= link_to customers_path(request.query_parameters.merge(sort: "created_at", direction: next_direction_for.call("created_at"))), class: "text-reset text-decoration-none" do %>
-            Depuis <%= sort_icon_for.call("created_at") %>
+          <%= link_to customers_path(request.query_parameters.except(:page).merge(sort: "created_at", direction: next_direction_for.call("created_at"))), class: sort_class_for.call("created_at") do %>
+            Depuis <span class="customers-sort-icon"><%= sort_icon_for.call("created_at") %></span>
           <% end %>
         </span>
       </div>
@@ -177,7 +173,7 @@
             data-customer-id="<%= customer.id %>"
           >
             <% if customer.orders.any? %>
-              <% customer.orders.order(created_at: :desc).limit(5).each do |order| %>
+              <% customer.orders.sort_by(&:created_at).reverse.first(5).each do |order| %>
                 <div class="customer-panel-order">
                   <div>
                     <strong>Commande #<%= order.id %></strong>
@@ -186,20 +182,16 @@
 
                   <div class="customer-panel-order-badges">
                     <% if order.respond_to?(:status) && order.status.present? %>
-                      <span class="customer-badge">
+                      <span class="<%= customer_order_status_class(order.status) %>">
+                        <i class="fa-regular fa-clock"></i>
                         <%= order_status_labels[order.status.to_s] || order.status.to_s.humanize %>
                       </span>
                     <% end %>
 
                     <% if order.respond_to?(:payment_status) && order.payment_status.present? %>
-                      <span class="customer-badge customer-badge-payment">
+                      <span class="<%= customer_payment_status_class(order.payment_status) %>">
+                        <i class="fa-regular fa-credit-card"></i>
                         <%= payment_status_labels[order.payment_status.to_s] || order.payment_status.to_s.humanize %>
-                      </span>
-                    <% end %>
-
-                    <% if order.respond_to?(:priority) && order.priority.present? %>
-                      <span class="customer-badge customer-badge-priority">
-                        <%= priority_labels[order.priority.to_s] || order.priority.to_s.humanize %>
                       </span>
                     <% end %>
                   </div>
@@ -218,95 +210,125 @@
         </div>
       <% end %>
     </div>
+
+    <% if @total_pages > 1 %>
+      <div class="customers-pagination">
+        <% if @page > 1 %>
+          <%= link_to "‹", customers_path(request.query_parameters.merge(page: @page - 1)) %>
+        <% else %>
+          <span class="disabled">‹</span>
+        <% end %>
+
+        <% (1..@total_pages).each do |page_number| %>
+          <% if page_number == @page %>
+            <span class="current"><%= page_number %></span>
+          <% else %>
+            <%= link_to page_number, customers_path(request.query_parameters.merge(page: page_number)) %>
+          <% end %>
+        <% end %>
+
+        <% if @page < @total_pages %>
+          <%= link_to "›", customers_path(request.query_parameters.merge(page: @page + 1)) %>
+        <% else %>
+          <span class="disabled">›</span>
+        <% end %>
+      </div>
+    <% end %>
   </section>
 
   <aside class="customer-panel" data-customer-panel-target="panel" aria-hidden="true">
-    <div class="customer-panel-header">
-      <h2>Fiche client</h2>
-
-      <button type="button" class="customer-panel-close" data-action="click->customer-panel#close">
-        Fermer
-      </button>
-    </div>
-
-    <div class="customer-panel-identity">
-      <div class="customer-avatar customer-avatar-large" data-customer-panel-target="initials">
-        CL
-      </div>
-
-      <div class="customer-panel-name">
-        <h3 data-customer-panel-target="name">Client</h3>
-        <p data-customer-panel-target="email">Email non renseigné</p>
-      </div>
-
-      <a href="#" class="customer-panel-edit" data-customer-panel-target="editLink">
-        Modifier
-      </a>
-    </div>
-
-    <div class="customer-panel-summary">
-      <strong data-customer-panel-target="ordersCount">0</strong>
-      <span>commande(s)</span>
-    </div>
-
-    <div class="customer-panel-card">
-      <h4>Coordonnées</h4>
-
-      <div class="customer-contact-line">
-        <div class="customer-contact-icon">
-          <i class="fa-solid fa-phone"></i>
-        </div>
-
+    <div class="customer-panel-body">
+      <div class="customer-panel-top">
         <div>
-          <span>Téléphone</span>
-          <strong data-customer-panel-target="phone">Téléphone non renseigné</strong>
+          <h2 data-customer-panel-target="name">Client</h2>
+          <p data-customer-panel-target="email">Email non renseigné</p>
+        </div>
+
+        <div class="customer-panel-actions">
+          <button type="button" class="customer-panel-close" data-action="click->customer-panel#close">
+            Fermer
+          </button>
+
+          <a href="#" class="customer-panel-edit" data-customer-panel-target="editLink">
+            Modifier
+          </a>
         </div>
       </div>
 
-      <div class="customer-contact-line">
-        <div class="customer-contact-icon">
-          <i class="fa-solid fa-envelope"></i>
-        </div>
+      <span class="d-none" data-customer-panel-target="initials">CL</span>
 
-        <div>
-          <span>Adresse e-mail</span>
-          <strong data-customer-panel-target="emailInDetails">Email non renseigné</strong>
+      <div class="customer-panel-section">
+        <h4>Résumé client</h4>
+
+        <div class="customer-panel-summary">
+          <strong data-customer-panel-target="ordersCount">0</strong>
+          <span>commande(s)</span>
         </div>
       </div>
-    </div>
 
-    <div class="customer-panel-card">
-      <h4>Notes internes</h4>
-      <p data-customer-panel-target="notes">Aucune note interne.</p>
-    </div>
+      <div class="customer-panel-section">
+        <h4>Coordonnées</h4>
 
-    <div class="customer-panel-card">
-      <h4>Historique de commandes</h4>
-
-      <div data-customer-panel-target="orders">
-        <p class="customer-panel-empty">Sélectionnez un client pour voir ses commandes.</p>
-      </div>
-    </div>
-
-    <div class="customer-panel-card">
-      <h4>Chronologie</h4>
-
-      <div class="customer-timeline">
-        <div class="customer-timeline-item">
-          <span class="customer-timeline-dot"></span>
+        <div class="customer-contact-line">
+          <div class="customer-contact-icon">
+            <i class="fa-solid fa-phone"></i>
+          </div>
 
           <div>
-            <strong>Dernière commande</strong>
-            <p data-customer-panel-target="lastOrderDate">Aucune commande</p>
+            <span>Téléphone</span>
+            <strong data-customer-panel-target="phone">Téléphone non renseigné</strong>
           </div>
         </div>
 
-        <div class="customer-timeline-item">
-          <span class="customer-timeline-dot"></span>
+        <div class="customer-contact-line">
+          <div class="customer-contact-icon">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
 
           <div>
-            <strong>Création du client</strong>
-            <p data-customer-panel-target="createdAt">—</p>
+            <span>Adresse e-mail</span>
+            <strong data-customer-panel-target="emailInDetails">Email non renseigné</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-panel-section">
+        <h4>Notes internes</h4>
+        <p data-customer-panel-target="notes">Aucune note interne.</p>
+      </div>
+
+      <div class="customer-panel-section">
+        <h4>Historique de commandes</h4>
+
+        <div data-customer-panel-target="orders">
+          <p class="customer-panel-empty">Sélectionnez un client pour voir ses commandes.</p>
+        </div>
+      </div>
+
+      <div class="customer-panel-section">
+        <h4>Chronologie</h4>
+
+        <div class="customer-timeline">
+          <div class="customer-timeline-item">
+            <div class="customer-timeline-icon">
+              <i class="fa-solid fa-shirt"></i>
+            </div>
+
+            <div>
+              <strong class="customer-timeline-label">Dernière commande</strong>
+              <p class="customer-timeline-date" data-customer-panel-target="lastOrderDate">Aucune commande</p>
+            </div>
+          </div>
+
+          <div class="customer-timeline-item">
+            <div class="customer-timeline-icon">
+              <i class="fa-solid fa-user-plus"></i>
+            </div>
+
+            <div>
+              <strong class="customer-timeline-label">Création du client</strong>
+              <p class="customer-timeline-date" data-customer-panel-target="createdAt">—</p>
+            </div>
           </div>
         </div>
       </div>

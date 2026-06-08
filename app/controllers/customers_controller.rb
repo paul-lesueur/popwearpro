@@ -2,6 +2,7 @@ class CustomersController < ApplicationController
   before_action :set_customer, only: %i[show edit update destroy]
 
   SORT_COLUMNS = %w[lastname email created_at orders_count].freeze
+  CUSTOMERS_PER_PAGE = 10
 
   def index
     base_customers = current_establishment
@@ -14,17 +15,17 @@ class CustomersController < ApplicationController
                                 .where("customers.created_at >= ?", Time.current.beginning_of_month)
                                 .count
 
-    @customers = base_customers
-                 .left_joins(:orders)
-                 .select("customers.*, COUNT(orders.id) AS orders_count")
-                 .group("customers.id")
+    customers = base_customers
+                .left_joins(:orders)
+                .select("customers.*, COUNT(orders.id) AS orders_count")
+                .group("customers.id")
 
     if params[:query].present?
       query = params[:query].strip
       search_query = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
       search_query_without_spaces = "%#{ActiveRecord::Base.sanitize_sql_like(query.delete(' '))}%"
 
-      @customers = @customers.where(
+      customers = customers.where(
         <<~SQL,
           customers.firstname ILIKE :query
           OR customers.lastname ILIKE :query
@@ -39,7 +40,21 @@ class CustomersController < ApplicationController
       )
     end
 
-    @customers = sort_customers(@customers).preload(:orders)
+    customers = sort_customers(customers)
+
+    @page = params[:page].to_i
+    @page = 1 if @page < 1
+
+    @customers_total = customers.length
+    @total_pages = (@customers_total.to_f / CUSTOMERS_PER_PAGE).ceil
+    @total_pages = 1 if @total_pages < 1
+
+    @page = @total_pages if @page > @total_pages
+
+    @customers = customers
+                 .offset((@page - 1) * CUSTOMERS_PER_PAGE)
+                 .limit(CUSTOMERS_PER_PAGE)
+                 .preload(:orders)
   end
 
   def show
@@ -90,9 +105,9 @@ class CustomersController < ApplicationController
 
     case sort_column
     when "lastname"
-      customers.reorder(Arel.sql("customers.lastname #{direction}, customers.firstname #{direction}"))
+      customers.reorder(Arel.sql("LOWER(customers.lastname) #{direction}, LOWER(customers.firstname) #{direction}"))
     when "email"
-      customers.reorder(Arel.sql("customers.email #{direction}"))
+      customers.reorder(Arel.sql("LOWER(customers.email) #{direction}"))
     when "orders_count"
       customers.reorder(Arel.sql("COUNT(orders.id) #{direction}"))
     else
