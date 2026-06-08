@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   resources :items
 
   resources :orders do
-    resources :communications, only: [:create]
+    resources :communications, only: [:create, :update]
 
     collection do
       get :archives
