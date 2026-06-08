@@ -3,7 +3,7 @@
 <div class="flash-stack">
   <% flash.each do |type, message| %>
     <% success = %w[notice success].include?(type.to_s) %>
-    <div class="flash-card flash-card--<%= success ? "success" : "error" %> alert-dismissible fade show" role="alert">
+    <div class="flash-card <%= success ? "flash-card--success" : "flash-card--error" %> alert alert-dismissible fade show" role="alert">
       <span class="flash-card__accent"></span>
       <div class="flash-card__body"><%= message %></div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>

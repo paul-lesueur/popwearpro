@@ -70,7 +70,7 @@ class OrdersController < ApplicationController
     fill_order_line_prices
 
     if @order.save
-      redirect_to @order, notice: "Commande mise à jour avec succès."
+      redirect_to orders_path(open: @order.id), notice: "Commande mise à jour avec succès."
     else
       @order.order_lines.build if @order.order_lines.empty?
       render :edit, status: :unprocessable_entity

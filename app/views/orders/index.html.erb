@@ -1,4 +1,4 @@
-<div class="orders-kanban" data-controller="kanban order-panel">
+<div class="orders-kanban" data-controller="kanban order-panel" data-open-order="<%= params[:open].to_i if params[:open].present? %>">
 
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
