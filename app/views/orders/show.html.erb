@@ -2,13 +2,15 @@
 <div>
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h1>
+      <h2>
         Commande #<%= @order.id %>
-      </h1>
-      <p class="text-muted fw-semibold mb-1">VDY<%= @order.id.to_s.rjust(6, "0") %></p>
+      </h2>
       <p class="text-muted mb-0"><%= @order.customer.firstname %> <%= @order.customer.lastname %></p>
     </div>
-    <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary btn-sm", data: { turbo_frame: "_top" } %>
+    <div class="d-flex flex-column align-items-end gap-2">
+      <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->order-panel#close">Fermer</button>
+      <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary btn-sm", data: { turbo_frame: "_top" } %>
+    </div>
   </div>
 
   <%# Statut de la commande %>
@@ -22,7 +24,7 @@
   } %>
   <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "bank_transfer" => "Virement", "other" => "Autre" } %>
   <% payment_status_labels = { "unpaid" => "En attente de règlement", "paid" => "Payé" } %>
-  <div class="d-flex flex-column gap-2 mb-4">
+  <div class="d-flex flex-wrap gap-2 mb-4">
     <span class="badge rounded-pill px-3 py-2 align-self-start bg-warning text-white d-inline-flex align-items-center gap-1">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
         <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -85,18 +87,6 @@
   <% if @order.payment_method.present? %>
     <p class="text-muted mb-0">Moyen de paiement : <%= payment_method_labels[@order.payment_method] || @order.payment_method %></p>
   <% end %>
-
-  <hr style="border-color: #EAE4DF;">
-
-  <%# Client %>
-  <h5 class="fw-bold text-secondary mb-3 mt-4">Client</h5>
-  <div class="d-flex justify-content-between align-items-center">
-    <div>
-      <p class="mb-0 fw-semibold"><%= @order.customer.firstname %> <%= @order.customer.lastname %></p>
-      <small class="text-muted"><%= @order.customer.orders.count %> commandes au total</small>
-    </div>
-    <%= link_to "Aperçu", customer_path(@order.customer), class: "btn btn-outline-primary btn-sm" %>
-  </div>
 
   <hr style="border-color: #EAE4DF;">
 
