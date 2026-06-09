@@ -362,6 +362,37 @@ reminder_orders.each do |order|
        "attente #{order.business_days_waiting} j ouvrés, palier #{order.pickup_reminder_level.inspect}"
 end
 
+puts "Creating due-date-alert test orders..."
+
+# Commandes pas encore prêtes dont la date de retrait est imminente ou dépassée.
+due_date_scenarios = [
+  { customer: customers[3], status: "pending",     offset: 1,  note: "TEST — retrait imminent (J+1)." },
+  { customer: customers[4], status: "in_progress", offset: 0,  note: "TEST — retrait aujourd'hui." },
+  { customer: customers[5], status: "in_progress", offset: -2, note: "TEST — retrait dépassé (J-2)." }
+]
+
+due_date_orders = due_date_scenarios.map do |scenario|
+  create_order_with_lines!(
+    establishment: establishment,
+    customer: scenario[:customer],
+    status: scenario[:status],
+    priority: "high",
+    created_at: Time.current - 3.days,
+    due_date: Date.current + scenario[:offset],
+    payment_method: "card",
+    payment_status: "unpaid",
+    paid_at: nil,
+    collected_at: nil,
+    internal_notes: scenario[:note],
+    lines: [{ item: reminder_item, quantity: 1 }]
+  )
+end
+
+due_date_orders.each do |order|
+  puts "  -> CMD-#{order.id} (#{order.customer.display_name}) : " \
+       "#{order.status}, retrait dans #{order.days_until_due} j, urgent #{order.urgent?}"
+end
+
 puts "Seeds finished!"
 puts "#{User.count} user created"
 puts "#{Establishment.count} establishment created"

@@ -2,9 +2,14 @@ class Order < ApplicationRecord
   include OrderTotals
 
   ARCHIVE_THRESHOLD_DAYS = 14
+  # Commande retirée par le client (colonne kanban "Terminées").
   DONE_STATUSES = %w[completed delivered].freeze
   # Statut « commande prête / en attente de retrait » (colonne kanban "recollect").
+  # = travail terminé côté atelier, plus rien à « traiter ».
   READY_STATUS = "sent".freeze
+  # Commande encore à traiter (colonnes "Nouvelles commandes" / "En cours").
+  # Seuls ces statuts peuvent être « urgents » au regard de la date de retrait.
+  IN_PROGRESS_STATUSES = %w[pending in_progress].freeze
   # Paliers (en jours ouvrés) déclenchant un rappel SMS si la commande n'est
   # toujours pas retirée. Du plus grand au plus petit pour la résolution du palier.
   PICKUP_REMINDER_DAYS = [10, 3].freeze
@@ -133,8 +138,43 @@ class Order < ApplicationRecord
     [total_ttc - discount.to_f, 0].max
   end
 
+  # « Urgent à traiter » : commande encore en cours (ni prête, ni terminée)
+  # dont la date de retrait est imminente (≤ 2 j) ou déjà dépassée. Une commande
+  # en attente de retrait est considérée comme traitée, donc jamais urgente.
   def urgent?
-    due_date.present? && due_date <= Date.current + 2.days && !DONE_STATUSES.include?(status)
+    return false unless IN_PROGRESS_STATUSES.include?(status)
+
+    due_date.present? && due_date <= Date.current + 2.days
+  end
+
+  # Jours calendaires avant la date de retrait (négatif si déjà dépassée).
+  def days_until_due
+    return nil if due_date.blank?
+
+    (due_date - Date.current).to_i
+  end
+
+  # Replanifie la date de retrait et prévient le client par SMS de la nouvelle
+  # date (le SMS est sauté si le client n'a pas de téléphone).
+  def reschedule_and_notify!(new_due_date)
+    update!(due_date: new_due_date)
+    return if customer&.phone.blank?
+
+    communication = communications.create!(
+      kind: "delay_notice",
+      channel: "sms",
+      status: "pending",
+      content: delay_notice_message
+    )
+    SendSmsJob.perform_later(communication.id)
+    communication
+  end
+
+  def delay_notice_message
+    name = customer&.firstname.presence || "client"
+    date = due_date.present? ? I18n.l(due_date, format: :long) : "prochainement"
+    "Bonjour #{name}, votre commande CMD-#{id} sera finalement prête le #{date}. " \
+      "Merci de votre compréhension."
   end
 
   def paid?
