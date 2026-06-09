@@ -1,0 +1,63 @@
+<%# Suggestions d'action en tête de modal. local: order.
+    Bloc re-rendu en Turbo Stream après chaque action → alerte XOR confirmation. %>
+<div id="order_suggestions_<%= order.id %>">
+  <%# UC2 — commande prête : prévenir le client qu'elle est à retirer %>
+  <% if order.ready_sms_suggested? %>
+    <div class="alert alert-warning d-flex flex-column gap-2" role="alert">
+      <span class="fw-semibold">Commande prête — prévenez le client qu'il peut venir la retirer.</span>
+      <% if order.customer.phone.present? %>
+        <%= button_to "Envoyer le SMS « commande prête »",
+              order_communications_path(order),
+              class: "btn btn-warning btn-sm align-self-start" %>
+      <% else %>
+        <span class="text-muted small">Aucun numéro de téléphone enregistré pour ce client.</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# UC3 — rappel de retrait J+3 / J+10 %>
+  <% if (level = order.pickup_reminder_level) %>
+    <div class="alert alert-warning d-flex flex-column gap-2" role="alert">
+      <span class="fw-semibold">
+        J+<%= level %> — Commande en attente de retrait depuis
+        <%= order.business_days_waiting %> jour<%= "s" if order.business_days_waiting > 1 %> ouvré<%= "s" if order.business_days_waiting > 1 %>.
+      </span>
+      <% if order.customer.phone.present? %>
+        <%= button_to "Envoyer un SMS de rappel de retrait au client",
+              order_communications_path(order, reminder_level: level),
+              class: "btn btn-warning btn-sm align-self-start" %>
+      <% else %>
+        <span class="text-muted small">Aucun numéro de téléphone enregistré pour ce client.</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# UC4 — date imminente / dépassée : replanifier et prévenir %>
+  <% if order.urgent? %>
+    <% d = order.days_until_due %>
+    <div class="alert <%= d.negative? ? "alert-danger" : "alert-warning" %> d-flex flex-column gap-2" role="alert">
+      <span class="fw-semibold">
+        <% if d.negative? %>
+          Date de retrait dépassée de <%= -d %> jour<%= "s" if d < -1 %> — commande pas encore prête.
+        <% elsif d.zero? %>
+          Date de retrait aujourd'hui — commande pas encore prête.
+        <% else %>
+          Date de retrait dans <%= d %> jour<%= "s" if d > 1 %> — commande pas encore prête.
+        <% end %>
+      </span>
+      <%= form_with url: reschedule_order_path(order), method: :patch,
+            class: "d-flex flex-wrap align-items-end gap-2 mb-0" do |f| %>
+        <div>
+          <label class="form-label small mb-1" for="reschedule_due_date_<%= order.id %>">Définir la nouvelle date de retrait</label>
+          <%= f.date_field :due_date, id: "reschedule_due_date_#{order.id}", value: order.due_date,
+                min: Date.current, required: true, class: "form-control form-control-sm" %>
+        </div>
+        <%= f.submit "Mettre à jour la date et prévenir le client par SMS",
+              class: "btn btn-sm #{d.negative? ? "btn-danger" : "btn-warning"}" %>
+      <% end %>
+      <% if order.customer.phone.blank? %>
+        <span class="text-muted small">Aucun téléphone client : la date sera mise à jour sans SMS.</span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
