@@ -106,18 +106,23 @@ export default class extends Controller {
     toast.querySelector("[data-role='confirm']").addEventListener("click", async () => {
       toast.querySelector("[data-role='confirm']").disabled = true
       toast.querySelector("[data-role='dismiss']").disabled = true
-      const response = await fetch(`/orders/${orderId}/communications`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "X-CSRF-Token": csrfToken
-        },
-        body: JSON.stringify({ channel: "sms" })
-      })
       // Le serveur renvoie le vrai résultat (envoyé / déjà envoyé / sans téléphone).
-      const result = await response.json()
-        .catch(() => ({ variant: "info", message: "SMS « commande prête » : envoi indéterminé." }))
+      // En cas d'échec réseau, on ne reste pas bloqué : on affiche une erreur.
+      let result
+      try {
+        const response = await fetch(`/orders/${orderId}/communications`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-CSRF-Token": csrfToken
+          },
+          body: JSON.stringify({ channel: "sms" })
+        })
+        result = await response.json()
+      } catch (_) {
+        result = { variant: "error", message: "Échec de l'envoi du SMS. Veuillez réessayer." }
+      }
       sessionStorage.setItem("smsFlash", JSON.stringify(result))
       closeAndReload()
     })

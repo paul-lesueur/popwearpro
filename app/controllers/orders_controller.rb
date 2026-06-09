@@ -98,8 +98,10 @@ class OrdersController < ApplicationController
   # Replanifie la date de retrait. SMS envoyé uniquement si la nouvelle date est
   # un vrai report (postérieure à l'ancienne). Réponse Turbo Stream (fluide).
   def reschedule
+    # Parsing strict ISO (format du date_field) : rejette les dates laxistes
+    # ("2026" -> mois/jour courants) ou malformées sans lever d'exception non gérée.
     new_date = begin
-      params[:due_date].present? ? Date.parse(params[:due_date].to_s) : nil
+      params[:due_date].present? ? Date.iso8601(params[:due_date].to_s) : nil
     rescue ArgumentError, TypeError
       nil
     end
