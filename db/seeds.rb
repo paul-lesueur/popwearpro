@@ -393,6 +393,32 @@ due_date_orders.each do |order|
        "#{order.status}, retrait dans #{order.days_until_due} j, urgent #{order.urgent?}"
 end
 
+puts "Creating history-demo order..."
+
+# Commande dont l'historique est complet (email de confirmation auto + SMS).
+history_order = create_order_with_lines!(
+  establishment: establishment,
+  customer: customers[6],
+  status: "sent",
+  priority: "medium",
+  created_at: business_days_ago.call(5),
+  due_date: business_days_ago.call(5).to_date,
+  payment_method: "card",
+  payment_status: "paid",
+  paid_at: business_days_ago.call(5),
+  collected_at: nil,
+  internal_notes: "TEST — historique complet (email + SMS prête + rappel J+3).",
+  lines: [{ item: reminder_item, quantity: 1 }]
+)
+# L'email de confirmation est déjà tracé par le callback ; on ajoute les SMS.
+history_order.communications.create!(channel: "sms", kind: "ready", status: "sent",
+                                     content: history_order.sms_ready_message,
+                                     sent_at: business_days_ago.call(4))
+history_order.communications.create!(channel: "sms", kind: "reminder_j3", status: "sent",
+                                     content: history_order.pickup_reminder_message,
+                                     sent_at: business_days_ago.call(1))
+puts "  -> CMD-#{history_order.id} historique: #{history_order.communications.order(:sent_at).pluck(:kind).inspect}"
+
 puts "Seeds finished!"
 puts "#{User.count} user created"
 puts "#{Establishment.count} establishment created"

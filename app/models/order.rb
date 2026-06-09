@@ -206,6 +206,14 @@ class Order < ApplicationRecord
     return if customer.email.blank?
 
     OrderMailer.confirmation(self).deliver_later
+    # Trace l'envoi dans l'historique (au même titre que les SMS).
+    communications.create!(
+      channel: "email",
+      kind: "confirmation",
+      status: "sent",
+      sent_at: Time.current,
+      content: "Email de confirmation de commande"
+    )
   end
 
   # Déclenche le SMS « prête » au passage en attente de retrait, si le rappel
