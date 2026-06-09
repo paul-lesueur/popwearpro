@@ -46,7 +46,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_082409) do
     t.string "channel"
     t.text "content"
     t.datetime "created_at", null: false
-    t.string "kind"
     t.bigint "order_id", null: false
     t.string "purpose"
     t.datetime "sent_at"

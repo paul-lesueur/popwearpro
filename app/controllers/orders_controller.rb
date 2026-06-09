@@ -5,7 +5,7 @@ class OrdersController < ApplicationController
   KANBAN_COLUMNS = [
     { key: "new",         label: "Nouvelles commandes",       statuses: %w[pending],             target_status: "pending" },
     { key: "in_progress", label: "En cours",                  statuses: %w[in_progress],         target_status: "in_progress" },
-    { key: "recollect",   label: "En attente de retrait",     statuses: %w[sent],                target_status: "sent" },
+    { key: "recollect",   label: "En attente de retrait", statuses: %w[sent],                target_status: "sent" },
     { key: "done",        label: "Terminées",                 statuses: %w[completed delivered], target_status: "completed" }
   ].freeze
 
@@ -36,9 +36,6 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @ai_client_messages = @order.communications
-                                .where(purpose: "ai_client_message")
-                                .order(created_at: :desc)
   end
 
   def new
