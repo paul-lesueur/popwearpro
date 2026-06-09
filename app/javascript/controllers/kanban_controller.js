@@ -68,10 +68,10 @@ export default class extends Controller {
       <span class="sms-toast__accent"></span>
       <div class="sms-toast__body">
         <p class="sms-toast__title">Prévenir ${customerName} que sa commande est prête à être retirée ?</p>
-        <p class="sms-toast__phone">Un SMS « commande prête » sera envoyé au ${phone}</p>
+        <p class="sms-toast__phone">Un SMS sera envoyé au ${phone}</p>
       </div>
       <div class="sms-toast__actions">
-        <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer le SMS « commande prête »</button>
+        <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer SMS</button>
         <button class="btn btn-sm btn-outline-secondary" data-role="dismiss">Ne pas envoyer</button>
       </div>
     `

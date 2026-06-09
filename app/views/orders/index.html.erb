@@ -28,6 +28,9 @@
       <% end %>
     </div>
 
+    <%# Toast SMS « commande prête » : inséré ici par le kanban (sous la recherche, au-dessus du board). %>
+    <div class="sms-toast-container"></div>
+
     <turbo-frame id="orders-kanban-board" data-turbo-action="replace">
     <div class="d-flex gap-3 align-items-start overflow-auto">
       <% @columns.each do |column| %>
