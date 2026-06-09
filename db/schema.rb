@@ -42,6 +42,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_094002) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "chats", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "deadline_id", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["deadline_id"], name: "index_chats_on_deadline_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
   create_table "communications", force: :cascade do |t|
     t.string "channel"
     t.text "content"
@@ -67,6 +77,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_094002) do
     t.datetime "updated_at", null: false
     t.index ["anon_ref"], name: "index_customers_on_anon_ref", unique: true
     t.index ["establishment_id"], name: "index_customers_on_establishment_id"
+  end
+
+  create_table "deadlines", force: :cascade do |t|
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "due_date"
+    t.integer "estimated_duration"
+    t.string "status"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_deadlines_on_user_id"
   end
 
   create_table "establishments", force: :cascade do |t|
@@ -96,6 +119,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_094002) do
     t.datetime "updated_at", null: false
     t.decimal "vat_rate"
     t.index ["establishment_id"], name: "index_items_on_establishment_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
   end
 
   create_table "order_lines", force: :cascade do |t|
@@ -290,10 +322,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_094002) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chats", "deadlines"
+  add_foreign_key "chats", "users"
   add_foreign_key "communications", "orders"
   add_foreign_key "customers", "establishments"
+  add_foreign_key "deadlines", "users"
   add_foreign_key "establishments", "users"
   add_foreign_key "items", "establishments"
+  add_foreign_key "messages", "chats"
   add_foreign_key "order_lines", "items"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "orders", "customers"

@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy, :move, :unarchive]
+  before_action :set_order, only: [:show, :edit, :update, :destroy, :move, :unarchive, :reschedule, :toggle_reminder]
   before_action :set_form_data, only: [:new, :create, :edit, :update]
 
   KANBAN_COLUMNS = [
@@ -93,6 +93,26 @@ class OrdersController < ApplicationController
     status = params[:status]
     @order.update(status:) if ALLOWED_STATUSES.include?(status)
     head :ok
+  end
+
+  # Replanifie la date de retrait et prévient le client par SMS de la nouvelle date.
+  def reschedule
+    new_due_date = params[:due_date]
+
+    if new_due_date.blank?
+      redirect_to order_path(@order), alert: "Indiquez une nouvelle date de retrait."
+      return
+    end
+
+    sms = @order.reschedule_and_notify!(new_due_date)
+    notice = sms ? "Date de retrait mise à jour, le client a été prévenu par SMS." : "Date de retrait mise à jour."
+    redirect_to order_path(@order), notice: notice
+  end
+
+  # Active/désactive le rappel SMS pour cette commande (toggle du drawer).
+  def toggle_reminder
+    @order.update(sms_reminder: !@order.sms_reminder)
+    redirect_to order_path(@order)
   end
 
   def destroy

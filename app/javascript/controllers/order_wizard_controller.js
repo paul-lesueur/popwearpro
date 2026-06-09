@@ -15,7 +15,8 @@ export default class extends Controller {
     "receiptSlot", "receiptBox",
     "back", "next", "finalize", "hint",
     "posPageNav", "posPagePrev", "posPageNext", "posPageInfo",
-    "payMethodSection"
+    "payMethodSection",
+    "smsReminderInput", "emailConfirmationInput"
   ]
 
   connect() {
@@ -142,6 +143,17 @@ export default class extends Controller {
 
   // ---------- Toggles décoratifs (sms / cgv / confirmation) ----------
   toggleSwitch(event) { event.currentTarget.classList.toggle("is-on") }
+
+  // Toggles branchés sur le formulaire : on met à jour le champ caché ("1"/"0").
+  toggleSms(event) {
+    const on = event.currentTarget.classList.toggle("is-on")
+    this.smsReminderInputTarget.value = on ? "1" : "0"
+  }
+
+  toggleEmail(event) {
+    const on = event.currentTarget.classList.toggle("is-on")
+    this.emailConfirmationInputTarget.value = on ? "1" : "0"
+  }
 
   // ---------- Réduction ----------
   showDiscount() {
