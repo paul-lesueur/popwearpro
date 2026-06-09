@@ -36,24 +36,6 @@
       </svg>
       <%= status_labels[@order.status] || @order.status %>
     </span>
-
-    <%# Tag modalité de paiement : orange (en attente) / vert (payé) %>
-    <% if @order.payment_status.present? %>
-      <% paid = @order.payment_status == "paid" %>
-      <span class="badge rounded-pill px-3 py-2 align-self-start <%= paid ? "bg-gradient-green" : "bg-warning" %> text-white d-inline-flex align-items-center gap-1">
-        <% if paid %>
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-          </svg>
-        <% else %>
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-          </svg>
-        <% end %>
-        <%= payment_status_labels[@order.payment_status] || @order.payment_status %>
-      </span>
-    <% end %>
   </div>
 
   <%# Rappel : commande toujours en attente de retrait à J+3 / J+10 ouvrés. %>
@@ -144,9 +126,37 @@
       <span class="fw-bold text-secondary"><%= number_to_currency(@order.total_due, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC</span>
     </div>
   </div>
-  <% if @order.payment_method.present? %>
-    <p class="text-muted mb-0">Moyen de paiement : <%= payment_method_labels[@order.payment_method] || @order.payment_method %></p>
-  <% end %>
+
+  <%# Tags paiement (sous le montant) : modalité puis moyen de paiement %>
+  <div class="d-flex flex-column align-items-start gap-2">
+    <%# Modalité de paiement : orange (en attente) / vert (payé) %>
+    <% if @order.payment_status.present? %>
+      <% paid = @order.payment_status == "paid" %>
+      <span class="badge rounded-pill px-3 py-2 <%= paid ? "bg-gradient-green" : "bg-warning" %> text-white d-inline-flex align-items-center gap-1">
+        <% if paid %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+        <% else %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+          </svg>
+        <% end %>
+        <%= payment_status_labels[@order.payment_status] || @order.payment_status %>
+      </span>
+    <% end %>
+
+    <%# Moyen de paiement : tag neutre %>
+    <% if @order.payment_method.present? %>
+      <span class="badge rounded-pill px-3 py-2 bg-secondary text-white d-inline-flex align-items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+        </svg>
+        <%= payment_method_labels[@order.payment_method] || @order.payment_method %>
+      </span>
+    <% end %>
+  </div>
 
   <hr style="border-color: #EAE4DF;">
 
