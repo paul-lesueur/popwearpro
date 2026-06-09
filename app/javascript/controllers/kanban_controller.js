@@ -30,6 +30,8 @@ export default class extends Controller {
     const card = document.querySelector(`[data-order-id="${orderId}"]`)
     const phone = card?.dataset.phone
     const customerName = card?.dataset.customerName
+    const fromStatus = card?.dataset.status
+    const paymentStatus = card?.dataset.paymentStatus
 
     await fetch(`/orders/${orderId}/move`, {
       method: "PATCH",
@@ -43,6 +45,9 @@ export default class extends Controller {
     if (status === "sent" && phone) {
       this.#showSmsConfirmation(orderId, phone, customerName)
     } else {
+      if (status === "completed" && fromStatus === "sent" && paymentStatus !== "paid") {
+        this.#showPaymentToast(orderId)
+      }
       Turbo.visit(window.location.href)
     }
   }
@@ -97,5 +102,29 @@ export default class extends Controller {
     })
 
     toast.querySelector("[data-role='dismiss']").addEventListener("click", dismiss)
+  }
+
+  #showPaymentToast(orderId) {
+    const container = document.getElementById("payment-toast-container")
+
+    const toast = document.createElement("div")
+    toast.className = "sms-toast"
+    toast.innerHTML = `
+      <div class="sms-toast__accent" style="background: #198754;"></div>
+      <div class="sms-toast__body">
+        <p class="sms-toast__title">Paiement mis à jour</p>
+        <p class="sms-toast__phone">La commande CMD-${orderId} a été marquée comme payée.</p>
+      </div>
+    `
+
+    container.appendChild(toast)
+    requestAnimationFrame(() => toast.classList.add("sms-toast--visible"))
+
+    const dismiss = () => {
+      toast.classList.remove("sms-toast--visible")
+      toast.addEventListener("transitionend", () => toast.remove(), { once: true })
+    }
+
+    setTimeout(dismiss, 4000)
   }
 }
