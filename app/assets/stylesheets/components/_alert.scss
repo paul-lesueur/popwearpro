@@ -1,6 +1,6 @@
-.alert {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 1000;
-}
+// Les alertes Bootstrap (.alert) restent dans le flux normal.
+// Les messages applicatifs (flash) ont leur propre positionnement via
+// .flash-stack / .flash-card (voir components/_layout.scss). On ne force donc
+// plus .alert en position fixe (ancien comportement du template Le Wagon, qui
+// envoyait toute alerte en bas à droite — y compris les erreurs de formulaire
+// et les suggestions affichées dans la modal commande).
