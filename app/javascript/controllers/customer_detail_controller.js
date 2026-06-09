@@ -1,8 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 
+// Remplit le contenu du modal client à partir des data-* de la ligne cliquée.
+// L'ouverture/fermeture du modal est gérée par le contrôleur générique `modal`.
 export default class extends Controller {
   static targets = [
-    "panel",
     "row",
     "name",
     "initials",
@@ -18,17 +19,10 @@ export default class extends Controller {
     "lastOrderDate"
   ]
 
-  open(event) {
+  fill(event) {
     const row = event.currentTarget
 
-    this.element.classList.add("customers-page--with-panel")
-    this.panelTarget.classList.add("is-open")
-    this.panelTarget.setAttribute("aria-hidden", "false")
-
-    this.rowTargets.forEach((target) => {
-      target.classList.remove("is-selected")
-    })
-
+    this.rowTargets.forEach((target) => target.classList.remove("is-selected"))
     row.classList.add("is-selected")
 
     this.nameTarget.textContent = row.dataset.name || "Client"
@@ -53,13 +47,7 @@ export default class extends Controller {
     }
   }
 
-  close() {
-    this.element.classList.remove("customers-page--with-panel")
-    this.panelTarget.classList.remove("is-open")
-    this.panelTarget.setAttribute("aria-hidden", "true")
-
-    this.rowTargets.forEach((target) => {
-      target.classList.remove("is-selected")
-    })
+  deselect() {
+    this.rowTargets.forEach((target) => target.classList.remove("is-selected"))
   }
 }

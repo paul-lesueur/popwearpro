@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between align-items-start mb-4">
     <h2 class="mb-0">Commande #<%= @order.id %></h2>
     <div class="d-flex gap-2">
-      <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->order-panel#close">Fermer</button>
+      <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->modal#close">Fermer</button>
       <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary btn-sm", data: { turbo_frame: "_top" } %>
     </div>
   </div>

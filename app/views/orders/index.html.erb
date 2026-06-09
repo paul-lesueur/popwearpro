@@ -1,4 +1,4 @@
-<div class="orders-kanban" data-controller="kanban order-panel" data-open-order="<%= params[:open].to_i if params[:open].present? %>">
+<div class="orders-kanban" data-controller="kanban modal">
 
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -105,7 +105,8 @@
                   <a href="<%= order_path(order) %>"
                      class="btn btn-outline-primary btn-sm w-100"
                      data-turbo-frame="order-detail"
-                     data-action="click->order-panel#open">Voir le détail</a>
+                     data-action="click->modal#open"
+                     <%= "data-modal-target=autoOpen" if order.id == params[:open].to_i %>>Voir le détail</a>
                   <% if (level = order.pickup_reminder_level) %>
                     <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle"
                           title="En attente de retrait depuis J+<%= level %> ouvrés">
@@ -137,12 +138,12 @@
     </turbo-frame>
   </div>
 
-  <aside class="order-panel" data-order-panel-target="panel" aria-hidden="true">
-    <div class="order-panel-body">
+  <div class="detail-modal" data-modal-target="modal" data-action="click->modal#backdropClose" aria-hidden="true">
+    <div class="detail-modal__dialog order-panel-body">
       <turbo-frame id="order-detail">
         <p class="text-muted text-center py-2">Sélectionnez une commande.</p>
       </turbo-frame>
     </div>
-  </aside>
+  </div>
 
 </div>

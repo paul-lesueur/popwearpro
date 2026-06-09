@@ -10,60 +10,51 @@
   align-items: start;
 }
 
-.orders-kanban--with-panel {
-  grid-template-columns: minmax(0, 1fr) 480px;
-}
-
-.order-panel {
+// ---- Modal de détail (commande / client) ----
+// Voile « scopé » à la zone contenu : la sidebar (240px) et le header (~64px)
+// restent visibles. Plein écran sous 992px (sidebar en off-canvas).
+.detail-modal {
   display: none;
-  position: sticky;
-  top: 24px;
-  animation: orderPanelIn 0.2s ease;
+  position: fixed;
+  top: 64px;
+  left: 240px;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  padding: 24px;
+  background: rgba($primary, 0.18); // teinte orange semi-transparente
+  backdrop-filter: blur(2px); // flou très léger
+  -webkit-backdrop-filter: blur(2px);
 }
 
-.order-panel.is-open {
-  display: block;
-}
-
-@keyframes orderPanelIn {
-  from {
-    opacity: 0;
-    transform: translateX(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.order-panel-header {
-  background: $bg-card;
-  border: 1px solid $border;
-  border-radius: $radius;
-  box-shadow: $shadow-card;
+.detail-modal.is-open {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  margin-bottom: 16px;
-
-  h2 {
-    margin: 0;
-    color: $text-primary;
-    font-size: 20px;
-    font-weight: 800;
-  }
+  justify-content: center;
+  animation: detailModalFade 0.15s ease;
 }
 
-.order-panel-close {
-  border: 0;
-  background: rgba($primary, 0.1);
-  color: $primary;
-  border-radius: $radius-pill;
-  padding: 8px 14px;
-  font-weight: 700;
-  cursor: pointer;
+.detail-modal__dialog {
+  width: 100%;
+  max-width: 600px;
+  max-height: 100%;
+  overflow-y: auto;
+  animation: detailModalIn 0.2s ease;
+}
+
+@keyframes detailModalFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes detailModalIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// Verrou du scroll de la page quand un modal est ouvert.
+body.detail-modal-open {
+  overflow: hidden;
 }
 
 .order-panel-body {
@@ -124,20 +115,12 @@
   color: $subtext;
 }
 
-@media (max-width: 1100px) {
-  .orders-kanban,
-  .orders-kanban--with-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .order-panel {
-    position: fixed;
-    inset: 16px;
-    z-index: 1000;
-    overflow-y: auto;
-    border-radius: $radius;
-    box-shadow: 0 20px 60px rgba(19, 21, 35, 0.18);
-    background: $bg-page;
+@media (max-width: 991.98px) {
+  // Sidebar en off-canvas : le voile couvre tout l'écran.
+  .detail-modal {
+    top: 0;
+    left: 0;
+    padding: 12px;
   }
 }
 
