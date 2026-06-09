@@ -21,10 +21,8 @@
   right: 0;
   bottom: 0;
   z-index: 900;
-  padding: 24px;
+  padding: 32px;
   background: rgba($primary, 0.18); // teinte orange semi-transparente
-  backdrop-filter: blur(2px); // flou très léger
-  -webkit-backdrop-filter: blur(2px);
 }
 
 .detail-modal.is-open {
@@ -36,7 +34,7 @@
 
 .detail-modal__dialog {
   width: 100%;
-  max-width: 600px;
+  max-width: 880px;
   max-height: 100%;
   overflow-y: auto;
   animation: detailModalIn 0.2s ease;
