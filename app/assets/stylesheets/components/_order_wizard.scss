@@ -133,6 +133,24 @@ $w-hover:         #FBF7F5;
 .postile__bonus { font-size: .68rem; }
 .postile__qty { position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: $primary; color: #fff; font-family: $font-heading; font-weight: 700; font-size: .72rem; display: flex; align-items: center; justify-content: center; }
 
+.postile.pospage-hidden { display: none; }
+
+.pospage {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid $w-line;
+}
+.pospage__btn {
+  width: 34px; height: 34px; border-radius: 10px; border: 1.5px solid $w-line-strong;
+  background: $bg-card; color: $w-ink; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: .8rem; transition: .12s;
+  &:hover:not(:disabled) { border-color: $primary; color: $primary; background: $w-hover; }
+  &:disabled { opacity: .35; cursor: default; }
+}
+.pospage__info {
+  font-family: $font-heading; font-weight: 600; font-size: .875rem;
+  color: $w-ink-soft; min-width: 52px; text-align: center;
+}
+
 .ticket { background: $bg-card; border: 1px solid $w-line; border-radius: 22px; box-shadow: $shadow-card; padding: 20px 20px 22px; position: sticky; top: 18px; }
 .ticket__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .ticket__title { font-family: $font-heading; font-weight: 700; font-size: 1.125rem; }

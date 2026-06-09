@@ -121,6 +121,16 @@
                 </button>
               <% end %>
             </div>
+
+            <div class="pospage d-none" data-order-wizard-target="posPageNav">
+              <button type="button" class="pospage__btn" data-order-wizard-target="posPagePrev" data-action="order-wizard#posPagePrev" aria-label="Page précédente">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <span class="pospage__info" data-order-wizard-target="posPageInfo">1 / 1</span>
+              <button type="button" class="pospage__btn" data-order-wizard-target="posPageNext" data-action="order-wizard#posPageNext" aria-label="Page suivante">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
           </div>
 
           <aside class="ticket">
@@ -162,18 +172,7 @@
           <div class="wizstep__sub">Sélectionnez le moyen et le statut du paiement.</div>
         </div>
 
-        <h3 class="section-title" style="font-size:1rem;margin-bottom:14px">Moyen de paiement</h3>
-        <div class="paygrid">
-          <% [["Espèces","fa-money-bill-wave"],["Carte","fa-credit-card"],["Chèque","fa-money-check"]].each do |label, icon| %>
-            <button type="button" class="paytile" data-value="<%= label %>" data-action="order-wizard#selectMethod">
-              <span class="paytile__tick"><i class="fa-solid fa-check"></i></span>
-              <span class="paytile__ic"><i class="fa-solid <%= icon %>"></i></span>
-              <span class="paytile__label"><%= label %></span>
-            </button>
-          <% end %>
-        </div>
-
-        <h3 class="section-title" style="font-size:1rem;margin:30px 0 14px">Statut du paiement</h3>
+        <h3 class="section-title" style="font-size:1rem;margin-bottom:14px">Statut du paiement</h3>
         <div class="statusgrid">
           <button type="button" class="statustile is-paye" data-value="paid" data-action="order-wizard#selectStatus">
             <span class="statustile__ic"><i class="fa-solid fa-check"></i></span>
@@ -189,6 +188,19 @@
               <span class="statustile__desc">Le client paiera en venant chercher sa commande</span>
             </span>
           </button>
+        </div>
+
+        <div data-order-wizard-target="payMethodSection">
+          <h3 class="section-title" style="font-size:1rem;margin:30px 0 14px">Moyen de paiement</h3>
+          <div class="paygrid">
+            <% [["Espèces","fa-money-bill-wave"],["Carte","fa-credit-card"],["Chèque","fa-money-check"]].each do |label, icon| %>
+              <button type="button" class="paytile" data-value="<%= label %>" data-action="order-wizard#selectMethod">
+                <span class="paytile__tick"><i class="fa-solid fa-check"></i></span>
+                <span class="paytile__ic"><i class="fa-solid <%= icon %>"></i></span>
+                <span class="paytile__label"><%= label %></span>
+              </button>
+            <% end %>
+          </div>
         </div>
       </section>
 
