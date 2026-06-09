@@ -65,8 +65,6 @@
                     <% end %>
                   </strong>
                   <% if order.urgent? %>
-                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-25" style="width: 28px; height: 28px;">
-                      <i class="fa-solid fa-clock" style="color: #F4AD22; font-size: 0.875rem;"></i>
                     <% overdue = order.days_until_due&.negative? %>
                     <span class="d-inline-flex align-items-center justify-content-center rounded-circle <%= overdue ? "bg-danger bg-opacity-25" : "bg-warning bg-opacity-25" %>"
                           style="width: 28px; height: 28px;"
