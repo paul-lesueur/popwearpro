@@ -8,6 +8,11 @@
     <%= form.hidden_field :payment_method, data: { order_wizard_target: "methodInput" } %>
     <%= form.hidden_field :payment_status, data: { order_wizard_target: "statusInput" } %>
     <%= form.hidden_field :status %>
+    <%# Pilotés par les toggles de l'étape 4 / récapitulatif (valeur "1"/"0"). %>
+    <%= form.hidden_field :sms_reminder, value: (@order.sms_reminder ? "1" : "0"),
+          data: { order_wizard_target: "smsReminderInput" } %>
+    <%= form.hidden_field :email_confirmation, value: (@order.email_confirmation ? "1" : "0"),
+          data: { order_wizard_target: "emailConfirmationInput" } %>
     <div data-order-wizard-target="lines" class="d-none"></div>
 
     <div class="wizard">
@@ -226,13 +231,14 @@
 
           <hr class="my-4">
 
-          <%# Rappel SMS + CGV — décoratifs (TODO : pas de colonnes) %>
+          <%# Rappel SMS : branché sur order[sms_reminder]. CGV : décoratif. %>
           <div class="inforow">
             <div class="inforow__txt">
               <div class="inforow__title">Rappel SMS au client</div>
               <div class="inforow__desc">Envoie automatiquement un SMS au client lorsque sa commande est prête.</div>
             </div>
-            <button type="button" class="w-toggle" data-action="order-wizard#toggleSwitch" aria-label="Rappel SMS"></button>
+            <button type="button" class="w-toggle <%= "is-on" if @order.sms_reminder %>"
+                    data-action="order-wizard#toggleSms" aria-label="Rappel SMS"></button>
           </div>
           <div class="inforow">
             <div class="inforow__txt">
@@ -281,7 +287,7 @@
               </div>
             </div>
 
-            <%# Confirmation e-mail — décoratif %>
+            <%# Confirmation e-mail : branché sur order[email_confirmation]. %>
             <div class="confirmcard">
               <div class="confirmcard__top">
                 <span class="confirmcard__ic"><i class="fa-solid fa-envelope"></i></span>
@@ -289,7 +295,8 @@
                   <div class="confirmcard__title">Confirmation par e-mail</div>
                   <div class="confirmcard__desc">Envoyer la confirmation de commande au client.</div>
                 </div>
-                <button type="button" class="w-toggle ms-auto" data-action="order-wizard#toggleSwitch" aria-label="Confirmation e-mail"></button>
+                <button type="button" class="w-toggle ms-auto <%= "is-on" if @order.email_confirmation %>"
+                        data-action="order-wizard#toggleEmail" aria-label="Confirmation e-mail"></button>
               </div>
             </div>
           </div>
