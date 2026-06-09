@@ -13,7 +13,9 @@ export default class extends Controller {
     "discountInput", "discountBox", "discountToggle", "discountRow", "discountAmount",
     "methodInput", "statusInput", "methodLabel", "statusLabel",
     "receiptSlot", "receiptBox",
-    "back", "next", "finalize", "hint"
+    "back", "next", "finalize", "hint",
+    "posPageNav", "posPagePrev", "posPageNext", "posPageInfo",
+    "payMethodSection"
   ]
 
   connect() {
@@ -23,7 +25,9 @@ export default class extends Controller {
     this.mode = "passage"
     this.method = null
     this.status = null
+    this.tilePage = 0
     this.render()
+    this.renderTilePage()
   }
 
   // ---------- Navigation ----------
@@ -84,6 +88,33 @@ export default class extends Controller {
   }
   clearCart() { this.cart = {}; this.render() }
 
+  get perPage() { return 9 }
+
+  posPagePrev() {
+    this.tilePage = Math.max(0, this.tilePage - 1)
+    this.renderTilePage()
+  }
+
+  posPageNext() {
+    const pages = Math.ceil(this.tileTargets.length / this.perPage)
+    this.tilePage = Math.min(pages - 1, this.tilePage + 1)
+    this.renderTilePage()
+  }
+
+  renderTilePage() {
+    const total = this.tileTargets.length
+    const pages = Math.ceil(total / this.perPage)
+    const start = this.tilePage * this.perPage
+    const end = start + this.perPage
+
+    this.tileTargets.forEach((t, i) => t.classList.toggle("pospage-hidden", i < start || i >= end))
+
+    if (this.hasPosPageNavTarget) this.posPageNavTarget.classList.toggle("d-none", pages <= 1)
+    if (this.hasPosPageInfoTarget) this.posPageInfoTarget.textContent = `${this.tilePage + 1} / ${pages}`
+    if (this.hasPosPagePrevTarget) this.posPagePrevTarget.disabled = this.tilePage === 0
+    if (this.hasPosPageNextTarget) this.posPageNextTarget.disabled = this.tilePage >= pages - 1
+  }
+
   tileFor(id) { return this.tileTargets.find((t) => t.dataset.itemId === id) }
 
   // ---------- Étape 3 : paiement ----------
@@ -98,6 +129,11 @@ export default class extends Controller {
     this.status = event.currentTarget.dataset.value           // "paid" | "unpaid"
     this.statusInputTarget.value = this.status
     this.markGroup(event.currentTarget, "statustile")
+    if (this.hasPayMethodSectionTarget) {
+      const hide = this.status === "unpaid"
+      this.payMethodSectionTarget.classList.toggle("d-none", hide)
+      if (hide) { this.method = null; this.methodInputTarget.value = "" }
+    }
     this.render()
   }
   markGroup(el, klass) {
@@ -139,7 +175,7 @@ export default class extends Controller {
       return name && name.value.trim().length > 1
     }
     if (this.step === 1) return Object.keys(this.cart).length > 0
-    if (this.step === 2) return !!this.method && !!this.status
+    if (this.step === 2) return !!this.status && (this.status === "unpaid" || !!this.method)
     return true
   }
 
