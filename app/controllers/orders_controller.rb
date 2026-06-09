@@ -148,6 +148,7 @@ class OrdersController < ApplicationController
       :collected_at,
       :internal_notes,
       :discount,
+      :sms_reminder,
       order_lines_attributes: [
         :id,
         :item_id,

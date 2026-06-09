@@ -1,0 +1,163 @@
+<% eur = ->(amount) { number_to_currency(amount, unit: "€", separator: ",", delimiter: " ", format: "%n %u") } %>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FCF8F8;margin:0;padding:24px 0;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;font-family:'Inter',Arial,sans-serif;color:#131523;">
+
+        <!-- Header -->
+        <tr>
+          <td bgcolor="#EE7635" style="background:#EE7635;background:linear-gradient(135deg,#EE7635,#FF6342);padding:28px 32px;">
+            <span style="font-family:'League Spartan',Arial,sans-serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:#ffffff;"><%= @establishment.name %></span>
+          </td>
+        </tr>
+
+        <!-- Hero -->
+        <tr>
+          <td style="padding:32px 32px 8px 32px;">
+            <h1 style="margin:0;font-family:'League Spartan',Arial,sans-serif;font-size:26px;line-height:1.2;color:#411221;">
+              Votre commande est en cours de traitement
+            </h1>
+            <p style="margin:12px 0 0 0;font-size:15px;line-height:1.5;color:#8B82B0;">
+              Bonjour <%= @customer.display_name %>,
+              <% if @order.due_date.present? %>
+                la date de retrait est fixée au <strong style="color:#131523;"><%= l(@order.due_date, format: :long) %></strong>.
+              <% else %>
+                la date de retrait vous sera communiquée prochainement.
+              <% end %>
+            </p>
+            <% if @order.sms_reminder? %>
+              <p style="margin:12px 0 0 0;font-size:15px;line-height:1.5;color:#131523;">
+                📱 Vous recevrez un SMS dès que votre commande sera prête à être retirée.
+              </p>
+            <% end %>
+          </td>
+        </tr>
+
+        <!-- Encart n° commande + date de retrait -->
+        <tr>
+          <td style="padding:20px 32px 8px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FCF8F8;border-radius:12px;">
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#8B82B0;"><%= @order.document_label %></p>
+                  <p style="margin:4px 0 0 0;font-size:18px;font-weight:700;color:#131523;">N° <%= @order.id %></p>
+                </td>
+                <td align="right" style="padding:16px 20px;">
+                  <p style="margin:0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#8B82B0;">Date de retrait</p>
+                  <p style="margin:4px 0 0 0;font-size:18px;font-weight:700;color:#131523;">
+                    <%= @order.due_date.present? ? l(@order.due_date, format: :long) : "À définir" %>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Récap des lignes -->
+        <tr>
+          <td style="padding:16px 32px 8px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;">
+              <tr>
+                <td style="padding:0 0 8px 0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#8B82B0;">Prestation</td>
+                <td align="right" style="padding:0 0 8px 0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#8B82B0;">Total TTC</td>
+              </tr>
+              <% @order_lines.each do |line| %>
+                <tr>
+                  <td style="padding:10px 0;border-top:1px solid #F0E9E9;color:#131523;">
+                    <%= line.item&.name.presence || "Prestation" %>
+                    <span style="color:#8B82B0;">× <%= line.quantity %></span>
+                    <% if line.item&.repair_bonus %>
+                      <br>
+                      <span style="display:inline-block;margin-top:6px;padding:3px 10px;background-color:#00BA88;color:#ffffff;font-size:11px;font-weight:700;border-radius:12px;">Bonus réparation</span>
+                    <% end %>
+                  </td>
+                  <td align="right" valign="top" style="padding:10px 0;border-top:1px solid #F0E9E9;color:#131523;font-weight:600;white-space:nowrap;">
+                    <%= eur.call(line.total_ttc) %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Totaux -->
+        <tr>
+          <td style="padding:8px 32px 8px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;">
+              <tr>
+                <td style="padding:6px 0;color:#8B82B0;">Total HT</td>
+                <td align="right" style="padding:6px 0;color:#131523;"><%= eur.call(@order.subtotal_ht) %></td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;color:#8B82B0;">TVA</td>
+                <td align="right" style="padding:6px 0;color:#131523;"><%= eur.call(@order.vat_amount) %></td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0 0 0;border-top:2px solid #411221;font-size:16px;font-weight:700;color:#411221;">Total TTC</td>
+                <td align="right" style="padding:12px 0 0 0;border-top:2px solid #411221;font-size:16px;font-weight:700;color:#411221;"><%= eur.call(@order.total_ttc) %></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Paiement + statut -->
+        <tr>
+          <td style="padding:16px 32px 8px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FCF8F8;border-radius:12px;">
+              <tr>
+                <td style="padding:14px 20px;font-size:14px;">
+                  <span style="color:#8B82B0;">Paiement&nbsp;:</span>
+                  <strong style="color:#131523;"><%= @order.payment_method_label %></strong>
+                </td>
+                <td align="right" style="padding:14px 20px;font-size:14px;">
+                  <strong style="color:<%= @order.paid? ? "#00BA88" : "#411221" %>;"><%= @order.payment_status_label %></strong>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Mention reçu PDF -->
+        <tr>
+          <td style="padding:12px 32px 0 32px;">
+            <p style="margin:0;font-size:13px;line-height:1.5;color:#8B82B0;">
+              📎 Votre <%= @order.document_label.downcase %> est joint à cet email au format PDF.
+            </p>
+          </td>
+        </tr>
+
+        <!-- Signature -->
+        <tr>
+          <td style="padding:24px 32px 8px 32px;">
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#131523;">
+              À très bientôt,<br>
+              <strong><%= @establishment.user&.name.presence || @establishment.name %></strong><br>
+              <span style="color:#8B82B0;"><%= @establishment.name %></span>
+            </p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:24px 32px 28px 32px;border-top:1px solid #F0E9E9;">
+            <p style="margin:0 0 16px 0;font-size:12px;line-height:1.5;color:#8B82B0;">
+              Cet email vous a été envoyé automatiquement — merci de ne pas y répondre (adresse noreply).
+            </p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="font-size:11px;color:#8B82B0;padding-right:8px;vertical-align:middle;">Propulsé par</td>
+                <td style="vertical-align:middle;">
+                  <%= image_tag attachments["logo-popwear-pro.png"].url,
+                        alt: "Popwear PRO",
+                        width: 92, height: 24,
+                        style: "display:block;width:92px;height:auto;border:0;" %>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>

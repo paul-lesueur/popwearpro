@@ -1,4 +1,6 @@
 class Customer < ApplicationRecord
+  include CustomerDisplay
+
   belongs_to :establishment
 
   has_many :orders
@@ -17,13 +19,6 @@ class Customer < ApplicationRecord
     return anon_ref if is_anonymous?
 
     [firstname, lastname].compact.join(" ").strip.presence || email.presence || "Client ##{id}"
-  end
-
-  # Affichage compact "Prénom N." (ou la réf anonyme). Sûr même sans nom.
-  def short_name
-    return anon_ref if is_anonymous?
-
-    "#{firstname} #{lastname&.first}.".strip
   end
 
   def initials
