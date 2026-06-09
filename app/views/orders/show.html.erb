@@ -8,6 +8,18 @@
     </div>
   </div>
 
+  <%# Confirmation des actions de la modal (SMS envoyé / non envoyé, date mise à jour…).
+      Même look que les flashes ; auto-disparition après 5 s. %>
+  <% flash_variants = { "notice" => "success", "success" => "success", "info" => "info", "alert" => "error", "error" => "error" } %>
+  <% flash.each do |type, message| %>
+    <div class="flash-card flash-card--<%= flash_variants[type.to_s] || "info" %> alert alert-dismissible fade show mb-3"
+         role="alert" data-controller="auto-dismiss">
+      <span class="flash-card__accent"></span>
+      <div class="flash-card__body"><%= message %></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+  <% end %>
+
   <%# Suggestions (en tête de modal) : rappel de retrait J+3/J+10 et date imminente/dépassée. %>
   <%# Rappel : commande toujours en attente de retrait à J+3 / J+10 ouvrés. %>
   <% if (level = @order.pickup_reminder_level) %>
@@ -43,7 +55,7 @@
       <%= form_with url: reschedule_order_path(@order), method: :patch,
             class: "d-flex flex-wrap align-items-end gap-2 mb-0" do |f| %>
         <div>
-          <label class="form-label small mb-1" for="reschedule_due_date">Nouvelle date de retrait</label>
+          <label class="form-label small mb-1" for="reschedule_due_date">Définir la nouvelle date de retrait</label>
           <%= f.date_field :due_date, id: "reschedule_due_date", value: @order.due_date,
                 min: Date.current, required: true, class: "form-control form-control-sm" %>
         </div>

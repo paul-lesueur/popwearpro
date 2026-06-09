@@ -104,9 +104,11 @@ class OrdersController < ApplicationController
       return
     end
 
-    sms = @order.reschedule_and_notify!(new_due_date)
-    notice = sms ? "Date de retrait mise à jour, le client a été prévenu par SMS." : "Date de retrait mise à jour."
-    redirect_to order_path(@order), notice: notice
+    if @order.reschedule_and_notify!(new_due_date)
+      redirect_to order_path(@order), notice: "Date de retrait mise à jour. SMS envoyé au client."
+    else
+      redirect_to order_path(@order), flash: { info: "Date de retrait mise à jour. SMS non envoyé : le client n'a pas de téléphone." }
+    end
   end
 
   # Active/désactive le rappel SMS pour cette commande (toggle du drawer).
