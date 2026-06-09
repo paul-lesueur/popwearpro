@@ -41,7 +41,7 @@ class OrdersController < ApplicationController
   def new
     # Le formulaire de création (cartes + panier) ne demande pas le statut/la priorité :
     # on pose des valeurs par défaut. Les lignes sont ajoutées via le panier (Stimulus).
-    @order = current_establishment.orders.new(status: "pending", priority: "medium", payment_status: "unpaid")
+    @order = current_establishment.orders.new(status: "pending", payment_status: "unpaid")
   end
 
   def create
@@ -141,7 +141,6 @@ class OrdersController < ApplicationController
     params.require(:order).permit(
       :customer_id,
       :status,
-      :priority,
       :due_date,
       :payment_method,
       :payment_status,
