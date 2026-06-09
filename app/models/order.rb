@@ -103,6 +103,7 @@ class Order < ApplicationRecord
   private
 
   def send_confirmation_email
+    return unless email_confirmation?
     return if customer.email.blank?
 
     OrderMailer.confirmation(self).deliver_later
