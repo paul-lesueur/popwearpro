@@ -27,6 +27,7 @@ class Order < ApplicationRecord
   # Horodate l'entrée en « attente de retrait » (et la réinitialise à la sortie),
   # pour pouvoir compter les jours ouvrés écoulés avant un rappel.
   before_save :track_ready_at
+  before_save :auto_mark_paid_on_completion
 
   # Email de confirmation transactionnel, uniquement si le client a un email.
   after_create_commit :send_confirmation_email
@@ -161,6 +162,7 @@ class Order < ApplicationRecord
   private
 
   def send_confirmation_email
+    return unless email_confirmation?
     return if customer.email.blank?
 
     OrderMailer.confirmation(self).deliver_later
@@ -175,6 +177,14 @@ class Order < ApplicationRecord
                             .where.not(status: "failed").exists?
 
     notify_ready_by_sms!
+  end
+
+  def auto_mark_paid_on_completion
+    return unless status_changed? && DONE_STATUSES.include?(status)
+    return unless status_was == READY_STATUS
+    return if payment_status == "paid"
+
+    self.payment_status = "paid"
   end
 
   def set_default_discount

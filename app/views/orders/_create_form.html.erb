@@ -205,8 +205,9 @@
     <section class="order-form__section">
       <h2 class="order-form__title">Rappels client</h2>
       <div class="form-check form-switch mb-2">
-        <input class="form-check-input" type="checkbox" role="switch" id="reminderEmail">
-        <label class="form-check-label" for="reminderEmail">Envoyer une confirmation de commande par e-mail</label>
+        <%= form.check_box :email_confirmation, class: "form-check-input", role: "switch" %>
+        <%= form.label :email_confirmation, "Envoyer une confirmation de commande par e-mail",
+              class: "form-check-label" %>
       </div>
       <div class="form-check form-switch">
         <%= form.check_box :sms_reminder, class: "form-check-input", role: "switch" %>
