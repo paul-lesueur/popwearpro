@@ -141,6 +141,12 @@ export default class extends Controller {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
     `
     stack.appendChild(card)
+
+    // Auto-disparition après ~5 s (la croix permet de fermer avant).
+    setTimeout(() => {
+      card.classList.remove("show")
+      card.addEventListener("transitionend", () => card.remove(), { once: true })
+    }, 5000)
   }
 
   #showPaymentToast(orderId) {
