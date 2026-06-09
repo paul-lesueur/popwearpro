@@ -21,11 +21,15 @@
     "completed"   => "Terminée",
     "delivered"   => "Terminée"
   } %>
-  <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "bank_transfer" => "Virement", "other" => "Autre" } %>
+  <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "check" => "Chèque", "bank_transfer" => "Virement", "other" => "Autre" } %>
   <% payment_status_labels = { "unpaid" => "En attente de paiement", "paid" => "Payé" } %>
+  <%# Couleurs alignées sur les colonnes du kanban (cf. badge_styles dans index). %>
+  <% status_badge_classes = { "pending" => "bg-gradient-green", "in_progress" => "bg-gradient-orange", "sent" => "bg-warning" } %>
+  <% status_done = %w[completed delivered].include?(@order.status) %>
   <div class="d-flex flex-wrap gap-2 mb-4">
-    <%# Tag statut de la commande %>
-    <span class="badge rounded-pill px-3 py-2 align-self-start bg-warning text-white d-inline-flex align-items-center gap-1">
+    <%# Tag statut de la commande (même couleur que la colonne kanban) %>
+    <span class="badge rounded-pill px-3 py-2 align-self-start text-white d-inline-flex align-items-center gap-1 <%= status_badge_classes[@order.status] %>"
+          style="<%= "background: #411221;" if status_done %>">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
         <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
         <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
