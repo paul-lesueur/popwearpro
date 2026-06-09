@@ -1,6 +1,11 @@
 # This file should ensure the existence of records required to run the application in every environment.
 # Warning: this seed resets demo data. Use locally for development/demo.
 
+# On crée beaucoup de commandes : sans ça, chaque email de confirmation
+# ouvrirait un onglet letter_opener en dev. La trace dans l'historique
+# (Communication kind "confirmation") reste créée indépendamment de l'envoi.
+ActionMailer::Base.perform_deliveries = false
+
 puts "Cleaning database..."
 
 Communication.destroy_all
