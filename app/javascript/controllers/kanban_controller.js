@@ -1,6 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  // Après le reload qui suit l'envoi (ou non) du SMS, on affiche un flash de
+  // confirmation. Le flag est consommé : il disparaît donc au refresh suivant.
+  connect() {
+    const raw = sessionStorage.getItem("smsFlash")
+    if (!raw) return
+    sessionStorage.removeItem("smsFlash")
+    try {
+      const { sent, name } = JSON.parse(raw)
+      this.#showSmsFlash(sent, name)
+    } catch (_) {
+      // flag invalide : on ignore
+    }
+  }
+
   dragstart(event) {
     event.dataTransfer.setData("text/plain", event.currentTarget.dataset.orderId)
     event.currentTarget.classList.add("opacity-50", "kanban-card--dragging")
@@ -79,7 +93,7 @@ export default class extends Controller {
     container.appendChild(toast)
     requestAnimationFrame(() => toast.classList.add("sms-toast--visible"))
 
-    const dismiss = () => {
+    const closeAndReload = () => {
       toast.classList.remove("sms-toast--visible")
       toast.addEventListener("transitionend", () => {
         toast.remove()
@@ -98,10 +112,33 @@ export default class extends Controller {
         },
         body: JSON.stringify({ channel: "sms" })
       })
-      dismiss()
+      sessionStorage.setItem("smsFlash", JSON.stringify({ sent: true, name: customerName }))
+      closeAndReload()
     })
 
-    toast.querySelector("[data-role='dismiss']").addEventListener("click", dismiss)
+    toast.querySelector("[data-role='dismiss']").addEventListener("click", () => {
+      sessionStorage.setItem("smsFlash", JSON.stringify({ sent: false, name: customerName }))
+      closeAndReload()
+    })
+  }
+
+  #showSmsFlash(sent, name) {
+    const stack = document.querySelector(".flash-stack")
+    if (!stack) return
+
+    const message = sent
+      ? `SMS « commande prête » envoyé à ${name}.`
+      : `SMS « commande prête » non envoyé à ${name}.`
+
+    const card = document.createElement("div")
+    card.className = `flash-card flash-card--${sent ? "success" : "info"} alert alert-dismissible fade show`
+    card.setAttribute("role", "alert")
+    card.innerHTML = `
+      <span class="flash-card__accent"></span>
+      <div class="flash-card__body">${message}</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    `
+    stack.appendChild(card)
   }
 
   #showPaymentToast(orderId) {

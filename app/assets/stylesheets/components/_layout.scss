@@ -109,6 +109,7 @@
 .flash-card--success .flash-card__accent { background: $gradient-green; }
 .flash-card--error   .flash-card__accent { background: $error; }
 .flash-card--error   .flash-card__body   { color: $error; }
+.flash-card--info    .flash-card__accent { background: $subtext; }
 
 // ---- SMS confirmation toast (côté droit, fixe) ----
 // Toast SMS « commande prête » : inséré dans le flux, sous la barre de

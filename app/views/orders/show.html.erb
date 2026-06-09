@@ -107,7 +107,8 @@
   <% total_ht = @order.total_ht %>
   <% total_ttc = @order.total_ttc %>
   <% tva = total_ttc - total_ht %>
-  <div class="mb-3">
+  <%# Largeur contrainte : les montants restent vers le milieu du modal élargi. %>
+  <div class="mb-3" style="max-width: 460px;">
     <div class="d-flex justify-content-between mb-1">
       <span class="text-muted">Sous-total</span>
       <span class="text-muted"><%= number_to_currency(total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> HT</span>

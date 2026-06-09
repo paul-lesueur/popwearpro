@@ -11,18 +11,14 @@
 }
 
 // ---- Modal de détail (commande / client) ----
-// Voile « scopé » à la zone contenu : la sidebar (240px) et le header (~64px)
-// restent visibles. Plein écran sous 992px (sidebar en off-canvas).
+// Plein écran : couvre toute la fenêtre (sidebar + header inclus).
 .detail-modal {
   display: none;
   position: fixed;
-  top: 64px;
-  left: 240px;
-  right: 0;
-  bottom: 0;
-  z-index: 900;
+  inset: 0;
+  z-index: 1090; // au-dessus de la sidebar, du header et des flashes
   padding: 32px;
-  background: rgba($primary, 0.18); // teinte orange semi-transparente
+  background: rgba(60, 22, 8, 0.62); // orange très foncé, opacité façon Trello
 }
 
 .detail-modal.is-open {
@@ -114,10 +110,7 @@ body.detail-modal-open {
 }
 
 @media (max-width: 991.98px) {
-  // Sidebar en off-canvas : le voile couvre tout l'écran.
   .detail-modal {
-    top: 0;
-    left: 0;
     padding: 12px;
   }
 }
