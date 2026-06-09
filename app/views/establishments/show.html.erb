@@ -1,7 +1,6 @@
 <div class="establishment-page">
   <div class="establishment-header">
     <div>
-      <span class="establishment-kicker">Profil établissement</span>
       <h1>Mon établissement</h1>
       <p>Gérez les informations principales de votre établissement.</p>
     </div>
@@ -26,13 +25,8 @@
       </div>
 
       <div class="establishment-card-header">
-        <div class="establishment-avatar">
-          <%= @establishment.name.present? ? @establishment.name.first.upcase : "A" %>
-        </div>
-
         <div>
           <h2><%= @establishment.name.presence || "Nom non renseigné" %></h2>
-          <p><%= @establishment.category.presence || "Catégorie non renseignée" %></p>
         </div>
       </div>
 
