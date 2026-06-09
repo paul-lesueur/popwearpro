@@ -97,7 +97,9 @@ export default class extends Controller {
       toast.classList.remove("sms-toast--visible")
       toast.addEventListener("transitionend", () => {
         toast.remove()
-        Turbo.visit(window.location.href)
+        // Reload complet (pas Turbo.visit) : pas de preview en cache qui
+        // consommerait le flag avant l'affichage du flash de confirmation.
+        window.location.reload()
       }, { once: true })
     }
 
