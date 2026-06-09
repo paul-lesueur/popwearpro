@@ -1,5 +1,5 @@
 .establishment-page {
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -13,13 +13,12 @@
   h1 {
     margin: 8px 0;
     color: $text-primary;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 800;
   }
 
   p {
-    margin: 0;
-    color: $subtext;
+    margin: 4px 0 0;
     font-size: 16px;
   }
 }
@@ -150,7 +149,7 @@
   h2 {
     margin: 0;
     color: $text-primary;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 800;
   }
 

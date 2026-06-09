@@ -68,6 +68,13 @@
   font-size: .875rem;
 }
 
+// ---- Page wrapper (largeur standard 1280px) ----
+.page-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 8px;
+}
+
 // ---- Flash ----
 .flash-stack {
   position: sticky;

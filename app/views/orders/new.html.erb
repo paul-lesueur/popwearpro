@@ -1,4 +1,4 @@
-<div class="container py-4">
+<div class="page-wrapper pb-4">
   <%= form_with model: @order, url: orders_path, method: :post, local: true,
         html: { class: "order-wizard", data: { controller: "order-wizard" } } do |form| %>
 
@@ -172,7 +172,7 @@
           <div class="wizstep__sub">Sélectionnez le moyen et le statut du paiement.</div>
         </div>
 
-        <h3 class="section-title" style="font-size:1rem;margin-bottom:14px">Statut du paiement</h3>
+        <h3 class="section-title fs-6 mb-3">Statut du paiement</h3>
         <div class="statusgrid">
           <button type="button" class="statustile is-paye" data-value="paid" data-action="order-wizard#selectStatus">
             <span class="statustile__ic"><i class="fa-solid fa-check"></i></span>
@@ -191,7 +191,7 @@
         </div>
 
         <div data-order-wizard-target="payMethodSection">
-          <h3 class="section-title" style="font-size:1rem;margin:30px 0 14px">Moyen de paiement</h3>
+          <h3 class="section-title fs-6 mt-4 mb-3">Moyen de paiement</h3>
           <div class="paygrid">
             <% [["Espèces","fa-money-bill-wave"],["Carte","fa-credit-card"],["Chèque","fa-money-check"]].each do |label, icon| %>
               <button type="button" class="paytile" data-value="<%= label %>" data-action="order-wizard#selectMethod">

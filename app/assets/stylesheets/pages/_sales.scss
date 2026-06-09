@@ -1,6 +1,7 @@
 .sales-page {
-  padding: 32px 36px;
-  color: #341c1c;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 36px;
 }
 
 .sales-header {
@@ -10,17 +11,22 @@
   margin-bottom: 34px;
 
   h1 {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 800;
-    margin: 0 0 28px;
-    color: #2d1b1b;
+    margin: 8px 0 4px;
+    color: $text-primary;
+  }
+
+  p {
+    margin: 0 0 16px;
+    font-size: 16px;
   }
 }
 
 .sales-tabs {
   display: flex;
   gap: 28px;
-  border-bottom: 1px solid #f0d8d1;
+  border-bottom: 1px solid $border;
 }
 
 .sales-tab {

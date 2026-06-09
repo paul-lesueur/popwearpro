@@ -55,17 +55,17 @@
   <div class="dashboard-v2__topbar">
     <div>
       <h1>Tableau de bord</h1>
-      <p>Vue d’ensemble de l’activité de <%= @establishment.name %>.</p>
+      <p class="text-muted">Vue d’ensemble de l’activité de <%= @establishment.name %>.</p>
     </div>
 
     <div class="dashboard-v2__actions">
-      <%= link_to new_order_path, class: "dashboard-v2__btn dashboard-v2__btn--primary" do %>
+      <%= link_to new_order_path, class: "btn-cta" do %>
         <i class="fa-solid fa-plus"></i>
         <span>Nouvelle commande</span>
       <% end %>
 
       <% if defined?(new_sale_path) %>
-        <%= link_to new_sale_path, class: "dashboard-v2__btn dashboard-v2__btn--primary" do %>
+        <%= link_to new_sale_path, class: "btn-cta" do %>
           <i class="fa-solid fa-cash-register"></i>
           <span>Nouvelle vente</span>
         <% end %>
