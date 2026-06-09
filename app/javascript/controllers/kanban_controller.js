@@ -65,14 +65,14 @@ export default class extends Controller {
     const toast = document.createElement("div")
     toast.className = "sms-toast"
     toast.innerHTML = `
-      <div class="sms-toast__accent"></div>
+      <span class="sms-toast__accent"></span>
       <div class="sms-toast__body">
-        <p class="sms-toast__title">Envoyer un SMS à ${customerName} ?</p>
-        <p class="sms-toast__phone">${phone}</p>
-        <div class="sms-toast__actions">
-          <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer le SMS</button>
-          <button class="btn btn-sm btn-outline-secondary" data-role="dismiss">Ignorer</button>
-        </div>
+        <p class="sms-toast__title">Prévenir ${customerName} que sa commande est prête à être retirée ?</p>
+        <p class="sms-toast__phone">Un SMS « commande prête » sera envoyé au ${phone}</p>
+      </div>
+      <div class="sms-toast__actions">
+        <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer le SMS « commande prête »</button>
+        <button class="btn btn-sm btn-outline-secondary" data-role="dismiss">Ne pas envoyer</button>
       </div>
     `
 
