@@ -11,10 +11,15 @@ class SendSmsJob < ApplicationJob
       ENV.fetch("TWILIO_AUTH_TOKEN", nil)
     )
 
+    # Le message porté par la communication (rappel dédié, etc.) prime ; à défaut
+    # on retombe sur le message « commande prête » par défaut.
+    body = communication.content.presence ||
+           "Bonjour #{order.customer.firstname}, votre commande CMD-#{order.id} est prête à être retirée chez Popwear."
+
     client.messages.create(
       from: ENV.fetch("TWILIO_FROM_WHATSAPP", nil),
       to: "whatsapp:#{format_phone(phone)}",
-      body: "Bonjour #{order.customer.firstname}, votre commande CMD-#{order.id} est prête à être retirée chez Popwear."
+      body: body
     )
 
     communication.update!(status: "sent", sent_at: Time.current)
