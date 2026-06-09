@@ -2,8 +2,11 @@
 
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1>Commandes</h1>
-      <%= link_to new_order_path, class: "app-sidebar__cta", style: "width: auto; padding: 0 1.25rem;" do %>
+       <div>
+        <h1>Commandes</h1>
+        <p class="text-muted">Retrouvez et gérez vos commandes.</p>
+      </div>
+      <%= link_to new_order_path, class: "btn-cta" do %>
         <i class="fa-solid fa-plus"></i>
         <span>Nouvelle commande</span>
       <% end %>
@@ -13,9 +16,7 @@
       <%= form_with url: orders_path, method: :get, data: { search_target: "form", turbo_frame: "orders-kanban-board" }, class: "mb-4" do |f| %>
         <div class="input-group" style="max-width: 380px;">
           <span class="input-group-text bg-white border-end-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6c757d" viewBox="0 0 16 16">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
-            </svg>
+            <i class="fa-solid fa-magnifying-glass text-muted" style="font-size: 0.875rem;"></i>
           </span>
           <%= f.text_field :q,
               value: @search_query,
@@ -64,6 +65,8 @@
                     <% end %>
                   </strong>
                   <% if order.urgent? %>
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-25" style="width: 28px; height: 28px;">
+                      <i class="fa-solid fa-clock" style="color: #F4AD22; font-size: 0.875rem;"></i>
                     <% overdue = order.days_until_due&.negative? %>
                     <span class="d-inline-flex align-items-center justify-content-center rounded-circle <%= overdue ? "bg-danger bg-opacity-25" : "bg-warning bg-opacity-25" %>"
                           style="width: 28px; height: 28px;"
