@@ -26,31 +26,15 @@
         </div>
       <% end %>
 
-      <div class="order-form-field">
-        <%= f.label :customer_id, "Client" %>
-
-        <div class="order-input-with-icon">
-          <i class="fa fa-user"></i>
-          <%= f.collection_select :customer_id,
-            @customers,
-            :id,
-            :lastname,
-            { prompt: "Choisir un client" },
-            class: "order-input"
-          %>
-        </div>
-      </div>
-
       <div class="order-form-grid">
         <div class="order-form-field">
           <%= f.label :status, "Statut" %>
           <%= f.select :status,
             [
-              ["À faire", "pending"],
+              ["Nouvelle commande", "pending"],
               ["En cours", "in_progress"],
-              ["Terminée", "completed"],
-              ["Terminée", "delivered"],
-              ["Annulée", "cancelled"]
+              ["En attente de retrait", "sent"],
+              ["Terminée", "completed"]
             ],
             {},
             class: "order-input"
@@ -58,30 +42,16 @@
         </div>
 
         <div class="order-form-field">
-          <%= f.label :priority, "Priorité" %>
-          <%= f.select :priority,
-            [
-              ["Basse", "low"],
-              ["Moyenne", "medium"],
-              ["Haute", "high"],
-              ["Urgente", "urgent"]
-            ],
-            {},
-            class: "order-input"
-          %>
-        </div>
-      </div>
-
-      <div class="order-form-grid">
-        <div class="order-form-field">
-          <%= f.label :due_date, "Date limite" %>
+          <%= f.label :due_date, "Date de retrait" %>
 
           <div class="order-input-with-icon">
             <i class="fa fa-calendar"></i>
             <%= f.date_field :due_date, class: "order-input" %>
           </div>
         </div>
+      </div>
 
+      <div class="order-form-grid">
         <div class="order-form-field">
           <%= f.label :payment_method, "Moyen de paiement" %>
 
@@ -99,18 +69,18 @@
             %>
           </div>
         </div>
-      </div>
 
-      <div class="order-form-field">
-        <%= f.label :payment_status, "Statut paiement" %>
-        <%= f.select :payment_status,
-          [
-            ["En attente de règlement", "unpaid"],
-            ["Payé", "paid"]
-          ],
-          {},
-          class: "order-input"
-        %>
+        <div class="order-form-field">
+          <%= f.label :payment_status, "Statut paiement" %>
+          <%= f.select :payment_status,
+            [
+              ["En attente de règlement", "unpaid"],
+              ["Payé", "paid"]
+            ],
+            {},
+            class: "order-input"
+          %>
+        </div>
       </div>
 
       <div class="order-form-field">
@@ -135,7 +105,7 @@
             <div class="order-form-line-item">
               <%= line_form.label :item_id, "Prestation" %>
               <%= line_form.collection_select :item_id,
-                @items,
+                items,
                 :id,
                 :name,
                 { prompt: "Choisir une prestation" },
