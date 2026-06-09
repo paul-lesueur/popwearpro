@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_082409) do
     t.datetime "created_at", null: false
     t.string "kind"
     t.bigint "order_id", null: false
+    t.string "purpose"
     t.datetime "sent_at"
     t.string "status"
     t.datetime "updated_at", null: false
