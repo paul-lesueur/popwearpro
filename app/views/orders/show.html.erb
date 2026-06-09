@@ -42,6 +42,23 @@
     <% end %>
   </div>
 
+  <%# Rappel : commande toujours en attente de retrait à J+3 / J+10 ouvrés. %>
+  <% if (level = @order.pickup_reminder_level) %>
+    <div class="alert alert-warning d-flex flex-column gap-2" role="alert">
+      <span class="fw-semibold">
+        J+<%= level %> — Commande en attente de retrait depuis
+        <%= @order.business_days_waiting %> jour<%= "s" if @order.business_days_waiting > 1 %> ouvré<%= "s" if @order.business_days_waiting > 1 %>.
+      </span>
+      <% if @order.customer.phone.present? %>
+        <%= button_to "Envoyer un SMS de rappel au client",
+              order_communications_path(@order, reminder_level: level),
+              class: "btn btn-warning btn-sm align-self-start" %>
+      <% else %>
+        <span class="text-muted small">Aucun numéro de téléphone enregistré pour ce client.</span>
+      <% end %>
+    </div>
+  <% end %>
+
   <hr style="border-color: #EAE4DF;">
 
   <%# Prestations %>

@@ -5,6 +5,9 @@ class Order < ApplicationRecord
   DONE_STATUSES = %w[completed delivered].freeze
   # Statut « commande prête / en attente de retrait » (colonne kanban "recollect").
   READY_STATUS = "sent".freeze
+  # Paliers (en jours ouvrés) déclenchant un rappel SMS si la commande n'est
+  # toujours pas retirée. Du plus grand au plus petit pour la résolution du palier.
+  PICKUP_REMINDER_DAYS = [10, 3].freeze
 
   belongs_to :establishment
   belongs_to :customer
@@ -21,6 +24,9 @@ class Order < ApplicationRecord
 
   before_validation :set_default_discount
   before_save :set_completed_at
+  # Horodate l'entrée en « attente de retrait » (et la réinitialise à la sortie),
+  # pour pouvoir compter les jours ouvrés écoulés avant un rappel.
+  before_save :track_ready_at
   before_save :auto_mark_paid_on_completion
 
   # Email de confirmation transactionnel, uniquement si le client a un email.
@@ -48,6 +54,58 @@ class Order < ApplicationRecord
     name = customer&.firstname.presence || "client"
     shop = establishment&.name.presence || "votre atelier"
     "Bonjour #{name}, votre commande CMD-#{id} est prête à être retirée chez #{shop}."
+  end
+
+  # Nombre de jours ouvrés (lundi→vendredi) entre deux dates, bornes incluses au
+  # départ, exclue à l'arrivée. Renvoie 0 si la commande vient juste d'être prête.
+  def self.business_days_between(from_date, to_date)
+    return 0 if from_date.blank? || to_date.blank? || to_date <= from_date
+
+    (from_date...to_date).count { |day| (1..5).include?(day.wday) }
+  end
+
+  # Jours ouvrés écoulés depuis l'entrée en attente de retrait, ou nil si la
+  # commande n'est pas (ou plus) dans cet état.
+  def business_days_waiting
+    return nil unless status == READY_STATUS && ready_at.present?
+
+    Order.business_days_between(ready_at.to_date, Date.current)
+  end
+
+  # Palier de rappel à proposer (10, 3 ou nil) : le plus haut seuil atteint dont
+  # le rappel n'a pas encore été envoyé. L'alerte disparaît donc palier par palier.
+  def pickup_reminder_level
+    waiting = business_days_waiting
+    return nil if waiting.nil?
+
+    PICKUP_REMINDER_DAYS.find { |days| waiting >= days && !reminder_sent?(days) }
+  end
+
+  # Un rappel de ce palier a-t-il déjà été (ou est-il en cours d') envoyé ?
+  def reminder_sent?(level)
+    communications.where(channel: "sms", kind: "reminder_j#{level}")
+                  .where.not(status: "failed").exists?
+  end
+
+  # Crée la communication SMS de rappel « commande non retirée » et l'envoie.
+  def send_pickup_reminder!(level)
+    return if customer&.phone.blank?
+
+    communication = communications.create!(
+      kind: "reminder_j#{level}",
+      channel: "sms",
+      status: "pending",
+      content: pickup_reminder_message
+    )
+    SendSmsJob.perform_later(communication.id)
+    communication
+  end
+
+  def pickup_reminder_message
+    name = customer&.firstname.presence || "client"
+    shop = establishment&.name.presence || "votre atelier"
+    "Bonjour #{name}, petit rappel : votre commande CMD-#{id} vous attend " \
+      "toujours chez #{shop}. Pensez à venir la retirer !"
   end
 
   def self.auto_archive_done!(establishment)
@@ -137,5 +195,17 @@ class Order < ApplicationRecord
     return unless status_changed? && DONE_STATUSES.include?(status)
 
     self.completed_at ||= Time.current
+  end
+
+  def track_ready_at
+    return unless status_changed?
+
+    if status == READY_STATUS
+      self.ready_at ||= Time.current
+    else
+      # La commande quitte l'attente de retrait : on repart à zéro pour un
+      # éventuel passage ultérieur.
+      self.ready_at = nil
+    end
   end
 end

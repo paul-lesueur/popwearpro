@@ -310,6 +310,58 @@ active_orders.each_with_index do |order, index|
   )
 end
 
+puts "Creating pickup-reminder test orders..."
+
+# Renvoie un horodatage situé `n` jours ouvrés (lundi→vendredi) avant aujourd'hui.
+business_days_ago = lambda do |n|
+  date = Date.current
+  remaining = n
+  while remaining.positive?
+    date -= 1
+    remaining -= 1 if (1..5).include?(date.wday)
+  end
+  date.to_time.change(hour: 10)
+end
+
+reminder_item = items_by_name["Ressemelage sneakers"] || items_by_name.values.first
+
+# Trois commandes « en attente de retrait » pour tester les rappels SMS.
+# On crée d'abord la commande (le callback pose ready_at = maintenant), puis on
+# force ready_at dans le passé via update_columns (sans repasser par les callbacks).
+reminder_scenarios = [
+  { customer: customers[0], waiting: 0,  note: "TEST — commande prête (J+0), à retirer." },
+  { customer: customers[1], waiting: 4,  note: "TEST — retard de retrait (J+3 ouvrés)." },
+  { customer: customers[2], waiting: 12, note: "TEST — retard de retrait (J+10 ouvrés)." }
+]
+
+reminder_orders = reminder_scenarios.map do |scenario|
+  created_at = business_days_ago.call(scenario[:waiting] + 1)
+
+  order = create_order_with_lines!(
+    establishment: establishment,
+    customer: scenario[:customer],
+    status: "sent",
+    priority: "medium",
+    created_at: created_at,
+    due_date: created_at.to_date,
+    payment_method: "card",
+    payment_status: "paid",
+    paid_at: created_at,
+    collected_at: nil,
+    internal_notes: scenario[:note],
+    lines: [{ item: reminder_item, quantity: 1 }]
+  )
+
+  ready_at = scenario[:waiting].zero? ? Time.current : business_days_ago.call(scenario[:waiting])
+  order.update_columns(sms_reminder: true, ready_at: ready_at)
+  order
+end
+
+reminder_orders.each do |order|
+  puts "  -> CMD-#{order.id} (#{order.customer.display_name}) : " \
+       "attente #{order.business_days_waiting} j ouvrés, palier #{order.pickup_reminder_level.inspect}"
+end
+
 puts "Seeds finished!"
 puts "#{User.count} user created"
 puts "#{Establishment.count} establishment created"

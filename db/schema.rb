@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_092130) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_09_094002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -125,6 +125,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_092130) do
     t.string "payment_method"
     t.string "payment_status"
     t.string "priority"
+    t.datetime "ready_at"
     t.boolean "sms_reminder", default: false, null: false
     t.string "status"
     t.datetime "updated_at", null: false

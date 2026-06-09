@@ -16,7 +16,7 @@ class OrdersController < ApplicationController
 
     orders = current_establishment.orders
                                   .not_archived
-                                  .includes(:customer, order_lines: :item)
+                                  .includes(:customer, :communications, order_lines: :item)
                                   .order(created_at: :desc)
 
     @search_query = params[:q].to_s.strip
