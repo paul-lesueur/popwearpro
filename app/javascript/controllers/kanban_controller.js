@@ -8,8 +8,8 @@ export default class extends Controller {
     if (!raw) return
     sessionStorage.removeItem("smsFlash")
     try {
-      const { sent, name } = JSON.parse(raw)
-      this.#showSmsFlash(sent, name)
+      const { variant, message } = JSON.parse(raw)
+      this.#showSmsFlash(variant, message)
     } catch (_) {
       // flag invalide : on ignore
     }
@@ -106,7 +106,7 @@ export default class extends Controller {
     toast.querySelector("[data-role='confirm']").addEventListener("click", async () => {
       toast.querySelector("[data-role='confirm']").disabled = true
       toast.querySelector("[data-role='dismiss']").disabled = true
-      await fetch(`/orders/${orderId}/communications`, {
+      const response = await fetch(`/orders/${orderId}/communications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,27 +115,26 @@ export default class extends Controller {
         },
         body: JSON.stringify({ channel: "sms" })
       })
-      sessionStorage.setItem("smsFlash", JSON.stringify({ sent: true, name: customerName }))
+      // Le serveur renvoie le vrai résultat (envoyé / déjà envoyé / sans téléphone).
+      const result = await response.json()
+        .catch(() => ({ variant: "info", message: "SMS « commande prête » : envoi indéterminé." }))
+      sessionStorage.setItem("smsFlash", JSON.stringify(result))
       closeAndReload()
     })
 
     toast.querySelector("[data-role='dismiss']").addEventListener("click", () => {
-      sessionStorage.setItem("smsFlash", JSON.stringify({ sent: false, name: customerName }))
+      sessionStorage.setItem("smsFlash", JSON.stringify({ variant: "info", message: "SMS « commande prête » non envoyé." }))
       closeAndReload()
     })
   }
 
-  #showSmsFlash(sent, name) {
+  #showSmsFlash(variant, message) {
     // Même emplacement que le toast : sous la barre de recherche, au-dessus du kanban.
     const stack = document.querySelector(".sms-toast-container")
     if (!stack) return
 
-    const message = sent
-      ? `SMS « commande prête » envoyé à ${name}.`
-      : `SMS « commande prête » non envoyé à ${name}.`
-
     const card = document.createElement("div")
-    card.className = `flash-card flash-card--${sent ? "success" : "info"} alert alert-dismissible fade show`
+    card.className = `flash-card flash-card--${variant || "info"} alert alert-dismissible fade show`
     card.setAttribute("role", "alert")
     card.innerHTML = `
       <span class="flash-card__accent"></span>

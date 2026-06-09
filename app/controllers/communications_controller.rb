@@ -18,7 +18,7 @@ class CommunicationsController < ApplicationController
       @flash = ready_flash(sent)
       respond_to do |format|
         format.turbo_stream { render "orders/update_modal" }
-        format.json { head :ok } # toast kanban (fetch)
+        format.json { render json: @flash } # toast kanban : { variant, message }
         format.html { redirect_to order_path(@order), flash: redirect_flash }
       end
     end

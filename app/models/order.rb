@@ -88,9 +88,10 @@ class Order < ApplicationRecord
   end
 
   # Un SMS de ce type a-t-il déjà été (ou est-il en cours d') envoyé ?
-  # Garde-fou central contre les doubles envois (back-end).
+  # Garde-fou central contre les doubles envois (back-end). On itère sur
+  # l'association (chargée en eager-load dans le kanban) pour éviter un N+1.
   def sms_already_sent?(kind)
-    communications.where(channel: "sms", kind: kind).where.not(status: "failed").exists?
+    communications.any? { |c| c.channel == "sms" && c.kind == kind && c.status != "failed" }
   end
 
   def reminder_sent?(level)

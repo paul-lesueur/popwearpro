@@ -52,10 +52,12 @@
           <%= f.date_field :due_date, id: "reschedule_due_date_#{order.id}", value: order.due_date,
                 min: Date.current, required: true, class: "form-control form-control-sm" %>
         </div>
-        <%= f.submit "Mettre à jour la date et prévenir le client par SMS",
+        <%= f.submit "Mettre à jour la date de retrait",
               class: "btn btn-sm #{d.negative? ? "btn-danger" : "btn-warning"}" %>
       <% end %>
-      <% if order.customer.phone.blank? %>
+      <% if order.customer.phone.present? %>
+        <p class="text-muted small mb-0">Le client est prévenu par SMS si la date est repoussée.</p>
+      <% else %>
         <span class="text-muted small">Aucun téléphone client : la date sera mise à jour sans SMS.</span>
       <% end %>
     </div>

@@ -98,13 +98,17 @@ class OrdersController < ApplicationController
   # Replanifie la date de retrait. SMS envoyé uniquement si la nouvelle date est
   # un vrai report (postérieure à l'ancienne). Réponse Turbo Stream (fluide).
   def reschedule
-    new_due_date = params[:due_date]
+    new_date = begin
+      params[:due_date].present? ? Date.parse(params[:due_date].to_s) : nil
+    rescue ArgumentError, TypeError
+      nil
+    end
 
     @flash =
-      if new_due_date.blank?
-        { variant: "error", message: "Indiquez une nouvelle date de retrait." }
+      if new_date.nil?
+        { variant: "error", message: "Indiquez une date de retrait valide." }
       else
-        reschedule_flash(@order.reschedule_and_notify!(new_due_date))
+        reschedule_flash(@order.reschedule_and_notify!(new_date))
       end
 
     respond_to do |format|
