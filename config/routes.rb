@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       patch :move
       patch :unarchive
       patch :reschedule
+      patch :toggle_reminder
       get :confirmation
     end
   end

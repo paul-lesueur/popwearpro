@@ -84,9 +84,11 @@
 
                 <% if order.order_lines.any? %>
                   <p class="mb-1"><small class="fw-semibold text-muted">Prestations</small></p>
-                  <% order.order_lines.each do |line| %>
-                    <p class="mb-0"><small class="text-muted"><%= line.item.name %></small></p>
-                  <% end %>
+                  <ul class="mb-0 ps-3">
+                    <% order.order_lines.each do |line| %>
+                      <li><small class="text-muted"><%= line.item.name %></small></li>
+                    <% end %>
+                  </ul>
                 <% end %>
 
                 <div class="mt-2 pt-2 border-top" style="border-color: #EAE4DF !important;">
