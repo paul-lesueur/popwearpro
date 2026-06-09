@@ -2,9 +2,14 @@ class Order < ApplicationRecord
   include OrderTotals
 
   ARCHIVE_THRESHOLD_DAYS = 14
+  # Commande retirée par le client (colonne kanban "Terminées").
   DONE_STATUSES = %w[completed delivered].freeze
   # Statut « commande prête / en attente de retrait » (colonne kanban "recollect").
+  # = travail terminé côté atelier, plus rien à « traiter ».
   READY_STATUS = "sent".freeze
+  # Commande encore à traiter (colonnes "Nouvelles commandes" / "En cours").
+  # Seuls ces statuts peuvent être « urgents » au regard de la date de retrait.
+  IN_PROGRESS_STATUSES = %w[pending in_progress].freeze
   # Paliers (en jours ouvrés) déclenchant un rappel SMS si la commande n'est
   # toujours pas retirée. Du plus grand au plus petit pour la résolution du palier.
   PICKUP_REMINDER_DAYS = [10, 3].freeze
@@ -133,17 +138,13 @@ class Order < ApplicationRecord
     [total_ttc - discount.to_f, 0].max
   end
 
+  # « Urgent à traiter » : commande encore en cours (ni prête, ni terminée)
+  # dont la date de retrait est imminente (≤ 2 j) ou déjà dépassée. Une commande
+  # en attente de retrait est considérée comme traitée, donc jamais urgente.
   def urgent?
-    due_date.present? && due_date <= Date.current + 2.days && !DONE_STATUSES.include?(status)
-  end
+    return false unless IN_PROGRESS_STATUSES.include?(status)
 
-  # Statuts d'une commande pas encore prête (avant l'attente de retrait).
-  IN_PROGRESS_STATUSES = %w[pending in_progress].freeze
-
-  # Date de retrait imminente OU dépassée, sur une commande pas encore prête :
-  # on alerte l'artisan pour qu'il replanifie et prévienne le client.
-  def due_date_alert?
-    urgent? && IN_PROGRESS_STATUSES.include?(status)
+    due_date.present? && due_date <= Date.current + 2.days
   end
 
   # Jours calendaires avant la date de retrait (négatif si déjà dépassée).

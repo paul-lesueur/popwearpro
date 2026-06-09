@@ -390,7 +390,7 @@ end
 
 due_date_orders.each do |order|
   puts "  -> CMD-#{order.id} (#{order.customer.display_name}) : " \
-       "#{order.status}, retrait dans #{order.days_until_due} j, alerte #{order.due_date_alert?}"
+       "#{order.status}, retrait dans #{order.days_until_due} j, urgent #{order.urgent?}"
 end
 
 puts "Seeds finished!"

@@ -61,7 +61,7 @@
 
   <%# Alerte : date de retrait imminente ou dépassée, commande pas encore prête.
       On propose de replanifier la date et d'en informer le client par SMS. %>
-  <% if @order.due_date_alert? %>
+  <% if @order.urgent? %>
     <% d = @order.days_until_due %>
     <div class="alert <%= d.negative? ? "alert-danger" : "alert-warning" %> d-flex flex-column gap-2" role="alert">
       <span class="fw-semibold">
