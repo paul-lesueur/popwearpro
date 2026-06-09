@@ -238,9 +238,14 @@
       <p class="fw-semibold mb-0">Rappel SMS au client</p>
       <p class="text-muted small mb-0">Prévenir automatiquement le client par SMS lorsque la commande est prête.</p>
     </div>
-    <%= button_to toggle_reminder_order_path(@order), method: :patch,
-          class: "btn btn-sm flex-shrink-0 #{@order.sms_reminder? ? "btn-success" : "btn-outline-secondary"}" do %>
-      <%= @order.sms_reminder? ? "Activé" : "Désactivé" %>
+    <%# Toggle slider (même visuel que le formulaire de création) : le submit
+        bascule sms_reminder côté serveur, puis le frame se recharge. %>
+    <%= form_with url: toggle_reminder_order_path(@order), method: :patch, class: "mb-0 flex-shrink-0" do %>
+      <button type="submit"
+              class="w-toggle <%= "is-on" if @order.sms_reminder? %>"
+              role="switch"
+              aria-checked="<%= @order.sms_reminder? %>"
+              aria-label="Activer le rappel SMS au client"></button>
     <% end %>
   </div>
 </div>
