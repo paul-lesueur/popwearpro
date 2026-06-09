@@ -74,6 +74,5 @@ group :test do
 end
 
 gem "pagy", "~> 43.5"
-gem "ruby_llm"
 
 gem "twilio-ruby"
