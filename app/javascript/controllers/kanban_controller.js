@@ -125,7 +125,8 @@ export default class extends Controller {
   }
 
   #showSmsFlash(sent, name) {
-    const stack = document.querySelector(".flash-stack")
+    // Même emplacement que le toast : sous la barre de recherche, au-dessus du kanban.
+    const stack = document.querySelector(".sms-toast-container")
     if (!stack) return
 
     const message = sent
