@@ -59,6 +59,36 @@
     </div>
   <% end %>
 
+  <%# Alerte : date de retrait imminente ou dépassée, commande pas encore prête.
+      On propose de replanifier la date et d'en informer le client par SMS. %>
+  <% if @order.due_date_alert? %>
+    <% d = @order.days_until_due %>
+    <div class="alert <%= d.negative? ? "alert-danger" : "alert-warning" %> d-flex flex-column gap-2" role="alert">
+      <span class="fw-semibold">
+        <% if d.negative? %>
+          Date de retrait dépassée de <%= -d %> jour<%= "s" if d < -1 %> — commande pas encore prête.
+        <% elsif d.zero? %>
+          Date de retrait aujourd'hui — commande pas encore prête.
+        <% else %>
+          Date de retrait dans <%= d %> jour<%= "s" if d > 1 %> — commande pas encore prête.
+        <% end %>
+      </span>
+      <%= form_with url: reschedule_order_path(@order), method: :patch,
+            class: "d-flex flex-wrap align-items-end gap-2 mb-0" do |f| %>
+        <div>
+          <label class="form-label small mb-1" for="reschedule_due_date">Nouvelle date de retrait</label>
+          <%= f.date_field :due_date, id: "reschedule_due_date", value: @order.due_date,
+                min: Date.current, required: true, class: "form-control form-control-sm" %>
+        </div>
+        <%= f.submit "Mettre à jour et prévenir le client",
+              class: "btn btn-sm #{d.negative? ? "btn-danger" : "btn-warning"}" %>
+      <% end %>
+      <% if @order.customer.phone.blank? %>
+        <span class="text-muted small">Aucun téléphone client : la date sera mise à jour sans SMS.</span>
+      <% end %>
+    </div>
+  <% end %>
+
   <hr style="border-color: #EAE4DF;">
 
   <%# Prestations %>

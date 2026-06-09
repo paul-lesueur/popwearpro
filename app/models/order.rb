@@ -137,6 +137,45 @@ class Order < ApplicationRecord
     due_date.present? && due_date <= Date.current + 2.days && !DONE_STATUSES.include?(status)
   end
 
+  # Statuts d'une commande pas encore prête (avant l'attente de retrait).
+  IN_PROGRESS_STATUSES = %w[pending in_progress].freeze
+
+  # Date de retrait imminente OU dépassée, sur une commande pas encore prête :
+  # on alerte l'artisan pour qu'il replanifie et prévienne le client.
+  def due_date_alert?
+    urgent? && IN_PROGRESS_STATUSES.include?(status)
+  end
+
+  # Jours calendaires avant la date de retrait (négatif si déjà dépassée).
+  def days_until_due
+    return nil if due_date.blank?
+
+    (due_date - Date.current).to_i
+  end
+
+  # Replanifie la date de retrait et prévient le client par SMS de la nouvelle
+  # date (le SMS est sauté si le client n'a pas de téléphone).
+  def reschedule_and_notify!(new_due_date)
+    update!(due_date: new_due_date)
+    return if customer&.phone.blank?
+
+    communication = communications.create!(
+      kind: "delay_notice",
+      channel: "sms",
+      status: "pending",
+      content: delay_notice_message
+    )
+    SendSmsJob.perform_later(communication.id)
+    communication
+  end
+
+  def delay_notice_message
+    name = customer&.firstname.presence || "client"
+    date = due_date.present? ? I18n.l(due_date, format: :long) : "prochainement"
+    "Bonjour #{name}, votre commande CMD-#{id} sera finalement prête le #{date}. " \
+      "Merci de votre compréhension."
+  end
+
   def paid?
     payment_status == "paid"
   end

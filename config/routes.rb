@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     member do
       patch :move
       patch :unarchive
+      patch :reschedule
       get :confirmation
     end
   end
