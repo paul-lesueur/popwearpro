@@ -111,27 +111,13 @@ class CommunicationsController < ApplicationController
   end
 
   def create_sms_communication
-    communication = @order.communications.create!(
-      kind: "ready",
-      channel: "sms",
-      status: "pending",
-      purpose: "sms_notification",
-      recipient_email: @order.customer&.email,
-      content: sms_ready_message
-    )
-
-    SendSmsJob.perform_later(communication.id)
-
-    head :ok
+    if @order.notify_ready_by_sms!
+      head :ok
+    else
+      head :unprocessable_entity
+    end
   rescue StandardError => e
     Rails.logger.error("Erreur SMS communication : #{e.message}")
     head :unprocessable_entity
-  end
-
-  def sms_ready_message
-    customer_firstname = @order.customer&.firstname.presence || "client"
-    establishment_name = @order.establishment&.name.presence || "votre atelier"
-
-    "Bonjour #{customer_firstname}, votre commande CMD-#{@order.id} est prête à être retirée chez #{establishment_name}."
   end
 end

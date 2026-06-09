@@ -8,6 +8,7 @@ class OrderMailer < ApplicationMailer
     @establishment = order.establishment
     @order_lines   = order.order_lines.includes(:item)
 
+    attach_logo
     attach_receipt
 
     mail(
@@ -17,6 +18,12 @@ class OrderMailer < ApplicationMailer
   end
 
   private
+
+  # Logo embarqué en inline (cid:) : s'affiche sans dépendre d'images externes.
+  def attach_logo
+    path = Rails.root.join("app", "assets", "images", "logo-popwear-pro.png")
+    attachments.inline["logo-popwear-pro.png"] = File.read(path)
+  end
 
   def attach_receipt
     receipt = Receipts::Receipt.new(

@@ -7,8 +7,7 @@
         <!-- Header -->
         <tr>
           <td bgcolor="#EE7635" style="background:#EE7635;background:linear-gradient(135deg,#EE7635,#FF6342);padding:28px 32px;">
-            <span style="font-family:'League Spartan',Arial,sans-serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:#ffffff;text-transform:lowercase;">popwear</span>
-            <span style="font-family:'League Spartan',Arial,sans-serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:#ffffff;"> PRO ★</span>
+            <span style="font-family:'League Spartan',Arial,sans-serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:#ffffff;"><%= @establishment.name %></span>
           </td>
         </tr>
 
@@ -16,11 +15,21 @@
         <tr>
           <td style="padding:32px 32px 8px 32px;">
             <h1 style="margin:0;font-family:'League Spartan',Arial,sans-serif;font-size:26px;line-height:1.2;color:#411221;">
-              Merci <%= @customer.short_name %>, c'est noté&nbsp;!
+              Votre commande est en cours de traitement
             </h1>
             <p style="margin:12px 0 0 0;font-size:15px;line-height:1.5;color:#8B82B0;">
-              Votre commande chez <strong style="color:#131523;"><%= @establishment.name %></strong> est confirmée. Voici le récapitulatif.
+              Bonjour <%= @customer.display_name %>,
+              <% if @order.due_date.present? %>
+                la date de retrait est fixée au <strong style="color:#131523;"><%= l(@order.due_date, format: :long) %></strong>.
+              <% else %>
+                la date de retrait vous sera communiquée prochainement.
+              <% end %>
             </p>
+            <% if @order.sms_reminder? %>
+              <p style="margin:12px 0 0 0;font-size:15px;line-height:1.5;color:#131523;">
+                📱 Vous recevrez un SMS dès que votre commande sera prête à être retirée.
+              </p>
+            <% end %>
           </td>
         </tr>
 
@@ -131,9 +140,20 @@
         <!-- Footer -->
         <tr>
           <td style="padding:24px 32px 28px 32px;border-top:1px solid #F0E9E9;">
-            <p style="margin:0;font-size:12px;line-height:1.5;color:#8B82B0;">
-              Cet email vous a été envoyé automatiquement par <strong>popwear PRO</strong> — merci de ne pas y répondre (adresse noreply).
+            <p style="margin:0 0 16px 0;font-size:12px;line-height:1.5;color:#8B82B0;">
+              Cet email vous a été envoyé automatiquement — merci de ne pas y répondre (adresse noreply).
             </p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="font-size:11px;color:#8B82B0;padding-right:8px;vertical-align:middle;">Propulsé par</td>
+                <td style="vertical-align:middle;">
+                  <%= image_tag attachments["logo-popwear-pro.png"].url,
+                        alt: "Popwear PRO",
+                        width: 92, height: 24,
+                        style: "display:block;width:92px;height:auto;border:0;" %>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 

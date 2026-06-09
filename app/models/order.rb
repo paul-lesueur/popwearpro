@@ -3,6 +3,8 @@ class Order < ApplicationRecord
 
   ARCHIVE_THRESHOLD_DAYS = 14
   DONE_STATUSES = %w[completed delivered].freeze
+  # Statut « commande prête / en attente de retrait » (colonne kanban "recollect").
+  READY_STATUS = "sent".freeze
 
   belongs_to :establishment
   belongs_to :customer
@@ -22,6 +24,30 @@ class Order < ApplicationRecord
 
   # Email de confirmation transactionnel, uniquement si le client a un email.
   after_create_commit :send_confirmation_email
+  # Rappel « commande prête » : envoyé quand la commande passe en attente de
+  # retrait, si le rappel SMS a été activé sur la commande.
+  after_update_commit :notify_ready_by_sms_if_enabled
+
+  # Crée la communication SMS « commande prête » et déclenche son envoi.
+  # Réutilisé par l'envoi automatique (toggle) et l'envoi manuel.
+  def notify_ready_by_sms!
+    return if customer&.phone.blank?
+
+    communication = communications.create!(
+      kind: "ready",
+      channel: "sms",
+      status: "pending",
+      content: sms_ready_message
+    )
+    SendSmsJob.perform_later(communication.id)
+    communication
+  end
+
+  def sms_ready_message
+    name = customer&.firstname.presence || "client"
+    shop = establishment&.name.presence || "votre atelier"
+    "Bonjour #{name}, votre commande CMD-#{id} est prête à être retirée chez #{shop}."
+  end
 
   def self.auto_archive_done!(establishment)
     threshold = ARCHIVE_THRESHOLD_DAYS.days.ago
@@ -80,6 +106,17 @@ class Order < ApplicationRecord
     return if customer.email.blank?
 
     OrderMailer.confirmation(self).deliver_later
+  end
+
+  # Déclenche le SMS « prête » au passage en attente de retrait, si le rappel
+  # est activé et qu'aucun SMS « prête » n'a déjà été (ou est en cours d') envoyé.
+  def notify_ready_by_sms_if_enabled
+    return unless sms_reminder?
+    return unless saved_change_to_status? && status == READY_STATUS
+    return if communications.where(channel: "sms", kind: "ready")
+                            .where.not(status: "failed").exists?
+
+    notify_ready_by_sms!
   end
 
   def set_default_discount
