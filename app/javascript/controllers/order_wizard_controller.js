@@ -218,12 +218,15 @@ export default class extends Controller {
     // panier : lignes + totaux + champs cachés
     this.renderCart()
 
-    // navigation
-    this.backTarget.classList.toggle("invisible", this.step === 0)
+    // navigation (boutons dupliqués en haut ET en bas)
     const last = this.step === 4
-    this.nextTarget.classList.toggle("d-none", last)
-    this.finalizeTarget.classList.toggle("d-none", !last)
-    this.nextTarget.disabled = !this.canContinue()
+    const blocked = !this.canContinue()
+    this.backTargets.forEach((b) => b.classList.toggle("invisible", this.step === 0))
+    this.nextTargets.forEach((b) => {
+      b.classList.toggle("d-none", last)
+      b.disabled = blocked
+    })
+    this.finalizeTargets.forEach((b) => b.classList.toggle("d-none", !last))
     if (this.hasHintTarget) {
       let hint = ""
       if (this.step === 1 && !this.canContinue()) hint = "Ajoutez au moins une prestation"
@@ -253,7 +256,7 @@ export default class extends Controller {
       recapHtml.push(`
         <div class="recap__line">
           <span class="recap__line-name"><span class="catalog-icon-halo" style="width:34px;height:34px">${icon}</span><span>${qty}× ${name}</span></span>
-          <span style="font-family:var(--font-heading,inherit);font-weight:600">${this.money(price * qty)}</span>
+          <span style="font-weight:600">${this.money(price * qty)}</span>
         </div>`)
 
       receiptHtml.push(`
@@ -305,11 +308,12 @@ export default class extends Controller {
     this.discountRowTargets.forEach((row) => row.classList.toggle("d-none", discount <= 0))
     this.discountAmountTargets.forEach((e) => (e.textContent = `− ${this.money(discount)}`))
 
-    // bouton "Continuer · total" et "Valider · total"
-    if (this.hasNextTarget && this.step === 1 && ids.length > 0) {
-      const amount = this.nextTarget.querySelector("[data-amount]")
-      if (amount) amount.textContent = ` · ${this.money(totalDue)}`
-    }
+    // bouton "Continuer · total" (étape panier) — sur tous les boutons Continuer
+    const showAmount = this.step === 1 && ids.length > 0
+    this.nextTargets.forEach((b) => {
+      const amount = b.querySelector("[data-amount]")
+      if (amount) amount.textContent = showAmount ? ` · ${this.money(totalDue)}` : ""
+    })
     this.element.querySelectorAll("[data-total-amount]").forEach((e) => (e.textContent = this.money(totalDue)))
   }
 

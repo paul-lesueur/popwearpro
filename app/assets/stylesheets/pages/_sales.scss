@@ -524,7 +524,7 @@
     background: transparent;
 
     &::placeholder {
-      color: #d0c7c5;
+      color: rgba($subtext, 0.7);
     }
   }
 }
