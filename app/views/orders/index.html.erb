@@ -40,7 +40,7 @@
              data-action="dragover->kanban#dragover dragleave->kanban#dragleave drop->kanban#drop">
           <% badge_styles = { "new" => "bg-gradient-green", "in_progress" => "bg-gradient-orange", "recollect" => "bg-warning", "done" => nil } %>
           <div class="d-flex align-items-center mb-3">
-            <h6 class="mb-0 fw-semibold"><%= column[:label] %></h6>
+            <h2 class="kanban-column__title mb-0"><%= column[:label] %></h2>
             <% if badge_styles[column[:key]] %>
               <span class="badge rounded-pill text-white ms-auto <%= badge_styles[column[:key]] %>"><%= column[:orders].count %></span>
             <% else %>
@@ -49,59 +49,55 @@
           </div>
 
           <% column[:orders].each do |order| %>
-            <div class="card mb-3 border-0 bg-white"
+            <div class="kanban-card mb-3"
                  draggable="true"
                  data-order-id="<%= order.id %>"
                  data-phone="<%= order.customer.phone %>"
                  data-customer-name="<%= [order.customer.firstname, order.customer.lastname].compact.join(' ').presence || 'Client' %>"
                  data-status="<%= order.status %>"
                  data-payment-status="<%= order.payment_status %>"
-                 data-action="dragstart->kanban#dragstart dragend->kanban#dragend"
-                 style="box-shadow: 0 4px 16px rgba(19,21,35,.06); cursor: grab;">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-1">
-                  <strong class="text-primary">
-                    <% if order.customer.firstname %>
-                      <%= order.customer.firstname&.first %>. <%= order.customer.lastname %>
+                 data-action="dragstart->kanban#dragstart dragend->kanban#dragend">
+              <div class="kanban-card__head">
+                <div>
+                  <p class="kanban-card__name">
+                    <% if order.customer.firstname.present? %>
+                      <%= order.customer.firstname %><%= " #{order.customer.lastname.first}." if order.customer.lastname.present? %>
                     <% else %>
-                      <em>Anonyme</em>
+                      <%= order.customer.display_name %>
                     <% end %>
-                  </strong>
-                  <%= render "orders/tile_indicators", order: order %>
+                  </p>
+                  <p class="kanban-card__meta">N° commande : CMD-<%= order.id %></p>
                 </div>
-
-                <small class="text-muted d-block mb-2" style="font-size: 0.75rem;">N° CMD-<%= order.id %></small>
-
-                <% if order.due_date.present? %>
-                  <small class="text-muted d-block mb-1">Retrait : <%= order.due_date.strftime("%d/%m/%y") %></small>
-                <% end %>
-
-                <% if order.order_lines.any? %>
-                  <p class="mb-1"><small class="fw-semibold text-muted">Prestations</small></p>
-                  <ul class="mb-0 ps-3">
-                    <% order.order_lines.each do |line| %>
-                      <li><small class="text-muted"><%= line.item.name %></small></li>
-                    <% end %>
-                  </ul>
-                <% end %>
-
-                <div class="mt-2 pt-2 border-top" style="border-color: #EAE4DF !important;">
-                  <small class="text-muted">
-                    <%= number_to_currency(order.total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> HT
-                  </small>
-                  <div class="fw-bold text-secondary">
-                    <%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC
-                  </div>
-                </div>
-
-                <div class="mt-3">
-                  <a href="<%= order_path(order) %>"
-                     class="btn btn-outline-primary btn-sm w-100"
-                     data-turbo-frame="order-detail"
-                     data-action="click->modal#open"
-                     <%= "data-modal-target=autoOpen" if order.id == params[:open].to_i %>>Voir le détail</a>
-                </div>
+                <%= render "orders/tile_indicators", order: order %>
               </div>
+
+              <hr class="kanban-card__divider">
+
+              <% if order.due_date.present? %>
+                <p class="kanban-card__value"><span class="kanban-card__label kanban-card__label--inline">Retrait :</span> <%= order.due_date.strftime("%d/%m/%Y") %></p>
+              <% end %>
+
+              <% if order.order_lines.any? %>
+                <p class="kanban-card__label">Prestations</p>
+                <ul class="kanban-card__list">
+                  <% order.order_lines.each do |line| %>
+                    <li><%= line.item.name %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+
+              <div class="kanban-card__prices">
+                <span class="kanban-card__ht"><%= number_to_currency(order.total_ht, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> HT</span>
+                <span class="kanban-card__ttc"><%= number_to_currency(order.total_ttc, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %> TTC</span>
+              </div>
+
+              <hr class="kanban-card__divider">
+
+              <a href="<%= order_path(order) %>"
+                 class="kanban-card__cta btn btn-outline-primary rounded-pill"
+                 data-turbo-frame="order-detail"
+                 data-action="click->modal#open"
+                 <%= "data-modal-target=autoOpen" if order.id == params[:open].to_i %>>Voir le détail</a>
             </div>
           <% end %>
 
