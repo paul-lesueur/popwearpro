@@ -61,7 +61,7 @@
                 <div>
                   <p class="kanban-card__name">
                     <% if order.customer.firstname.present? %>
-                      <%= order.customer.firstname %><%= " #{order.customer.lastname.first}." if order.customer.lastname.present? %>
+                      <%= order.customer.firstname.first %>.<%= " #{order.customer.lastname}" if order.customer.lastname.present? %>
                     <% else %>
                       <%= order.customer.display_name %>
                     <% end %>
@@ -94,7 +94,7 @@
               <hr class="kanban-card__divider">
 
               <a href="<%= order_path(order) %>"
-                 class="kanban-card__cta btn btn-outline-primary rounded-pill"
+                 class="kanban-card__cta btn btn-outline-primary"
                  data-turbo-frame="order-detail"
                  data-action="click->modal#open"
                  <%= "data-modal-target=autoOpen" if order.id == params[:open].to_i %>>Voir le détail</a>

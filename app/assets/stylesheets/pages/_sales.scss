@@ -385,6 +385,17 @@
     font-size: 13px;
     font-weight: 600;
   }
+
+  // Colonnes Prix + Unités : un peu d'air à gauche pour ne pas coller au nom.
+  th:nth-child(2), td:nth-child(2),
+  th:nth-child(3), td:nth-child(3) {
+    padding-left: 16px;
+  }
+
+  // Valeur du prix : jamais coupée (le "€" passait à la ligne).
+  td:nth-child(2) {
+    white-space: nowrap;
+  }
 }
 
 .sales-product {

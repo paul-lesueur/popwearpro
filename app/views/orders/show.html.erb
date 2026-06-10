@@ -1,10 +1,12 @@
 <turbo-frame id="order-detail">
-<div>
+<div class="order-modal">
   <div class="d-flex justify-content-between align-items-start mb-4">
     <h2 class="mb-0">Commande #<%= @order.id %></h2>
-    <div class="d-flex gap-2">
-      <button type="button" class="btn btn-outline-primary btn-sm" data-action="click->modal#close">Fermer</button>
-      <%= link_to "Modifier", edit_order_path(@order), class: "btn btn-outline-primary btn-sm", data: { turbo_frame: "_top" } %>
+    <div class="d-flex gap-2 align-items-center">
+      <button type="button" class="btn-wiz btn-wiz--ghost" data-action="click->modal#close"><i class="fa-solid fa-xmark"></i>Fermer</button>
+      <%= link_to edit_order_path(@order), class: "btn-wiz btn-wiz--primary", data: { turbo_frame: "_top" } do %>
+        <i class="fa-solid fa-pencil"></i>Modifier
+      <% end %>
     </div>
   </div>
 
@@ -23,6 +25,8 @@
   <h5 class="fw-bold text-secondary mb-2">Client</h5>
   <p class="text-muted mb-4"><%= @order.customer.display_name %></p>
 
+  <hr style="border-color: #EAE4DF;">
+
   <%# Statut de la commande %>
   <h5 class="fw-bold text-secondary mb-3">Statut de la commande</h5>
   <% status_labels = {
@@ -32,7 +36,7 @@
     "completed"   => "Terminée",
     "delivered"   => "Terminée"
   } %>
-  <% payment_method_labels = { "card" => "Carte", "cash" => "Espèces", "check" => "Chèque", "bank_transfer" => "Virement", "other" => "Autre" } %>
+  <% payment_method_labels = { "card" => "Carte bancaire", "cash" => "Espèces", "check" => "Chèque", "bank_transfer" => "Virement", "other" => "Autre" } %>
   <% payment_status_labels = { "unpaid" => "En attente de paiement", "paid" => "Payé" } %>
   <%# Couleurs alignées sur les colonnes du kanban (cf. badge_styles dans index). %>
   <% status_badge_classes = { "pending" => "bg-gradient-green", "in_progress" => "bg-gradient-orange", "sent" => "bg-warning" } %>
@@ -93,7 +97,7 @@
   </div>
 
   <%# Tags paiement (sous le montant) : modalité puis moyen de paiement %>
-  <div class="d-flex flex-column align-items-start gap-2">
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2">
     <%# Modalité de paiement : orange (en attente) / vert (payé) %>
     <% if @order.payment_status.present? %>
       <% paid = @order.payment_status == "paid" %>

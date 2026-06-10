@@ -89,7 +89,7 @@ $w-hover:         #FBF7F5;
 // Secondaires (Annuler, Retour) : fond blanc, bordure orange, texte prune.
 // Principal (Continuer) : plein dégradé orange · Finaliser : plein dégradé vert.
 .btn-wiz {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 11px 22px; border-radius: 12px; border: 1.5px solid transparent;
   font-family: $font-body; font-weight: 700; font-size: .95rem; line-height: 1;
   text-decoration: none; cursor: pointer;
@@ -98,15 +98,20 @@ $w-hover:         #FBF7F5;
 }
 .btn-wiz--ghost {
   background: $bg-card; border-color: $primary; color: $w-ink;
-  &:hover { background: $w-orange-softer; border-color: $w-orange-press; color: $w-ink; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(242, 104, 44, .14); }
+  &:hover { background: #fff; border-color: $w-orange-press; color: $w-ink; transform: translateY(-1px); opacity: .92; }
 }
 .btn-wiz--primary {
   background: $gradient-orange; color: #fff;
-  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(242, 84, 28, .32); }
+  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); opacity: .92; }
+}
+// Texte seul : orange, sans bordure ni fond (ex. "Fermer" de la modal).
+.btn-wiz--text {
+  background: transparent; border-color: transparent; color: $primary;
+  &:hover { background: $w-orange-softer; color: $w-orange-press; }
 }
 .btn-wiz--success {
   background: $gradient-green; color: #fff;
-  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(11, 122, 78, .28); }
+  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); opacity: .92; }
 }
 
 // ---- Generic panel / kv ----
@@ -212,7 +217,7 @@ $w-hover:         #FBF7F5;
   display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px;
   border: 1.5px solid $w-line-strong; border-radius: $radius; background: $bg-card; cursor: pointer; transition: .14s; position: relative;
   &:hover { border-color: $primary; }
-  &.is-on { border-color: $primary; background: $w-orange-softer; box-shadow: 0 6px 18px rgba(242, 104, 44, .12); }
+  &.is-on { border-color: $primary; background: $bg-card; box-shadow: 0 6px 18px rgba(242, 104, 44, .12); }
 }
 .paytile__ic { width: 54px; height: 54px; border-radius: 50%; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
 .paytile.is-on .paytile__ic { background: $w-orange-soft; color: $w-orange-press; }

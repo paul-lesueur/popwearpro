@@ -1,13 +1,22 @@
 // Boutons Popwear Pro (radius 12 via $border-radius).
-// 3 styles : primaire (gradient orange), succès (gradient vert), outline (orange).
+// 2 styles canoniques du Design System (calqués sur les boutons du wizard) :
+//   - primaire   : plein dégradé orange (Modifier, Continuer…)        -> .btn-primary
+//   - secondaire : fond blanc, bordure orange, texte prune (Fermer,
+//     Annuler, Retour, Voir le détail, Ajouter…)                      -> .btn-outline-primary
+// Hover identique au wizard : léger fond orange clair + élévation pour le secondaire,
+// élévation + ombre pour le primaire.
+$btn-hover-bg:     #FEF6F1; // fond hover du secondaire (orange très clair)
+$btn-hover-border: #DD4E18; // bordure hover du secondaire (orange pressé)
 
 .btn-primary {
   background: $gradient-orange;
   border: none;
   color: #fff;
+  transition: box-shadow .15s ease, transform .15s ease, opacity .15s ease;
 
   &:hover, &:focus, &:active {
     color: #fff;
+    transform: translateY(-1px);
     opacity: .92;
   }
 
@@ -16,6 +25,8 @@
     background: $gradient-orange;
     color: #fff;
     opacity: .55;
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -23,9 +34,11 @@
   background: $gradient-green;
   border: none;
   color: #fff;
+  transition: box-shadow .15s ease, transform .15s ease, opacity .15s ease;
 
   &:hover, &:focus, &:active {
     color: #fff;
+    transform: translateY(-1px);
     opacity: .92;
   }
 
@@ -33,19 +46,24 @@
     background: $gradient-green;
     color: #fff;
     opacity: .55;
+    transform: none;
+    box-shadow: none;
   }
 }
 
-// Outline : fond blanc, bordure + texte $primary (Annuler, Voir le détail, Ajouter…)
+// Secondaire : fond blanc, bordure orange, texte PRUNE (Annuler, Voir le détail, Ajouter…)
 .btn-outline-primary {
   background-color: #fff;
   border-color: $primary;
-  color: $primary;
+  color: $secondary;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease, color .15s ease;
 
   &:hover, &:focus, &:active {
-    background: $gradient-orange;
-    border-color: transparent;
-    color: #fff;
+    background: #fff;
+    border-color: $btn-hover-border;
+    color: $secondary;
+    transform: translateY(-1px);
+    opacity: .92;
   }
 }
 
