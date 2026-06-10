@@ -186,6 +186,112 @@
   margin: 0;
 }
 
+// ---- Pricing ----
+.home-pricing {
+  padding: 4rem 2.5rem;
+}
+
+.home-pricing__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.home-pricing__card-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.home-pricing-card {
+  background: $bg-card;
+  border: 2px solid $primary;
+  border-radius: $radius;
+  box-shadow: 0 8px 32px rgba(19, 21, 35, 0.1);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.home-pricing-card__badge {
+  display: inline-block;
+  background: $gradient-orange;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.9rem;
+  border-radius: $radius-pill;
+  margin-bottom: 1.5rem;
+}
+
+.home-pricing-card__price {
+  margin-bottom: 1rem;
+}
+
+.home-pricing-card__amount {
+  font-family: $font-heading;
+  font-size: 3rem;
+  font-weight: 700;
+  color: $text-primary;
+  line-height: 1;
+}
+
+.home-pricing-card__period {
+  display: block;
+  font-size: 0.875rem;
+  color: $subtext;
+  margin-top: 0.25rem;
+}
+
+.home-pricing-card__desc {
+  color: $secondary;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.home-pricing-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: $secondary;
+
+    i {
+      color: $success;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.home-pricing-card__cta {
+  display: block;
+  background: $gradient-orange;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: $radius;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    color: #fff;
+  }
+}
+
 // ---- CTA finale ----
 .home-cta {
   background: $gradient-orange;
