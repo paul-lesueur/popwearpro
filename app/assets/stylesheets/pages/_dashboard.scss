@@ -238,12 +238,27 @@
 }
 
 .dashboard-v2__filter-btn {
-  border: 1px solid #eadfdb;
-  background: #fff;
-  color: #8c7e84;
+  border: 1px solid rgba($primary, .22);
+  background: rgba($primary, .1);
+  color: $primary;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  box-shadow: 0 10px 24px rgba($primary, .12);
+  transition: .2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: $primary;
+    border-color: $primary;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  i {
+    font-size: 11px;
+    transition: .2s ease;
+  }
 }
 
 .dashboard-v2__small-btn {

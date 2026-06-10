@@ -229,6 +229,10 @@
   }
 }
 
+.establishment-info-card > div:not(.establishment-info-icon) {
+  min-width: 0;
+}
+
 .establishment-info-card span {
   display: block;
   color: $subtext;
@@ -237,9 +241,11 @@
 }
 
 .establishment-info-card strong {
+  display: block;
   color: $secondary;
   font-size: 15px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .establishment-check-list,

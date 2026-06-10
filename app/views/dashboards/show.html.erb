@@ -1,5 +1,7 @@
-<% average_recent_order = @recent_orders.any? ? (@recent_orders.sum { |order| order.total_ttc.to_f } / @recent_orders.count) : 0 %>
-<% recent_orders_total = @recent_orders.sum { |order| order.total_ttc.to_f } %>
+<% period_orders_total = @period_orders.to_a.sum { |order| order.total_ttc.to_f } %>
+<% period_orders_count = @period_orders.count %>
+<% average_recent_order = period_orders_count.positive? ? period_orders_total / period_orders_count : 0 %>
+<% recent_orders_total = period_orders_total %>
 
 <%
   status_labels = {
@@ -137,11 +139,20 @@
       <h2>Résumé de l’activité</h2>
 
       <div class="dashboard-v2__summary-actions">
-        <button type="button" class="dashboard-v2__filter-btn">
-          Ce mois-ci
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
+        <details class="sales-period-dropdown">
+          <summary class="dashboard-v2__filter-btn">
+            <%= @period_label %>
+            <i class="fa-solid fa-chevron-down"></i>
+          </summary>
 
+          <div class="sales-period-menu">
+            <% @period_options.each do |value, label| %>
+              <%= link_to label,
+                dashboard_path(period: value),
+                class: "sales-period-link #{'is-active' if @period == value}" %>
+            <% end %>
+          </div>
+        </details>
       </div>
     </div>
 
@@ -201,7 +212,7 @@
       <div class="dashboard-v2__panel-head">
         <div>
           <h2>Commandes en cours</h2>
-          <p><%= @orders_in_progress.count %> réparation(s) & création(s) en cours</p>
+          <p><%= @orders_in_progress.count %> réparation(s) &amp; création(s) en cours</p>
         </div>
 
         <%= link_to orders_path, class: "dashboard-v2__small-btn" do %>
