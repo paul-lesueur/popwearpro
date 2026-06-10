@@ -1,7 +1,11 @@
-<%= form_with model: item, local: true do |form| %>
+<%= form_with model: item, local: true, class: "catalogue-item-form" do |form| %>
   <% if item.errors.any? %>
-    <div class="alert alert-danger">
-      <p><strong>Erreur :</strong></p>
+    <div class="catalogue-form-errors">
+      <div>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <strong>Impossible d’enregistrer cet élément</strong>
+      </div>
+
       <ul>
         <% item.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -10,38 +14,70 @@
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= form.label :name, "Nom", class: "form-label" %>
-    <%= form.text_field :name, class: "form-control", placeholder: "Ex : Ourlet pantalon" %>
+  <div class="catalogue-form-grid">
+    <div class="catalogue-form-group catalogue-form-group--full">
+      <%= form.label :name, "Nom de l’élément", class: "catalogue-form-label" %>
+      <%= form.text_field :name,
+        class: "catalogue-form-input",
+        placeholder: "Ex : Ourlet pantalon"
+      %>
+    </div>
+
+    <div class="catalogue-form-group">
+      <%= form.label :price_ht, "Prix HT", class: "catalogue-form-label" %>
+      <%= form.number_field :price_ht,
+        step: 0.01,
+        class: "catalogue-form-input",
+        placeholder: "Ex : 18.00"
+      %>
+    </div>
+
+    <div class="catalogue-form-group">
+      <%= form.label :vat_rate, "TVA (%)", class: "catalogue-form-label" %>
+      <%= form.number_field :vat_rate,
+        step: 0.01,
+        class: "catalogue-form-input",
+        placeholder: "Ex : 20.00"
+      %>
+    </div>
+
+    <div class="catalogue-form-group catalogue-form-group--full">
+      <%= form.label :photo_url, "URL de l’image", class: "catalogue-form-label" %>
+      <%= form.text_field :photo_url,
+        class: "catalogue-form-input",
+        placeholder: "https://..."
+      %>
+    </div>
   </div>
 
-  <div class="mb-3">
-    <%= form.label :price_ht, "Prix HT", class: "form-label" %>
-    <%= form.number_field :price_ht, step: 0.01, class: "form-control", placeholder: "Ex : 18.00" %>
+  <div class="catalogue-form-options">
+    <label class="catalogue-form-check">
+      <%= form.check_box :repair_bonus, class: "catalogue-form-check-input" %>
+
+      <span>
+        <strong>Éligible bonus réparation</strong>
+        <small>Affiche le badge bonus réparation sur la prestation.</small>
+      </span>
+    </label>
+
+    <label class="catalogue-form-check">
+      <%= form.check_box :active, class: "catalogue-form-check-input" %>
+
+      <span>
+        <strong>Actif dans le catalogue</strong>
+        <small>L’élément pourra être sélectionné dans les commandes.</small>
+      </span>
+    </label>
   </div>
 
-  <div class="mb-3">
-    <%= form.label :vat_rate, "TVA (%)", class: "form-label" %>
-    <%= form.number_field :vat_rate, step: 0.01, class: "form-control", placeholder: "Ex : 20.00" %>
-  </div>
+  <div class="catalogue-form-actions">
+    <%= form.submit item.persisted? ? "Enregistrer les modifications" : "Créer l’élément",
+      class: "catalogue-form-submit"
+    %>
 
-  <div class="mb-3">
-    <%= form.label :photo_url, "URL de l'image", class: "form-label" %>
-    <%= form.text_field :photo_url, class: "form-control", placeholder: "https://..." %>
-  </div>
-
-  <div class="form-check mb-3">
-    <%= form.check_box :repair_bonus, class: "form-check-input" %>
-    <%= form.label :repair_bonus, "Éligible bonus réparation", class: "form-check-label" %>
-  </div>
-
-  <div class="form-check mb-4">
-    <%= form.check_box :active, class: "form-check-input" %>
-    <%= form.label :active, "Actif dans le catalogue", class: "form-check-label" %>
-  </div>
-
-  <div class="d-flex gap-2">
-    <%= form.submit "Enregistrer", class: "btn btn-primary" %>
-    <%= link_to "Annuler", items_path, class: "btn btn-secondary" %>
+    <%= link_to item.persisted? ? "Annuler" : "Retour au catalogue",
+      item.persisted? ? item_path(item) : items_path,
+      class: "catalogue-form-cancel"
+    %>
   </div>
 <% end %>
