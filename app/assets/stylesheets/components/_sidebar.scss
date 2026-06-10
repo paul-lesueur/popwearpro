@@ -20,6 +20,11 @@
   flex-shrink: 0;
 }
 
+.app-sidebar__brand-logo {
+  max-width: 140px;
+  height: auto;
+}
+
 .app-sidebar__logo {
   font-family: $font-heading;
   font-weight: 700;

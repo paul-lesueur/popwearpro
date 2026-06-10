@@ -2,8 +2,7 @@
 
 <aside class="app-sidebar d-none d-lg-flex">
   <div class="app-sidebar__brand">
-    <span class="app-sidebar__logo">popwear</span>
-    <span class="app-sidebar__pro">PRO</span>
+    <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "app-sidebar__brand-logo" %>
   </div>
 
   <div class="app-sidebar__main">
@@ -18,8 +17,6 @@
 
     <% if current_establishment.present? %>
       <div class="app-sidebar__establishment">
-        <span class="app-sidebar__status-dot"></span>
-
         <span class="app-sidebar__establishment-content">
           <span class="app-sidebar__establishment-name">
             <%= current_establishment.name %>
@@ -28,5 +25,4 @@
       </div>
     <% end %>
   </div>
-</aside>
 </aside>
