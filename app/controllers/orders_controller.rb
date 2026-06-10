@@ -95,18 +95,28 @@ class OrdersController < ApplicationController
     head :ok
   end
 
-  # Replanifie la date de retrait et prévient le client par SMS de la nouvelle date.
+  # Replanifie la date de retrait. SMS envoyé uniquement si la nouvelle date est
+  # un vrai report (postérieure à l'ancienne). Réponse Turbo Stream (fluide).
   def reschedule
-    new_due_date = params[:due_date]
-
-    if new_due_date.blank?
-      redirect_to order_path(@order), alert: "Indiquez une nouvelle date de retrait."
-      return
+    # Parsing strict ISO (format du date_field) : rejette les dates laxistes
+    # ("2026" -> mois/jour courants) ou malformées sans lever d'exception non gérée.
+    new_date = begin
+      params[:due_date].present? ? Date.iso8601(params[:due_date].to_s) : nil
+    rescue ArgumentError, TypeError
+      nil
     end
 
-    sms = @order.reschedule_and_notify!(new_due_date)
-    notice = sms ? "Date de retrait mise à jour, le client a été prévenu par SMS." : "Date de retrait mise à jour."
-    redirect_to order_path(@order), notice: notice
+    @flash =
+      if new_date.nil?
+        { variant: "error", message: "Indiquez une date de retrait valide." }
+      else
+        reschedule_flash(@order.reschedule_and_notify!(new_date))
+      end
+
+    respond_to do |format|
+      format.turbo_stream { render "orders/update_modal" }
+      format.html { redirect_to order_path(@order), flash: { @flash[:variant].to_sym => @flash[:message] } }
+    end
   end
 
   # Active/désactive le rappel SMS pour cette commande (toggle du drawer).
@@ -121,6 +131,16 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  def reschedule_flash(sms)
+    if sms
+      { variant: "success", message: "Date de retrait mise à jour. SMS envoyé au client." }
+    elsif @order.customer.phone.blank?
+      { variant: "info", message: "Date de retrait mise à jour. SMS non envoyé : pas de téléphone." }
+    else
+      { variant: "info", message: "Date de retrait mise à jour. (Date non reportée — aucun SMS.)" }
+    end
+  end
 
   def set_order
     @order = current_establishment.orders.find(params[:id])

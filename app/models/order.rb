@@ -44,6 +44,7 @@ class Order < ApplicationRecord
   # Réutilisé par l'envoi automatique (toggle) et l'envoi manuel.
   def notify_ready_by_sms!
     return if customer&.phone.blank?
+    return if sms_already_sent?("ready") # jamais 2 fois
 
     communication = communications.create!(
       kind: "ready",
@@ -86,15 +87,26 @@ class Order < ApplicationRecord
     PICKUP_REMINDER_DAYS.find { |days| waiting >= days && !reminder_sent?(days) }
   end
 
-  # Un rappel de ce palier a-t-il déjà été (ou est-il en cours d') envoyé ?
+  # Un SMS de ce type a-t-il déjà été (ou est-il en cours d') envoyé ?
+  # Garde-fou central contre les doubles envois (back-end). On itère sur
+  # l'association (chargée en eager-load dans le kanban) pour éviter un N+1.
+  def sms_already_sent?(kind)
+    communications.any? { |c| c.channel == "sms" && c.kind == kind && c.status != "failed" }
+  end
+
   def reminder_sent?(level)
-    communications.where(channel: "sms", kind: "reminder_j#{level}")
-                  .where.not(status: "failed").exists?
+    sms_already_sent?("reminder_j#{level}")
+  end
+
+  # UC2 : faut-il proposer le SMS « commande prête » dans la modal ?
+  def ready_sms_suggested?
+    status == READY_STATUS && !sms_already_sent?("ready")
   end
 
   # Crée la communication SMS de rappel « commande non retirée » et l'envoie.
   def send_pickup_reminder!(level)
     return if customer&.phone.blank?
+    return if sms_already_sent?("reminder_j#{level}") # jamais 2 fois
 
     communication = communications.create!(
       kind: "reminder_j#{level}",
@@ -156,9 +168,16 @@ class Order < ApplicationRecord
 
   # Replanifie la date de retrait et prévient le client par SMS de la nouvelle
   # date (le SMS est sauté si le client n'a pas de téléphone).
+  # Replanifie la date de retrait. Le SMS d'information n'est envoyé que si la
+  # nouvelle date est un vrai report (postérieure à l'ancienne) — sinon on met
+  # juste à jour la date. Renvoie la communication si un SMS part, sinon nil.
   def reschedule_and_notify!(new_due_date)
-    update!(due_date: new_due_date)
-    return if customer&.phone.blank?
+    new_date = new_due_date.is_a?(Date) ? new_due_date : Date.parse(new_due_date.to_s)
+    postponed = due_date.present? && new_date > due_date
+    update!(due_date: new_date)
+
+    return nil unless postponed
+    return nil if customer&.phone.blank?
 
     communication = communications.create!(
       kind: "delay_notice",

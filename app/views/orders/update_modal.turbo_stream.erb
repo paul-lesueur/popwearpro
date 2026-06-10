@@ -1,0 +1,20 @@
+<%# Réponse fluide commune aux actions de la modal (UC2/UC3/UC4) :
+    on remplace les suggestions (alerte → résolue), l'historique et les
+    indicateurs de la tuile, et on insère le flash de confirmation. %>
+<%= turbo_stream.replace "order_suggestions_#{@order.id}" do %>
+  <%= render "orders/suggestions", order: @order %>
+<% end %>
+
+<%= turbo_stream.replace "order_history_#{@order.id}" do %>
+  <%= render "orders/history", order: @order %>
+<% end %>
+
+<%= turbo_stream.replace "tile_indicators_#{@order.id}" do %>
+  <%= render "orders/tile_indicators", order: @order %>
+<% end %>
+
+<% if @flash %>
+  <%= turbo_stream.prepend "order_flash_#{@order.id}" do %>
+    <%= render "orders/modal_flash", variant: @flash[:variant], message: @flash[:message] %>
+  <% end %>
+<% end %>

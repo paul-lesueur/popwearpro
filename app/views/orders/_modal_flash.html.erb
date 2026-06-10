@@ -1,0 +1,8 @@
+<%# Flash de confirmation dans la modal. locals: variant (success/info/error), message.
+    Auto-disparition après 5 s (la croix permet de fermer avant). %>
+<div class="flash-card flash-card--<%= variant %> alert alert-dismissible fade show mb-3"
+     role="alert" data-controller="auto-dismiss">
+  <span class="flash-card__accent"></span>
+  <div class="flash-card__body"><%= message %></div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+</div>

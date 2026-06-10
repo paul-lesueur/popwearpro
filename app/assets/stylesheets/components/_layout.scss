@@ -109,61 +109,78 @@
 .flash-card--success .flash-card__accent { background: $gradient-green; }
 .flash-card--error   .flash-card__accent { background: $error; }
 .flash-card--error   .flash-card__body   { color: $error; }
+.flash-card--info    .flash-card__accent { background: $subtext; }
 
 // ---- SMS confirmation toast (côté droit, fixe) ----
+// Toast SMS « commande prête » : inséré dans le flux, sous la barre de
+// recherche et au-dessus du kanban. Look calqué sur les flashes (.flash-card).
 .sms-toast-container {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 1080;
   display: flex;
   flex-direction: column;
-  gap: .75rem;
-  pointer-events: none;
+  gap: .5rem;
+
+  &:not(:empty) {
+    margin-bottom: 1.25rem;
+  }
 }
 
 .sms-toast {
-  width: 320px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .875rem 1rem .875rem 1.25rem;
   background: $bg-card;
   border-radius: $radius;
-  box-shadow: 0 8px 32px rgba(19, 21, 35, .14);
+  box-shadow: $shadow-card;
   overflow: hidden;
   pointer-events: auto;
-  display: flex;
-  align-items: stretch;
-  transform: translateX(calc(100% + 1.5rem));
-  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+  transform: translateY(-12px);
+  opacity: 0;
+  transition: transform .25s ease, opacity .25s ease;
 
   &.sms-toast--visible {
-    transform: translateX(0);
+    transform: translateY(0);
+    opacity: 1;
   }
 
   &__accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: 6px;
-    flex-shrink: 0;
-    background: $subtext;
+    background: $gradient-orange;
   }
 
   &__body {
-    padding: 1rem;
     flex: 1;
+    min-width: 0;
   }
 
   &__title {
-    font-size: .875rem;
+    font-size: .9rem;
     font-weight: 600;
     color: $text-primary;
-    margin-bottom: .25rem;
+    margin-bottom: .15rem;
   }
 
   &__phone {
     font-size: .8rem;
     color: $subtext;
-    margin-bottom: .875rem;
+    margin-bottom: 0;
   }
 
   &__actions {
     display: flex;
     gap: .5rem;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  // Sur très petit écran, les actions passent sous le texte.
+  .sms-toast {
+    flex-wrap: wrap;
   }
 }

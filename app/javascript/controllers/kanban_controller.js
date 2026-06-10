@@ -1,6 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  // Après le reload qui suit l'envoi (ou non) du SMS, on affiche un flash de
+  // confirmation. Le flag est consommé : il disparaît donc au refresh suivant.
+  connect() {
+    const raw = sessionStorage.getItem("smsFlash")
+    if (!raw) return
+    sessionStorage.removeItem("smsFlash")
+    try {
+      const { variant, message } = JSON.parse(raw)
+      this.#showSmsFlash(variant, message)
+    } catch (_) {
+      // flag invalide : on ignore
+    }
+  }
+
   dragstart(event) {
     event.dataTransfer.setData("text/plain", event.currentTarget.dataset.orderId)
     event.currentTarget.classList.add("opacity-50", "kanban-card--dragging")
@@ -65,43 +79,80 @@ export default class extends Controller {
     const toast = document.createElement("div")
     toast.className = "sms-toast"
     toast.innerHTML = `
-      <div class="sms-toast__accent"></div>
+      <span class="sms-toast__accent"></span>
       <div class="sms-toast__body">
-        <p class="sms-toast__title">Envoyer un SMS à ${customerName} ?</p>
-        <p class="sms-toast__phone">${phone}</p>
-        <div class="sms-toast__actions">
-          <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer le SMS</button>
-          <button class="btn btn-sm btn-outline-secondary" data-role="dismiss">Ignorer</button>
-        </div>
+        <p class="sms-toast__title">Prévenir ${customerName} que sa commande est prête à être retirée ?</p>
+        <p class="sms-toast__phone">Un SMS sera envoyé au ${phone}</p>
+      </div>
+      <div class="sms-toast__actions">
+        <button class="btn btn-sm btn-primary" data-role="confirm">Envoyer SMS</button>
+        <button class="btn btn-sm btn-outline-secondary" data-role="dismiss">Ne pas envoyer</button>
       </div>
     `
 
     container.appendChild(toast)
     requestAnimationFrame(() => toast.classList.add("sms-toast--visible"))
 
-    const dismiss = () => {
+    const closeAndReload = () => {
       toast.classList.remove("sms-toast--visible")
       toast.addEventListener("transitionend", () => {
         toast.remove()
-        Turbo.visit(window.location.href)
+        // Reload complet (pas Turbo.visit) : pas de preview en cache qui
+        // consommerait le flag avant l'affichage du flash de confirmation.
+        window.location.reload()
       }, { once: true })
     }
 
     toast.querySelector("[data-role='confirm']").addEventListener("click", async () => {
       toast.querySelector("[data-role='confirm']").disabled = true
       toast.querySelector("[data-role='dismiss']").disabled = true
-      await fetch(`/orders/${orderId}/communications`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken
-        },
-        body: JSON.stringify({ channel: "sms" })
-      })
-      dismiss()
+      // Le serveur renvoie le vrai résultat (envoyé / déjà envoyé / sans téléphone).
+      // En cas d'échec réseau, on ne reste pas bloqué : on affiche une erreur.
+      let result
+      try {
+        const response = await fetch(`/orders/${orderId}/communications`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-CSRF-Token": csrfToken
+          },
+          body: JSON.stringify({ channel: "sms" })
+        })
+        result = await response.json()
+      } catch (_) {
+        result = { variant: "error", message: "Échec de l'envoi du SMS. Veuillez réessayer." }
+      }
+      sessionStorage.setItem("smsFlash", JSON.stringify(result))
+      closeAndReload()
     })
 
-    toast.querySelector("[data-role='dismiss']").addEventListener("click", dismiss)
+    toast.querySelector("[data-role='dismiss']").addEventListener("click", () => {
+      sessionStorage.setItem("smsFlash", JSON.stringify({ variant: "info", message: "SMS « commande prête » non envoyé." }))
+      closeAndReload()
+    })
+  }
+
+  #showSmsFlash(variant, message) {
+    // Même emplacement que le toast : sous la barre de recherche, au-dessus du kanban.
+    const stack = document.querySelector(".sms-toast-container")
+    if (!stack) return
+
+    const card = document.createElement("div")
+    card.className = `flash-card flash-card--${variant || "info"} alert alert-dismissible fade show`
+    card.setAttribute("role", "alert")
+    card.innerHTML = `
+      <span class="flash-card__accent"></span>
+      <div class="flash-card__body">${message}</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    `
+    stack.appendChild(card)
+
+    // Auto-disparition après ~5 s (la croix permet de fermer avant).
+    setTimeout(() => {
+      card.classList.remove("show")
+      card.addEventListener("transitionend", () => card.remove(), { once: true })
+    }, 5000)
   }
 
   #showPaymentToast(orderId) {

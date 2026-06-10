@@ -40,7 +40,7 @@
   }
 %>
 
-<div class="customers-page" data-controller="customer-panel">
+<div class="customers-page" data-controller="customer-detail modal">
   <section class="customers-main">
     <div class="customers-header">
       <div>
@@ -128,8 +128,8 @@
           <button
             type="button"
             class="customers-row"
-            data-action="click->customer-panel#open"
-            data-customer-panel-target="row"
+            data-action="click->modal#open click->customer-detail#fill"
+            data-customer-detail-target="row"
             data-customer-id="<%= customer.id %>"
             data-name="<%= customer.display_name %>"
             data-initials="<%= customer.initials %>"
@@ -169,7 +169,7 @@
           </button>
 
           <template
-            data-customer-panel-target="ordersTemplate"
+            data-customer-detail-target="ordersTemplate"
             data-customer-id="<%= customer.id %>"
           >
             <% if customer.orders.any? %>
@@ -239,32 +239,32 @@
     <% end %>
   </section>
 
-  <aside class="customer-panel" data-customer-panel-target="panel" aria-hidden="true">
-    <div class="customer-panel-body">
+  <div class="detail-modal" data-modal-target="modal" data-action="click->modal#backdropClose" aria-hidden="true">
+    <div class="detail-modal__dialog customer-panel-body">
       <div class="customer-panel-top">
         <div>
-          <h2 data-customer-panel-target="name">Client</h2>
-          <p data-customer-panel-target="email">Email non renseigné</p>
+          <h2 data-customer-detail-target="name">Client</h2>
+          <p data-customer-detail-target="email">Email non renseigné</p>
         </div>
 
         <div class="customer-panel-actions">
-          <button type="button" class="customer-panel-close" data-action="click->customer-panel#close">
+          <button type="button" class="customer-panel-close" data-action="click->modal#close click->customer-detail#deselect">
             Fermer
           </button>
 
-          <a href="#" class="customer-panel-edit" data-customer-panel-target="editLink">
+          <a href="#" class="customer-panel-edit" data-customer-detail-target="editLink">
             Modifier
           </a>
         </div>
       </div>
 
-      <span class="d-none" data-customer-panel-target="initials">CL</span>
+      <span class="d-none" data-customer-detail-target="initials">CL</span>
 
       <div class="customer-panel-section">
         <h4>Résumé client</h4>
 
         <div class="customer-panel-summary">
-          <strong data-customer-panel-target="ordersCount">0</strong>
+          <strong data-customer-detail-target="ordersCount">0</strong>
           <span>commande(s)</span>
         </div>
       </div>
@@ -279,7 +279,7 @@
 
           <div>
             <span>Téléphone</span>
-            <strong data-customer-panel-target="phone">Téléphone non renseigné</strong>
+            <strong data-customer-detail-target="phone">Téléphone non renseigné</strong>
           </div>
         </div>
 
@@ -290,20 +290,20 @@
 
           <div>
             <span>Adresse e-mail</span>
-            <strong data-customer-panel-target="emailInDetails">Email non renseigné</strong>
+            <strong data-customer-detail-target="emailInDetails">Email non renseigné</strong>
           </div>
         </div>
       </div>
 
       <div class="customer-panel-section">
         <h4>Notes internes</h4>
-        <p data-customer-panel-target="notes">Aucune note interne.</p>
+        <p data-customer-detail-target="notes">Aucune note interne.</p>
       </div>
 
       <div class="customer-panel-section">
         <h4>Historique de commandes</h4>
 
-        <div data-customer-panel-target="orders">
+        <div data-customer-detail-target="orders">
           <p class="customer-panel-empty">Sélectionnez un client pour voir ses commandes.</p>
         </div>
       </div>
@@ -319,7 +319,7 @@
 
             <div>
               <strong class="customer-timeline-label">Dernière commande</strong>
-              <p class="customer-timeline-date" data-customer-panel-target="lastOrderDate">Aucune commande</p>
+              <p class="customer-timeline-date" data-customer-detail-target="lastOrderDate">Aucune commande</p>
             </div>
           </div>
 
@@ -330,11 +330,11 @@
 
             <div>
               <strong class="customer-timeline-label">Création du client</strong>
-              <p class="customer-timeline-date" data-customer-panel-target="createdAt">—</p>
+              <p class="customer-timeline-date" data-customer-detail-target="createdAt">—</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </aside>
+  </div>
 </div>
