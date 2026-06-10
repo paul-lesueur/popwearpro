@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<% end %>
+
 <div class="page-wrapper pb-4">
   <%= form_with model: @order, url: orders_path, method: :post, local: true,
         html: { class: "order-wizard", data: { controller: "order-wizard" } } do |form| %>
@@ -21,7 +25,13 @@
         <div class="wizhead__title">
           Créer une commande
         </div>
-        <%= link_to "Annuler", orders_path, class: "btn btn-outline-primary" %>
+        <div class="wizhead__actions">
+          <%= link_to "Annuler", orders_path, class: "btn-wiz btn-wiz--ghost" %>
+          <button type="button" class="btn-wiz btn-wiz--primary" data-order-wizard-target="next" data-action="order-wizard#next">
+            Continuer<i class="fa-solid fa-arrow-right ms-1"></i>
+          </button>
+          <%= form.submit "Finaliser la commande", class: "btn-wiz btn-wiz--success d-none", data: { order_wizard_target: "finalize" } %>
+        </div>
       </div>
 
       <%# ---- STEPPER ---- %>
@@ -140,7 +150,7 @@
 
           <aside class="ticket">
             <div class="ticket__head">
-              <span class="ticket__title">Panier</span>
+              <span class="ticket__title">Détails des prestations</span>
               <button type="button" class="ticket__clear d-none" data-order-wizard-target="ticketClear" data-action="order-wizard#clearCart">Vider</button>
             </div>
             <div class="ticket__lines" data-order-wizard-target="ticketLines"></div>
@@ -174,10 +184,10 @@
       <section class="wizstep" data-order-wizard-target="step">
         <div class="wizstep__head">
           <div class="wizstep__title">Paiement</div>
-          <div class="wizstep__sub">Sélectionnez le moyen et le statut du paiement.</div>
+          <div class="wizstep__sub">Sélectionnez le statut et le moyen du paiement.</div>
         </div>
 
-        <h3 class="section-title fs-6 mb-3">Statut du paiement</h3>
+        <h3 class="section-title mb-3">Statut du paiement</h3>
         <div class="statusgrid">
           <button type="button" class="statustile is-paye" data-value="paid" data-action="order-wizard#selectStatus">
             <span class="statustile__ic"><i class="fa-solid fa-check"></i></span>
@@ -196,7 +206,7 @@
         </div>
 
         <div data-order-wizard-target="payMethodSection">
-          <h3 class="section-title fs-6 mt-4 mb-3">Moyen de paiement</h3>
+          <h3 class="section-title mt-4 mb-3">Moyen de paiement</h3>
           <div class="paygrid">
             <% [["Espèces","fa-money-bill-wave"],["Carte","fa-credit-card"],["Chèque","fa-money-check"]].each do |label, icon| %>
               <button type="button" class="paytile" data-value="<%= label %>" data-action="order-wizard#selectMethod">
@@ -218,13 +228,13 @@
 
         <div style="max-width:720px">
           <div class="mb-4">
-            <label class="form-label">Date de retrait</label>
+            <label class="form-label wizlabel">Date de retrait</label>
             <div class="wiz-date">
-              <%= form.date_field :due_date, class: "form-control wiz-date__input" %>
+              <%= form.date_field :due_date, class: "form-control wiz-date__input", data: { controller: "datepicker" } %>
             </div>
           </div>
           <div class="mb-2">
-            <label class="form-label">Commentaires <span class="text-subtext">(facultatif)</span></label>
+            <label class="form-label wizlabel">Commentaires <span class="text-subtext">(facultatif)</span></label>
             <%= form.text_area :internal_notes, rows: 4, class: "form-control",
                   placeholder: "Note pour cette commande (état de la pièce, demande particulière…)" %>
           </div>
@@ -274,7 +284,7 @@
             </div>
 
             <div class="panel">
-              <h3 class="section-title mb-2" style="font-size:1rem">Prestations</h3>
+              <h3 class="section-title mb-2">Détails des prestations</h3>
               <div data-order-wizard-target="recapLines"></div>
               <div class="mt-3">
                 <div class="kv"><span class="kv__k">Sous-total HT</span><span class="kv__v" data-order-wizard-target="subtotal">0,00 €</span></div>
@@ -344,13 +354,13 @@
 
       <%# ---- NAV ---- %>
       <div class="wiznav">
-        <button type="button" class="btn btn-light" data-order-wizard-target="back" data-action="order-wizard#back"><i class="fa-solid fa-chevron-left me-1"></i>Retour</button>
-        <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn-wiz btn-wiz--ghost" data-order-wizard-target="back" data-action="order-wizard#back"><i class="fa-solid fa-chevron-left me-1"></i>Retour</button>
+        <div class="wiznav__right">
           <span class="wiznav__hint d-none" data-order-wizard-target="hint"></span>
-          <button type="button" class="btn btn-primary" data-order-wizard-target="next" data-action="order-wizard#next">
+          <button type="button" class="btn-wiz btn-wiz--primary" data-order-wizard-target="next" data-action="order-wizard#next">
             Continuer<span data-amount></span><i class="fa-solid fa-arrow-right ms-1"></i>
           </button>
-          <%= form.submit "Valider la commande", class: "btn btn-success d-none", data: { order_wizard_target: "finalize" } %>
+          <%= form.submit "Finaliser la commande", class: "btn-wiz btn-wiz--success d-none", data: { order_wizard_target: "finalize" } %>
         </div>
       </div>
     </div>

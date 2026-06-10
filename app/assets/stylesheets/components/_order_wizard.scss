@@ -14,7 +14,7 @@ $w-amber:         $warning;
 $w-amber-soft:    #FCEFC7;
 $w-amber-ink:     #B07B12;
 $w-ink:           $secondary;       // #411221
-$w-ink-soft:      #6E4A56;
+$w-ink-soft:      $subtext;       // harmonisé : sous-textes en lavande (ex-#6E4A56 brun)
 $w-muted:         $subtext;
 $w-line:          $border;
 $w-line-strong:   #E2DBDE;
@@ -30,6 +30,10 @@ $w-hover:         #FBF7F5;
 }
 
 .wizard { max-width: 1120px; margin: 0 auto; }
+// Taille de texte des champs du wizard harmonisée (placeholders inclus).
+.wizard .form-control { font-size: .9rem; }
+// Textarea Commentaires : un cran en dessous (texte saisi + placeholder).
+.wizard textarea.form-control { font-size: .85rem; }
 
 .wizhead {
   display: flex; align-items: center; justify-content: space-between;
@@ -70,21 +74,47 @@ $w-hover:         #FBF7F5;
 // ---- Steps shell ----
 .wizstep { display: none; &.is-active { display: block; } }
 .wizstep__head { margin-bottom: 26px; }
-.wizstep__title { font-family: $font-heading; font-weight: 700; font-size: 1.625rem; color: $w-ink; }
-.wizstep__sub { color: $w-ink-soft; font-size: 1rem; margin-top: 6px; max-width: 600px; line-height: 1.55; }
+.wizstep__title { font-family: $font-heading; font-weight: 700; font-size: 1.25rem; color: $w-ink; }
+.wizstep__sub { color: $w-ink-soft; font-size: .875rem; margin-top: 6px; max-width: 600px; line-height: 1.55; }
 
 .wiznav {
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
   margin-top: 32px; padding-top: 24px; border-top: 1px solid $w-line;
 }
 .wiznav__hint { color: $w-muted; font-size: .85rem; display: inline-flex; align-items: center; gap: 8px; }
+.wizhead__actions { display: flex; align-items: center; gap: 10px; }
+.wiznav__right { display: flex; align-items: center; gap: 12px; }
+
+// ---- Boutons du wizard (réf. bouton "Exporter") ----
+// Secondaires (Annuler, Retour) : fond blanc, bordure orange, texte prune.
+// Principal (Continuer) : plein dégradé orange · Finaliser : plein dégradé vert.
+.btn-wiz {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 22px; border-radius: 12px; border: 1.5px solid transparent;
+  font-family: $font-body; font-weight: 700; font-size: .95rem; line-height: 1;
+  text-decoration: none; cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .15s, transform .15s;
+  &:disabled { opacity: .5; cursor: not-allowed; }
+}
+.btn-wiz--ghost {
+  background: $bg-card; border-color: $primary; color: $w-ink;
+  &:hover { background: $w-orange-softer; border-color: $w-orange-press; color: $w-ink; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(242, 104, 44, .14); }
+}
+.btn-wiz--primary {
+  background: $gradient-orange; color: #fff;
+  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(242, 84, 28, .32); }
+}
+.btn-wiz--success {
+  background: $gradient-green; color: #fff;
+  &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(11, 122, 78, .28); }
+}
 
 // ---- Generic panel / kv ----
 .panel { background: $bg-card; border: 1px solid $w-line; border-radius: 22px; box-shadow: $shadow-card; padding: 24px 26px; }
 .panel + .panel { margin-top: 18px; }
 .kv { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: .9rem; }
 .kv__k { color: $w-ink-soft; }
-.kv__v { font-family: $font-heading; font-weight: 600; color: $w-ink; white-space: nowrap; }
+.kv__v { font-family: $font-body; font-weight: 700; color: $w-ink; white-space: nowrap; }
 .kv--total { border-top: 1px solid $w-line; margin-top: 6px; padding-top: 11px; .kv__v { font-size: 1.0625rem; } }
 .kv__v--deduct { color: $w-green-ink; }
 .kv__k--deduct { color: $w-green-ink; display: inline-flex; align-items: center; gap: 6px; }
@@ -100,7 +130,7 @@ $w-hover:         #FBF7F5;
 }
 .clientopt__ic { width: 46px; height: 46px; border-radius: 13px; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
 .clientopt.is-on .clientopt__ic { background: $w-orange-soft; color: $w-orange-press; }
-.clientopt__title { font-family: $font-heading; font-weight: 700; font-size: .97rem; }
+.clientopt__title { font-family: $font-heading; font-weight: 700; font-size: 1.05rem; }
 .clientopt__desc { color: $w-muted; font-size: .8125rem; line-height: 1.45; }
 .clientopt__tick { position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: $primary; color: #fff; display: none; align-items: center; justify-content: center; font-size: .75rem; }
 .clientopt.is-on .clientopt__tick { display: flex; }
@@ -128,10 +158,10 @@ $w-hover:         #FBF7F5;
   &.is-on { border-color: $primary; }
 }
 .postile__top { display: flex; align-items: center; gap: 12px; width: 100%; }
-.postile__name { font-family: $font-heading; font-weight: 600; font-size: .9rem; line-height: 1.3; }
-.postile__price { font-family: $font-heading; font-weight: 700; font-size: 1rem; }
+.postile__name { font-family: $font-body; font-weight: 700; font-size: 1rem; line-height: 1.3; }
+.postile__price { font-family: $font-body; font-weight: 700; font-size: 1rem; }
 .postile__bonus { font-size: .68rem; }
-.postile__qty { position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: $primary; color: #fff; font-family: $font-heading; font-weight: 700; font-size: .72rem; display: flex; align-items: center; justify-content: center; }
+.postile__qty { position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: $primary; color: #fff; font-family: $font-body; font-weight: 700; font-size: .72rem; display: flex; align-items: center; justify-content: center; }
 
 .postile.pospage-hidden { display: none; }
 
@@ -147,7 +177,7 @@ $w-hover:         #FBF7F5;
   &:disabled { opacity: .35; cursor: default; }
 }
 .pospage__info {
-  font-family: $font-heading; font-weight: 600; font-size: .875rem;
+  font-family: $font-body; font-weight: 600; font-size: .875rem;
   color: $w-ink-soft; min-width: 52px; text-align: center;
 }
 
@@ -159,12 +189,12 @@ $w-hover:         #FBF7F5;
 .ticket__empty { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; color: $w-muted; padding: 24px 10px; font-size: .85rem; line-height: 1.45; i { font-size: 1.75rem; color: $w-line-strong; } }
 .ticket__line { display: flex; align-items: center; gap: 11px; }
 .ticket__line-thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: $w-slate-soft; flex: 0 0 auto; }
-.ticket__line-name { font-family: $font-heading; font-weight: 600; font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ticket__line-name { font-family: $font-body; font-weight: 600; font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ticket__line-unit { color: $w-muted; font-size: .78rem; }
 .ticket__totals { border-top: 1px solid $w-line; margin-top: 16px; padding-top: 14px; }
 .qtyctl { display: flex; align-items: center; gap: 8px; }
 .qtyctl button { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid $w-line-strong; background: $bg-card; color: $w-ink; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: .8rem; &:hover { background: $w-hover; } }
-.qtyctl span { font-family: $font-heading; font-weight: 700; font-size: .875rem; min-width: 14px; text-align: center; }
+.qtyctl span { font-family: $font-body; font-weight: 700; font-size: .875rem; min-width: 14px; text-align: center; }
 .ticket__del { background: none; border: 0; color: $w-muted; padding: 4px; cursor: pointer; }
 
 .bonuscard { display: flex; align-items: center; gap: 14px; padding: 14px 15px; border-radius: 14px; border: 1.5px solid $w-green-soft; background: linear-gradient(180deg, #EAFBF1, #D6F4E2); margin-top: 16px; }
@@ -186,7 +216,7 @@ $w-hover:         #FBF7F5;
 }
 .paytile__ic { width: 54px; height: 54px; border-radius: 50%; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
 .paytile.is-on .paytile__ic { background: $w-orange-soft; color: $w-orange-press; }
-.paytile__label { font-family: $font-heading; font-weight: 600; font-size: .9375rem; }
+.paytile__label { font-family: $font-heading; font-weight: 700; font-size: 1.05rem; }
 .paytile__tick { position: absolute; top: 13px; right: 13px; width: 22px; height: 22px; border-radius: 50%; background: $primary; color: #fff; display: none; align-items: center; justify-content: center; font-size: .72rem; }
 .paytile.is-on .paytile__tick { display: flex; }
 
@@ -201,13 +231,16 @@ $w-hover:         #FBF7F5;
 .statustile__ic { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 12px; background: $w-slate-soft; color: $w-ink; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
 .statustile.is-paye.is-on .statustile__ic { background: #fff; color: $w-green-ink; }
 .statustile.is-retrait.is-on .statustile__ic { background: #fff; color: $w-amber-ink; }
-.statustile__title { font-family: $font-heading; font-weight: 700; font-size: .9375rem; }
+.statustile__title { font-family: $font-heading; font-weight: 700; font-size: 1.05rem; }
 .statustile__desc { color: $w-muted; font-size: .78rem; margin-top: 2px; display: block; }
-.section-title { font-family: $font-heading; font-weight: 700; color: $w-ink; }
+.section-title { font-family: $font-heading; font-weight: 700; font-size: 1.125rem; color: $w-ink; }
 
 // ---- Step 4 : informations ----
 .inforow { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 18px 0; border-bottom: 1px solid $w-line; &:last-child { border-bottom: 0; } }
-.inforow__title { font-family: $font-heading; font-weight: 600; font-size: .9375rem; color: $w-ink; }
+// Titres de section uniformes de l'étape Informations (Date, Commentaires, SMS, CGV) :
+// League Spartan, même poids/taille pour les labels de champ et les libellés de toggle.
+.inforow__title,
+.wizlabel { font-family: $font-heading; font-weight: 700; font-size: 1rem; color: $w-ink; }
 .inforow__desc { color: $w-muted; font-size: .8125rem; margin-top: 3px; line-height: 1.45; max-width: 420px; }
 
 // Champ "Date de retrait" — input date habillé (charte + icône calendrier teintée).
@@ -233,6 +266,33 @@ $w-hover:         #FBF7F5;
   &::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 }
 
+// ---- Flatpickr (calendrier "Date de retrait") habillé à la charte ----
+.flatpickr-calendar {
+  border-radius: 16px; border: 1px solid $w-line;
+  box-shadow: 0 16px 44px rgba(65, 18, 33, .16);
+  font-family: $font-body;
+}
+.flatpickr-calendar.arrowTop::before, .flatpickr-calendar.arrowTop::after { border-bottom-color: $bg-card; }
+.flatpickr-months { padding: 6px 0 2px; }
+.flatpickr-current-month, .flatpickr-current-month input.cur-year { color: $w-ink; font-family: $font-heading; font-weight: 700; }
+.flatpickr-monthDropdown-months { color: $w-ink; font-family: $font-heading; }
+.flatpickr-months .flatpickr-prev-month svg, .flatpickr-months .flatpickr-next-month svg { fill: $primary; }
+.flatpickr-months .flatpickr-prev-month:hover svg, .flatpickr-months .flatpickr-next-month:hover svg { fill: $w-orange-press; }
+span.flatpickr-weekday { color: $w-muted; font-weight: 700; }
+.flatpickr-day {
+  color: $w-ink; border-radius: 10px;
+  &:hover { background: $w-orange-softer; border-color: $w-orange-softer; }
+}
+.flatpickr-day.today { border-color: $primary; }
+.flatpickr-day.today:hover { background: $w-orange-soft; border-color: $primary; color: $w-ink; }
+.flatpickr-day.selected, .flatpickr-day.selected:hover,
+.flatpickr-day.startRange, .flatpickr-day.endRange {
+  background: $gradient-orange; border-color: transparent; color: #fff;
+}
+.flatpickr-day.flatpickr-disabled, .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+  color: rgba($w-muted, .45);
+}
+
 // ---- Toggle (switch custom) ----
 .w-toggle { width: 46px; height: 26px; border-radius: 99px; background: #CFC8D4; position: relative; transition: .16s; flex: 0 0 auto; border: none; cursor: pointer; padding: 0;
   &::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); transition: .16s; }
@@ -244,7 +304,7 @@ $w-hover:         #FBF7F5;
 .recapwrap { display: grid; grid-template-columns: 1fr 360px; gap: 30px; align-items: start; }
 @media (max-width: 1080px) { .recapwrap { grid-template-columns: 1fr; } }
 .recap__line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid $w-line; font-size: .9rem; &:last-child { border-bottom: 0; } }
-.recap__line-name { display: flex; align-items: center; gap: 12px; font-family: $font-heading; font-weight: 600; }
+.recap__line-name { display: flex; align-items: center; gap: 12px; font-family: $font-body; font-weight: 600; }
 .recap__thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: $w-slate-soft; }
 .recap__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 

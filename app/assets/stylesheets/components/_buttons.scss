@@ -79,3 +79,7 @@
 .text-primary   { color: $text-primary !important; } // override : titres (#131523)
 .text-secondary { color: $secondary    !important; } // prune
 .text-subtext   { color: $subtext      !important; } // lavande (sous-textes)
+.text-muted     { color: $subtext      !important; } // harmonisé : sous-textes en lavande (ex-gris Bootstrap)
+
+// ---- Placeholders harmonisés : lavande atténué, partout (Design System) ----
+.form-control::placeholder { color: rgba($subtext, .7); opacity: 1; }
