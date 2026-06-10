@@ -11,7 +11,7 @@ class ProfilesController < ApplicationController
         render :show, status: :unprocessable_entity
       end
     else
-      if current_user.update_without_password(profile_params.except(:password, :password_confirmation, :current_password))
+      if current_user.update_without_password(non_sensitive_profile_params)
         redirect_to profile_path, notice: "Profil mis à jour."
       else
         render :show, status: :unprocessable_entity
@@ -26,7 +26,18 @@ class ProfilesController < ApplicationController
       (profile_params[:email].present? && profile_params[:email] != current_user.email)
   end
 
+  def non_sensitive_profile_params
+    profile_params.except(:password, :password_confirmation, :current_password)
+  end
+
   def profile_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
+    params.require(:user).permit(
+      :name,
+      :email,
+      :avatar,
+      :password,
+      :password_confirmation,
+      :current_password
+    )
   end
 end
