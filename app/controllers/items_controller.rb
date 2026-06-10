@@ -2,7 +2,21 @@ class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
 
   def index
-    @items = current_establishment.items.order(created_at: :desc)
+    @items_per_page = 9
+
+    @page = params[:page].to_i
+    @page = 1 if @page < 1
+
+    items_scope = current_establishment.items.order(created_at: :desc)
+
+    @total_items = items_scope.count
+    @total_pages = (@total_items.to_f / @items_per_page).ceil
+
+    @page = @total_pages if @total_pages.positive? && @page > @total_pages
+
+    @items = items_scope
+      .offset((@page - 1) * @items_per_page)
+      .limit(@items_per_page)
   end
 
   def show
