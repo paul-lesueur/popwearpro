@@ -1,128 +1,349 @@
-<div class="home-page">
+<div class="home-page landing-v2">
 
   <%# Navbar %>
-  <nav class="home-nav">
-    <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "home-nav__logo" %>
-    <div class="home-nav__actions">
+  <nav class="lp-nav">
+    <div class="lp-nav__left">
+      <div class="lp-nav__brand">
+        <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "lp-nav__logo" %>
+      </div>
+
+      <div class="lp-nav__links">
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="#tarifs">Tarifs</a>
+      </div>
+    </div>
+
+    <div class="lp-nav__actions">
       <% if user_signed_in? %>
-        <%= link_to "Accéder à l'app", dashboard_path, class: "btn btn-primary btn-sm" %>
+        <%= link_to "Accéder à l'app", dashboard_path, class: "lp-btn lp-btn--primary lp-btn--sm" %>
+        <%= link_to "Se déconnecter",
+                    destroy_user_session_path,
+                    data: { turbo_method: :delete },
+                    class: "lp-btn lp-btn--ghost lp-btn--sm" %>
       <% else %>
-        <%= link_to "Se connecter", new_user_session_path, class: "btn btn-outline-primary btn-sm" %>
-        <%= link_to "S'inscrire", new_user_registration_path, class: "btn btn-primary btn-sm" %>
+        <%= link_to "Se connecter", new_user_session_path, class: "lp-btn lp-btn--ghost lp-btn--sm" %>
+        <%= link_to "Essayer Popwear Pro", new_user_registration_path, class: "lp-btn lp-btn--primary lp-btn--sm" %>
       <% end %>
     </div>
   </nav>
 
   <%# Hero %>
-  <section class="home-hero">
-    <div class="home-hero__content">
-      <h1 class="home-hero__title">
-        Gérez votre atelier,<br>
-        <span>sans friction.</span>
-      </h1>
-      <p class="home-hero__subtitle">
-        Popwear Pro centralise vos commandes, vos clients et votre catalogue de prestations — pour que vous puissiez vous concentrer sur votre métier.
+  <section class="lp-hero">
+    <div class="lp-hero-shell">
+      <div class="lp-hero-shell__glow lp-hero-shell__glow--left"></div>
+      <div class="lp-hero-shell__glow lp-hero-shell__glow--right"></div>
+
+      <div class="lp-hero__content">
+        <p class="lp-eyebrow">
+          <i class="fa-solid fa-briefcase"></i>
+          Logiciel de gestion d’atelier
+        </p>
+
+        <h1 class="lp-hero__title">
+          Le logiciel de <span>gestion d’atelier</span> pour artisans.
+        </h1>
+
+        <p class="lp-hero__subtitle">
+          Popwear Pro centralise vos commandes, vos clients, vos prestations,
+          vos paiements et vos rappels clients par SMS et email.
+        </p>
+
+        <p class="lp-hero__note">
+          <i class="fa-solid fa-check"></i>
+          Un outil simple pour suivre l’activité de l’atelier sans multiplier les fichiers, carnets et messages.
+        </p>
+      </div>
+
+      <div class="lp-hero__visual">
+        <div class="lp-hero-illustration">
+          <%= image_tag "home-illustration.png", alt: "Illustration Popwear Pro", class: "lp-hero-image" %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# Fonctionnalités %>
+  <section class="lp-section" id="fonctionnalites">
+    <div class="lp-section__heading">
+      <p class="lp-section__eyebrow">Fonctionnalités</p>
+      <h2>Tout l’atelier au même endroit</h2>
+      <p>
+        Popwear Pro regroupe les éléments essentiels pour gérer une activité artisanale :
+        commandes, clients, prestations, paiements et suivi client.
       </p>
-      <div class="home-hero__ctas">
+    </div>
+
+    <div class="lp-modules-grid">
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-tag"></i>
+        </div>
+        <h3>Commandes atelier</h3>
+        <p>
+          Créez une commande, ajoutez des prestations ou articles,
+          puis suivez son statut jusqu’à la remise au client.
+        </p>
+      </article>
+
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <h3>Clients</h3>
+        <p>
+          Gardez les coordonnées, les notes et l’historique des commandes
+          de chaque client.
+        </p>
+      </article>
+
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-list"></i>
+        </div>
+        <h3>Catalogue</h3>
+        <p>
+          Centralisez vos prestations et articles avec leurs prix,
+          prêts à être ajoutés à une commande.
+        </p>
+      </article>
+
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-euro-sign"></i>
+        </div>
+        <h3>Paiements</h3>
+        <p>
+          Suivez les paiements liés aux commandes et conservez
+          l’historique des transactions clients.
+        </p>
+      </article>
+
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3>Rappels clients</h3>
+        <p>
+          Prévenez vos clients par SMS ou email selon l’avancement
+          de leur commande.
+        </p>
+      </article>
+
+      <article class="lp-module-card">
+        <div class="lp-icon">
+          <i class="fa-solid fa-chart-simple"></i>
+        </div>
+        <h3>Tableau de bord</h3>
+        <p>
+          Visualisez les commandes en cours, les urgences, les paiements
+          et l’activité récente.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <%# Comment ça marche %>
+  <section class="lp-section lp-workflow-section" id="comment-ca-marche">
+    <div class="lp-section__heading">
+      <p class="lp-section__eyebrow">Comment ça marche</p>
+      <h2>Un parcours simple pour chaque commande</h2>
+      <p>
+        De la prise en charge à la remise au client, Popwear Pro suit
+        les étapes clés du travail en atelier.
+      </p>
+    </div>
+
+    <div class="lp-timeline">
+      <div class="lp-timeline__line"></div>
+
+      <article class="lp-timeline__step">
+        <div class="lp-timeline__dot">1</div>
+        <div class="lp-timeline__card">
+          <h3>Créer la commande</h3>
+          <p>
+            Sélectionnez un client existant ou créez rapidement une commande
+            pour un client de passage.
+          </p>
+        </div>
+      </article>
+
+      <article class="lp-timeline__step">
+        <div class="lp-timeline__dot">2</div>
+        <div class="lp-timeline__card">
+          <h3>Ajouter les prestations</h3>
+          <p>
+            Ajoutez les prestations ou articles depuis le catalogue
+            avec les prix déjà renseignés.
+          </p>
+        </div>
+      </article>
+
+      <article class="lp-timeline__step">
+        <div class="lp-timeline__dot">3</div>
+        <div class="lp-timeline__card">
+          <h3>Suivre l’avancement</h3>
+          <p>
+            Faites avancer la commande dans l’atelier :
+            nouvelle, en cours, prête ou terminée.
+          </p>
+        </div>
+      </article>
+
+      <article class="lp-timeline__step">
+        <div class="lp-timeline__dot">4</div>
+        <div class="lp-timeline__card">
+          <h3>Encaisser et prévenir</h3>
+          <p>
+            Suivez le paiement puis prévenez le client par SMS ou email
+            lorsque la commande évolue.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <%# Tarifs %>
+  <section class="lp-section lp-pricing-section" id="tarifs">
+    <div class="lp-section__heading">
+      <p class="lp-section__eyebrow">Tarifs</p>
+      <h2>Une offre pour chaque étape de votre atelier</h2>
+      <p>
+        Commencez gratuitement, puis activez les fonctionnalités utiles
+        quand votre activité grandit.
+      </p>
+    </div>
+
+    <div class="lp-pricing-grid">
+      <article class="lp-plan">
+        <h3>Plan Gratuit <span>· Découverte</span></h3>
+
+        <div class="lp-plan__price">
+          <strong>0€</strong>
+          <small>/ mois</small>
+        </div>
+
+        <p>Pour tester Popwear Pro simplement.</p>
+
+        <ul>
+          <li>Fiche établissement</li>
+          <li>Catalogue limité</li>
+          <li>Création de commandes atelier</li>
+          <li>Suivi des statuts</li>
+          <li>Fichier client limité</li>
+          <li>Tableau de bord de base</li>
+        </ul>
+      </article>
+
+      <article class="lp-plan">
+        <h3>Offre Basique</h3>
+
+        <div class="lp-plan__price">
+          <strong>15€</strong>
+          <small>/ mois</small>
+        </div>
+
+        <p>Pour structurer son atelier au quotidien.</p>
+
+        <ul>
+          <li>Commandes atelier illimitées</li>
+          <li>Gestion complète des clients</li>
+          <li>Historique client</li>
+          <li>Catalogue prestations / articles</li>
+          <li>Suivi des paiements</li>
+          <li>Archivage des commandes</li>
+        </ul>
+      </article>
+
+      <article class="lp-plan lp-plan--featured">
+        <span class="lp-plan__badge">Recommandé</span>
+
+        <h3>Offre Essentiel</h3>
+
+        <div class="lp-plan__price">
+          <strong>24€</strong>
+          <small>/ mois</small>
+        </div>
+
+        <p>L’offre recommandée pour piloter son activité.</p>
+
+        <ul>
+          <li>Paiements liés aux commandes</li>
+          <li>Historique des transactions</li>
+          <li>Tableau de bord chiffre d’affaires</li>
+          <li>Suivi avancé des commandes</li>
+          <li>Rappels clients SMS / email</li>
+          <li>Relance de récupération client</li>
+        </ul>
+      </article>
+
+      <article class="lp-plan">
+        <h3>Offre Premium</h3>
+
+        <div class="lp-plan__price">
+          <strong>49€</strong>
+          <small>/ mois</small>
+        </div>
+
+        <p>Pour professionnaliser la relation client.</p>
+
+        <ul>
+          <li>Paramétrage avancé du suivi client</li>
+          <li>Choix du canal SMS ou email</li>
+          <li>Modèles de messages</li>
+          <li>Rappels de paiement</li>
+          <li>Rapports d’activité</li>
+          <li>Support prioritaire</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <%# Bas de page %>
+  <section class="lp-final-cta">
+    <div class="lp-final-cta__shape lp-final-cta__shape--left"></div>
+    <div class="lp-final-cta__shape lp-final-cta__shape--right"></div>
+
+    <div class="lp-final-cta__content">
+      <h2>
         <% if user_signed_in? %>
-          <%= link_to "Accéder à l'app", dashboard_path, class: "btn btn-primary" %>
+          Continuez à piloter votre atelier.
         <% else %>
-          <%= link_to "Commencer gratuitement", new_user_registration_path, class: "btn btn-primary" %>
-          <%= link_to "Se connecter", new_user_session_path, class: "btn btn-outline-primary" %>
+          Reprenez le contrôle sur votre atelier.
+        <% end %>
+      </h2>
+
+      <p>
+        <% if user_signed_in? %>
+          Retrouvez vos commandes, vos clients, vos paiements et votre suivi client
+          depuis votre espace Popwear Pro.
+        <% else %>
+          Commandes, clients, paiements et rappels clients réunis dans un seul
+          outil pensé pour les artisans. Simple à prendre en main, sérieux dans la durée.
+        <% end %>
+      </p>
+
+      <div class="lp-final-cta__actions">
+        <% if user_signed_in? %>
+          <%= link_to "Accéder à l'app", dashboard_path, class: "lp-btn lp-final-cta__btn-primary" %>
+          <%= link_to "Se déconnecter",
+                      destroy_user_session_path,
+                      data: { turbo_method: :delete },
+                      class: "lp-btn lp-final-cta__btn-secondary" %>
+        <% else %>
+          <%= link_to "Essayer Popwear Pro", new_user_registration_path, class: "lp-btn lp-final-cta__btn-primary" %>
+          <%= link_to "Se connecter", new_user_session_path, class: "lp-btn lp-final-cta__btn-secondary" %>
         <% end %>
       </div>
     </div>
-
-    <div class="home-hero__visual">
-      <div class="home-hero__blob">
-        <%= image_tag "home-illustration.png", alt: "Illustration atelier", class: "home-hero__illustration" %>
-      </div>
-    </div>
   </section>
 
-  <%# Features %>
-  <section class="home-features">
-    <div class="home-features__inner">
-      <p class="home-features__label">Fonctionnalités</p>
-      <h2 class="home-features__title">Tout ce dont votre atelier a besoin</h2>
+  <footer class="lp-footer-minimal">
+    <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "lp-footer-minimal__logo" %>
 
-      <div class="home-features__grid">
-
-        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="0">
-          <div class="home-feature-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M2.5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11zm5 2h5.5v1H7.5V2zm-5 0h3.5v3h-3.5V2zm0 5h3.5v3h-3.5V7zm0 5h3.5v2h-3.5v-2zm5-5h5.5v1H7.5V7zm0 3h5.5v1H7.5v-1zm0 3h5.5v1H7.5v-1z"/>
-            </svg>
-          </div>
-          <h3 class="home-feature-card__title">Suivi des commandes</h3>
-          <p class="home-feature-card__desc">Visualisez et faites avancer vos commandes d'un simple glisser-déposer, du devis à la livraison.</p>
-        </div>
-
-        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="240">
-          <div class="home-feature-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-            </svg>
-          </div>
-          <h3 class="home-feature-card__title">Gestion des clients</h3>
-          <p class="home-feature-card__desc">Retrouvez l'historique complet de chaque client, ses notes et ses coordonnées en un clin d'œil.</p>
-        </div>
-
-        <div class="home-feature-card" data-controller="reveal" data-reveal-delay-value="480">
-          <div class="home-feature-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V2zm0 4h16v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6zm3 1a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H3zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H3z"/>
-            </svg>
-          </div>
-          <h3 class="home-feature-card__title">Catalogue &amp; tarifs</h3>
-          <p class="home-feature-card__desc">Définissez vos prestations, vos prix HT/TTC et vos réductions. La facturation se calcule automatiquement.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <%# Pricing %>
-  <section class="home-pricing">
-    <div class="home-pricing__inner">
-      <p class="home-features__label">Tarifs</p>
-      <div class="home-pricing__card-wrap">
-        <div class="home-pricing-card">
-          <div class="home-pricing-card__badge">Essai gratuit</div>
-          <div class="home-pricing-card__price">
-            <span class="home-pricing-card__amount">0 €</span>
-            <span class="home-pricing-card__period">pour commencer</span>
-          </div>
-          <p class="home-pricing-card__desc">Accès complet à toutes les fonctionnalités, sans carte bancaire requise.</p>
-          <ul class="home-pricing-card__features">
-            <li><i class="fa-solid fa-check"></i> Outil de suivi des commandes</li>
-            <li><i class="fa-solid fa-check"></i> Gestion illimitée des clients</li>
-            <li><i class="fa-solid fa-check"></i> Catalogue de prestations &amp; tarifs</li>
-            <li><i class="fa-solid fa-check"></i> Notifications SMS client</li>
-            <li><i class="fa-solid fa-check"></i> Profil &amp; horaires de l'établissement</li>
-          </ul>
-          <% if user_signed_in? %>
-            <%= link_to "Accéder à l'app", dashboard_path, class: "home-pricing-card__cta" %>
-          <% else %>
-            <%= link_to "Commencer gratuitement", new_user_registration_path, class: "home-pricing-card__cta" %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <%# CTA finale %>
-  <% cta_title    = user_signed_in? ? "Bon retour, #{current_user.name} !" : "Prêt à simplifier votre quotidien ?" %>
-  <% cta_subtitle = user_signed_in? ? "Votre atelier vous attend." : "Rejoignez les ateliers qui gèrent leurs commandes avec Popwear Pro." %>
-  <section class="home-cta">
-    <h2 class="home-cta__title"><%= cta_title %></h2>
-    <p class="home-cta__subtitle"><%= cta_subtitle %></p>
-    <% if user_signed_in? %>
-      <%= link_to "Accéder à l'app", dashboard_path, class: "btn" %>
-    <% else %>
-      <%= link_to "Commencer gratuitement", new_user_registration_path, class: "btn" %>
-    <% end %>
-  </section>
+    <p>
+      © 2026 Popwear Pro — La plateforme de gestion des ateliers artisanaux
+    </p>
+  </footer>
 
 </div>
