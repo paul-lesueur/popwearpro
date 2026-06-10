@@ -1,7 +1,7 @@
 .orders-kanban {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 0 56px 32px; // padding droit retiré : laisse la place à la 4e colonne du kanban
+  padding: 0 0 56px 16px; // padding droit retiré : laisse la place à la 4e colonne du kanban
   display: grid;
 
   // Titre + sous-titre calqués sur le Tableau de bord (.dashboard-v2__topbar).
@@ -76,7 +76,38 @@ body.detail-modal-open {
   border: 1px solid $border;
   border-radius: $radius;
   box-shadow: $shadow-card;
-  padding: 24px;
+  padding: 36px 40px;
+}
+
+// ---- Modal détail commande : hiérarchie de texte + espacement ----
+.order-modal {
+  // Titre de section (Client, Statut, Prestations, Paiement, Informations, Historique…)
+  h2 { font-size: 1.5rem; font-weight: 800; color: $text-primary; }
+  h5 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $secondary;
+  }
+  // Labels (Date de retrait, Commentaires, Rappel SMS au client…)
+  .fw-semibold {
+    font-size: .9rem;
+    font-weight: 600 !important;
+    color: $secondary;
+  }
+  // "Montant total" (un <span>) : même taille que les labels (Date de retrait…).
+  // Scopé au span pour ne PAS toucher les titres de section <h5 class="fw-bold">.
+  span.fw-bold { font-size: .9rem; }
+  // Valeurs / textes secondaires : prune, plus petits que les labels (au lieu de lavande)
+  .text-muted {
+    color: $secondary !important;
+    font-size: .8rem;
+  }
+  // Dividers homogènes entre sections (espacement augmenté)
+  hr {
+    border-color: $border !important;
+    margin: 26px 0;
+    opacity: 1;
+  }
 }
 
 // ---- Titre de colonne kanban ----

@@ -7,7 +7,6 @@ export default class extends Controller {
     "row",
     "name",
     "initials",
-    "email",
     "emailInDetails",
     "phone",
     "notes",
@@ -27,7 +26,6 @@ export default class extends Controller {
 
     this.nameTarget.textContent = row.dataset.name || "Client"
     this.initialsTarget.textContent = row.dataset.initials || "CL"
-    this.emailTarget.textContent = row.dataset.email || "Email non renseigné"
     this.emailInDetailsTarget.textContent = row.dataset.email || "Email non renseigné"
     this.phoneTarget.textContent = row.dataset.phone || "Téléphone non renseigné"
     this.notesTarget.textContent = row.dataset.notes || "Aucune note interne."

@@ -6,8 +6,12 @@
     </div>
 
     <div>
-      <%= link_to "Modifier", edit_customer_path(@customer), class: "btn btn-outline-primary" %>
-      <%= link_to "Retour", customers_path, class: "btn btn-secondary" %>
+      <%= link_to edit_customer_path(@customer), class: "btn btn-primary" do %>
+        <i class="fa-solid fa-pencil me-2"></i>Modifier
+      <% end %>
+      <%= link_to customers_path, class: "btn btn-outline-primary" do %>
+        <i class="fa-solid fa-arrow-left me-2"></i>Retour
+      <% end %>
     </div>
   </div>
 

@@ -1,7 +1,7 @@
 .customers-page {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 16px 56px 32px; // espacement page harmonisé (cf. .dashboard-v2)
+  padding: 0 16px 56px 16px; // espacement page harmonisé (cf. .dashboard-v2)
   display: grid;
   grid-template-columns: 1fr;
   gap: 28px;
@@ -146,10 +146,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 14px;
+  min-width: 12px;
   color: inherit;
-  font-size: 13px;
-  font-weight: 900;
+  font-size: 10px; // chevron fin
+
+  .customers-sort-icon--idle {
+    opacity: 0.45; // toujours visible mais discret sur les colonnes non triées
+  }
 }
 
 .customers-row {
@@ -312,7 +315,7 @@
   border: 1px solid $border;
   border-radius: $radius;
   box-shadow: $shadow-card;
-  padding: 24px;
+  padding: 36px 40px;
 }
 
 .customer-panel-top {
@@ -339,7 +342,8 @@
 
 .customer-panel-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
@@ -378,7 +382,7 @@
   h4 {
     margin: 0 0 16px;
     color: $secondary;
-    font-size: 17px;
+    font-size: 1.3rem;
     font-weight: 800;
   }
 
@@ -386,6 +390,7 @@
     color: $secondary;
     margin: 0;
     line-height: 1.55;
+    font-size: 0.875rem; // aligné sur "Commande #x"
   }
 }
 
@@ -412,14 +417,12 @@
   align-items: flex-start;
   gap: 14px;
   padding: 13px 0;
-  border-bottom: 1px solid $border;
 
   &:first-of-type {
     padding-top: 0;
   }
 
   &:last-child {
-    border-bottom: none;
     padding-bottom: 0;
   }
 }
@@ -468,8 +471,9 @@
 
   strong {
     display: block;
-    color: $text-primary;
-    font-weight: 800;
+    color: $secondary;
+    font-size: 0.875rem;
+    font-weight: 600;
     margin-bottom: 4px;
   }
 
@@ -518,14 +522,19 @@
   color: #ffffff !important;
 }
 
-/* Paiement carte / espèces / commande terminée : vert */
+/* Paiement carte / espèces / payé : vert */
 .customer-badge--payment-card,
 .customer-badge--payment-cash,
-.customer-badge--paid,
+.customer-badge--paid {
+  background: #32d946 !important;
+  color: #ffffff !important;
+}
+
+/* Commande terminée / livrée : prune — aligné sur les tags de la modal commande */
 .customer-badge--done,
 .customer-badge--completed,
 .customer-badge--delivered {
-  background: #32d946 !important;
+  background: #411221 !important;
   color: #ffffff !important;
 }
 

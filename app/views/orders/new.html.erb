@@ -28,7 +28,7 @@
         <div class="wizhead__actions">
           <%= link_to "Annuler", orders_path, class: "btn-wiz btn-wiz--ghost" %>
           <button type="button" class="btn-wiz btn-wiz--primary" data-order-wizard-target="next" data-action="order-wizard#next">
-            Continuer<i class="fa-solid fa-arrow-right ms-1"></i>
+            Continuer<i class="fa-solid fa-arrow-right"></i>
           </button>
           <%= form.submit "Finaliser la commande", class: "btn-wiz btn-wiz--success d-none", data: { order_wizard_target: "finalize" } %>
         </div>
@@ -354,11 +354,11 @@
 
       <%# ---- NAV ---- %>
       <div class="wiznav">
-        <button type="button" class="btn-wiz btn-wiz--ghost" data-order-wizard-target="back" data-action="order-wizard#back"><i class="fa-solid fa-chevron-left me-1"></i>Retour</button>
+        <button type="button" class="btn-wiz btn-wiz--ghost" data-order-wizard-target="back" data-action="order-wizard#back"><i class="fa-solid fa-arrow-left"></i>Retour</button>
         <div class="wiznav__right">
           <span class="wiznav__hint d-none" data-order-wizard-target="hint"></span>
           <button type="button" class="btn-wiz btn-wiz--primary" data-order-wizard-target="next" data-action="order-wizard#next">
-            Continuer<span data-amount></span><i class="fa-solid fa-arrow-right ms-1"></i>
+            Continuer<span data-amount></span><i class="fa-solid fa-arrow-right"></i>
           </button>
           <%= form.submit "Finaliser la commande", class: "btn-wiz btn-wiz--success d-none", data: { order_wizard_target: "finalize" } %>
         </div>
