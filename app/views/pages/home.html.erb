@@ -54,7 +54,7 @@
               <path d="M2.5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11zm5 2h5.5v1H7.5V2zm-5 0h3.5v3h-3.5V2zm0 5h3.5v3h-3.5V7zm0 5h3.5v2h-3.5v-2zm5-5h5.5v1H7.5V7zm0 3h5.5v1H7.5v-1zm0 3h5.5v1H7.5v-1z"/>
             </svg>
           </div>
-          <h3 class="home-feature-card__title">Kanban des commandes</h3>
+          <h3 class="home-feature-card__title">Suivi des commandes</h3>
           <p class="home-feature-card__desc">Visualisez et faites avancer vos commandes d'un simple glisser-déposer, du devis à la livraison.</p>
         </div>
 
@@ -79,6 +79,35 @@
           <p class="home-feature-card__desc">Définissez vos prestations, vos prix HT/TTC et vos réductions. La facturation se calcule automatiquement.</p>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <%# Pricing %>
+  <section class="home-pricing">
+    <div class="home-pricing__inner">
+      <p class="home-features__label">Tarifs</p>
+      <div class="home-pricing__card-wrap">
+        <div class="home-pricing-card">
+          <div class="home-pricing-card__badge">Essai gratuit</div>
+          <div class="home-pricing-card__price">
+            <span class="home-pricing-card__amount">0 €</span>
+            <span class="home-pricing-card__period">pour commencer</span>
+          </div>
+          <p class="home-pricing-card__desc">Accès complet à toutes les fonctionnalités, sans carte bancaire requise.</p>
+          <ul class="home-pricing-card__features">
+            <li><i class="fa-solid fa-check"></i> Outil de suivi des commandes</li>
+            <li><i class="fa-solid fa-check"></i> Gestion illimitée des clients</li>
+            <li><i class="fa-solid fa-check"></i> Catalogue de prestations &amp; tarifs</li>
+            <li><i class="fa-solid fa-check"></i> Notifications SMS client</li>
+            <li><i class="fa-solid fa-check"></i> Profil &amp; horaires de l'établissement</li>
+          </ul>
+          <% if user_signed_in? %>
+            <%= link_to "Accéder à l'app", dashboard_path, class: "home-pricing-card__cta" %>
+          <% else %>
+            <%= link_to "Commencer gratuitement", new_user_registration_path, class: "home-pricing-card__cta" %>
+          <% end %>
+        </div>
       </div>
     </div>
   </section>
