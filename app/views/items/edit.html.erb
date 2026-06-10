@@ -1,6 +1,57 @@
-<div class="page-wrapper pb-4">
-  <h1>Modifier l'élément</h1>
-  <p class="text-muted">Mettez à jour votre catalogue.</p>
+<div class="page-wrapper catalogue-form-page pb-4">
+  <div class="catalogue-form-header">
+    <div>
+      <%= link_to item_path(@item), class: "catalogue-back-link" do %>
+        <i class="fa-solid fa-arrow-left"></i>
+        Retour au détail
+      <% end %>
 
-  <%= render "form", item: @item %>
+      <h1>Modifier l’élément</h1>
+      <p>Mettez à jour les informations, le tarif et le statut de cette prestation.</p>
+    </div>
+
+    <div class="catalogue-form-header-actions">
+      <%= link_to items_path, class: "catalogue-btn catalogue-btn-dark" do %>
+        Catalogue
+      <% end %>
+    </div>
+  </div>
+
+  <div class="catalogue-form-layout">
+    <section class="catalogue-form-card">
+      <div class="catalogue-form-card-header">
+        <div>
+          <h2>Informations catalogue</h2>
+          <p>Ces informations seront utilisées dans les commandes et les ventes.</p>
+        </div>
+      </div>
+
+      <%= render "form", item: @item %>
+    </section>
+
+    <aside class="catalogue-form-preview">
+      <div class="catalogue-form-preview-icon">
+        <%= catalog_icon(@item.icon) %>
+      </div>
+
+      <span>Élément sélectionné</span>
+      <strong><%= @item.name %></strong>
+
+      <p>
+        <%= number_to_currency(@item.price_ht, unit: "€ HT", separator: ",", delimiter: " ", format: "%n %u") %>
+      </p>
+
+      <div class="catalogue-form-preview-badges">
+        <% if @item.active? %>
+          <span class="is-active">Actif</span>
+        <% else %>
+          <span class="is-inactive">Inactif</span>
+        <% end %>
+
+        <% if @item.repair_bonus? %>
+          <span class="is-bonus">Bonus réparation</span>
+        <% end %>
+      </div>
+    </aside>
+  </div>
 </div>

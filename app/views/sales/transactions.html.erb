@@ -1,12 +1,13 @@
 <div class="sales-page">
   <div class="sales-header">
     <div>
-      <h1>Ventes</h1>
+      <h1>Transactions</h1>
+      <p class="text-muted">Consultez l’historique des encaissements et le détail des commandes payées.</p>
 
       <div class="sales-tabs">
         <%= link_to "Tableau de bord", sales_path, class: "sales-tab" %>
         <%= link_to "Transactions", sales_transactions_path, class: "sales-tab is-active" %>
-        <%= link_to "Prestations et Produits", items_path, class: "sales-tab" %>
+        <%= link_to "Catalogue", items_path, class: "sales-tab" %>
       </div>
     </div>
   </div>
@@ -17,27 +18,27 @@
                     method: :get,
                     class: "sales-transactions-search",
                     data: { turbo: false } do %>
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <%= hidden_field_tag :page, 1 %>
 
-        <%= text_field_tag :query,
-          @query,
-          placeholder: "Rechercher une transaction",
-          autocomplete: "off"
-        %>
+        <div class="sales-search-field">
+          <i class="fa-solid fa-magnifying-glass"></i>
 
-        <button type="submit" class="sales-search-button">
-          Rechercher
-        </button>
+          <%= text_field_tag :query,
+            @query,
+            placeholder: "Rechercher un client ou N° de commande...",
+            autocomplete: "off"
+          %>
+        </div>
       <% end %>
 
       <details class="sales-export-dropdown">
         <summary class="sales-report-btn">
           <i class="fa-solid fa-download"></i>
-          Télécharger un rapport des ventes
+          Rapport
         </summary>
 
         <div class="sales-export-panel">
-          <p class="sales-export-title">Choisir une période</p>
+          <p class="sales-export-title">Télécharger un rapport</p>
 
           <%= form_with url: sales_report_path(format: :csv),
                         method: :get,
@@ -65,11 +66,11 @@
     </div>
 
     <div class="sales-transactions-layout">
-      <div class="sales-clean-table">
+      <div class="sales-clean-table sales-clean-table--card">
         <div class="sales-clean-table-head">
           <div>Référence</div>
           <div>Client</div>
-          <div>Prix TTC</div>
+          <div class="sales-cell-right">Total TTC</div>
           <div>Paiement</div>
         </div>
 
@@ -84,31 +85,37 @@
                 <% else %>
                   <%= l(date, format: "%d %B %Y") %>
                 <% end %>
-                ·
-                <%= number_to_currency(day_total, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               </span>
+
+              <strong>
+                <%= number_to_currency(day_total, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </strong>
             </div>
 
             <% transactions.each do |transaction| %>
               <% order = transaction[:order] %>
 
-              <%= link_to sales_transactions_path(query: @query, order_id: order.id),
+              <%= link_to sales_transactions_path(request.query_parameters.merge(order_id: order.id)),
                 class: "sales-clean-row #{'is-selected' if @selected_order == order}" do %>
 
                 <div class="sales-reference">
-                  <%= transaction[:reference] %>
+                  <strong><%= transaction[:reference].to_s.sub("Commande ", "") %></strong>
+                  <span>Commande</span>
                 </div>
 
-                <div>
-                  <%= transaction[:customer_name] %>
+                <div class="sales-customer-cell">
+                  <strong><%= transaction[:customer_name] %></strong>
+                  <span>Client</span>
                 </div>
 
-                <div>
+                <div class="sales-amount-cell">
                   <%= number_to_currency(transaction[:total], unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
                 </div>
 
                 <div>
-                  <%= transaction[:payment_method] %>
+                  <span class="sales-payment-badge">
+                    <%= transaction[:payment_method] %>
+                  </span>
                 </div>
               <% end %>
             <% end %>
@@ -126,11 +133,11 @@
 
           <div class="sales-detail-header">
             <div>
-              <p>Détail commande</p>
+              <p>Détail de la transaction</p>
               <h2>Commande <%= order_reference(@selected_order) %></h2>
             </div>
 
-            <%= link_to sales_transactions_path(query: @query), class: "sales-detail-close" do %>
+            <%= link_to sales_transactions_path(request.query_parameters.except(:order_id)), class: "sales-detail-close" do %>
               <i class="fa-solid fa-xmark"></i>
             <% end %>
           </div>
@@ -146,7 +153,7 @@
 
           <div class="sales-detail-block">
             <span class="sales-detail-label">Date</span>
-            <strong><%= l(@selected_order.created_at, format: "%d/%m/%Y à %H:%M") %></strong>
+            <strong><%= l(@selected_order.created_at, format: "%d/%m/%Y") %></strong>
           </div>
 
           <div class="sales-detail-block">
@@ -156,7 +163,7 @@
           </div>
 
           <div class="sales-detail-lines">
-            <span class="sales-detail-label">Articles / prestations</span>
+            <span class="sales-detail-label">Prestations facturées</span>
 
             <% @selected_order.order_lines.each do |line| %>
               <% quantity = line.quantity.to_i.zero? ? 1 : line.quantity.to_i %>
@@ -203,27 +210,41 @@
         <% else %>
           <div class="sales-detail-empty">
             <i class="fa-solid fa-receipt"></i>
-            <strong>Sélectionne une transaction</strong>
+            <strong>Sélectionnez une transaction</strong>
             <span>Le détail de la commande s’affichera ici.</span>
           </div>
         <% end %>
       </aside>
     </div>
 
-    <div class="sales-clean-pagination">
-      <div class="sales-pages">
-        <span class="is-active">1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>...</span>
-        <span>12</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
+    <% if @total_pages > 1 %>
+      <div class="sales-clean-pagination">
+        <div class="sales-pages">
+          <% if @page > 1 %>
+            <%= link_to "‹", sales_transactions_path(request.query_parameters.merge(page: @page - 1)) %>
+          <% else %>
+            <span class="disabled">‹</span>
+          <% end %>
 
-      <div class="sales-results-count">
-        <%= @transactions_count %> résultat<%= "s" if @transactions_count > 1 %>
+          <% (1..@total_pages).each do |page_number| %>
+            <% if page_number == @page %>
+              <span class="current"><%= page_number %></span>
+            <% else %>
+              <%= link_to page_number, sales_transactions_path(request.query_parameters.merge(page: page_number)) %>
+            <% end %>
+          <% end %>
+
+          <% if @page < @total_pages %>
+            <%= link_to "›", sales_transactions_path(request.query_parameters.merge(page: @page + 1)) %>
+          <% else %>
+            <span class="disabled">›</span>
+          <% end %>
+        </div>
+
+        <div class="sales-results-count">
+          <%= @transactions_count %> résultat<%= "s" if @transactions_count > 1 %>
+        </div>
       </div>
-    </div>
+    <% end %>
   </section>
 </div>

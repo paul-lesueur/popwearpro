@@ -53,8 +53,6 @@ class SalesController < ApplicationController
 
     @best_period_day = best_day_for(@orders, current_start_date, current_end_date)
     @best_sales = build_best_sales
-
-    @services_percentage, @articles_percentage = sales_split_percentages
   end
 
   def transactions
@@ -62,11 +60,24 @@ class SalesController < ApplicationController
     @export_start_date = params[:start_date].presence
     @export_end_date = params[:end_date].presence
 
-    @transactions = build_transactions(sales_orders.order(created_at: :desc))
-    @transactions = filter_transactions(@transactions, @query)
+    transactions = build_transactions(sales_orders.order(created_at: :desc))
+    transactions = filter_transactions(transactions, @query)
+
+    @transactions_count = transactions.count
+
+    @page = params[:page].to_i
+    @page = 1 if @page < 1
+
+    @per_page = 10
+    @total_pages = (@transactions_count.to_f / @per_page).ceil
+    @total_pages = 1 if @total_pages.zero?
+
+    @page = @total_pages if @page > @total_pages
+
+    offset = (@page - 1) * @per_page
+    @transactions = transactions.slice(offset, @per_page) || []
 
     @transactions_by_date = @transactions.group_by { |transaction| transaction[:date].to_date }
-    @transactions_count = @transactions.count
 
     @selected_order = sales_orders.find_by(id: params[:order_id]) if params[:order_id].present?
   end
@@ -270,10 +281,7 @@ class SalesController < ApplicationController
   end
 
   def order_total_ttc(order)
-    lines_total = order.order_lines.to_a.sum do |line|
-      line_total_ttc(line)
-    end
-
+    lines_total = order.order_lines.to_a.sum { |line| line_total_ttc(line) }
     total = lines_total - order.discount.to_f
     total.positive? ? total : 0
   end
@@ -374,57 +382,6 @@ class SalesController < ApplicationController
              icon: item.icon
            }
          end
-  end
-
-  def sales_split_percentages
-    services_count = 0
-    articles_count = 0
-
-    @orders.find_each do |order|
-      order.order_lines.includes(:item).each do |line|
-        item = line.item
-        next if item.blank?
-
-        quantity = line.quantity.to_i
-        quantity = 1 if quantity.zero?
-
-        if service_item?(item)
-          services_count += quantity
-        else
-          articles_count += quantity
-        end
-      end
-    end
-
-    total = services_count + articles_count
-    return [0, 0] if total.zero?
-
-    services_percentage = ((services_count.to_f / total) * 100).round
-    articles_percentage = 100 - services_percentage
-
-    [services_percentage, articles_percentage]
-  end
-
-  def service_item?(item)
-    return true if item.repair_bonus == true
-
-    name = item.name.to_s.downcase
-
-    service_keywords = [
-      "retouche",
-      "ourlet",
-      "réparation",
-      "reparation",
-      "cordonnerie",
-      "ressemelage",
-      "talon",
-      "semelle",
-      "pose",
-      "couture",
-      "nettoyage"
-    ]
-
-    service_keywords.any? { |keyword| name.include?(keyword) }
   end
 
   def chart_points_for_range(scope, start_date, end_date)

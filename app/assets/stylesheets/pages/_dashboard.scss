@@ -250,6 +250,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   background: #fff3ed;
   color: #ff6b35;
   border: 1px solid #ffe0d2;
@@ -391,6 +392,15 @@
     vertical-align: middle;
   }
 
+  tbody tr {
+    transition: background 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba($primary, 0.05);
+    }
+  }
+
   tbody tr:last-child td {
     border-bottom: none;
   }
@@ -457,6 +467,12 @@
 .dashboard-v2__client-row {
   padding: 14px 0;
   border-bottom: 1px solid #f6efec;
+  transition: background 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($primary, 0.05);
+  }
 
   &:last-child {
     border-bottom: none;
