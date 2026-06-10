@@ -6,9 +6,13 @@
     <div class="alert alert-warning d-flex flex-column gap-2" role="alert">
       <span class="fw-semibold">Commande prête — prévenez le client qu'il peut venir la retirer.</span>
       <% if order.customer.phone.present? %>
-        <%= button_to "Envoyer le SMS « commande prête »",
-              order_communications_path(order),
-              class: "btn btn-warning btn-sm align-self-start" %>
+        <div class="d-flex gap-2">
+          <%= button_to "Envoyer le SMS « commande prête »",
+                order_communications_path(order),
+                class: "btn btn-warning btn-sm" %>
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+                  onclick="this.closest('.alert').remove()">Ne pas envoyer</button>
+        </div>
       <% else %>
         <span class="text-muted small">Aucun numéro de téléphone enregistré pour ce client.</span>
       <% end %>
@@ -54,6 +58,8 @@
         </div>
         <%= f.submit "Mettre à jour la date de retrait",
               class: "btn btn-sm #{d.negative? ? "btn-danger" : "btn-warning"}" %>
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+                onclick="this.closest('.alert').remove()">Ignorer</button>
       <% end %>
       <% if order.customer.phone.present? %>
         <p class="text-muted small mb-0">Le client est prévenu par SMS si la date est repoussée.</p>
