@@ -45,17 +45,49 @@ customers_data = [
   ["Élise", "Robert", "elise.robert@email.com", "07 15 82 44 31", "Cliente régulière pour entretien cuir."],
   ["Hugo", "Renard", "hugo.renard@email.com", "07 12 89 45 67", "Sneakers et zip principalement."],
   ["Laura", "Simon", "laura.simon@email.com", "06 32 14 58 79", "Prévenir dès que la commande est prête."],
-  ["Mehdi", "Kacem", "mehdi.kacem@email.com", "07 26 37 48 59", "Client régulier pour ressemelage."]
+  ["Mehdi", "Kacem", "mehdi.kacem@email.com", "07 26 37 48 59", "Client régulier pour ressemelage."],
+  ["Julie", "Petit", "julie.petit@email.com", "07 90 12 34 56", "Cliente récente. Commandes simples."],
+  ["Antoine", "Rousseau", "antoine.rousseau@email.com", "06 44 55 66 77", "Client occasionnel."],
+  ["Sarah", "Dubois", "sarah.dubois@email.com", "07 41 22 33 44", "Aime être prévenue par SMS."],
+  ["Vincent", "Aubert", "vincent.aubert@email.com", "07 65 54 43 32", "Dépôts fréquents le samedi."],
+  ["Lina", "Fontaine", "lina.fontaine@email.com", "06 11 22 33 44", "Cliente récente."],
+  ["Alexandre", "Noël", "alexandre.noel@email.com", "07 99 88 77 66", "Réparations chaussures haut de gamme."],
+  ["Claire", "Bousquet", "claire.bousquet@email.com", "07 19 28 37 46", "Commandes souvent des travaux simples."],
+
+  ["David", "Azure", "david.azure@email.com", "06 20 21 22 23", "Client démo. Référence IA Azure."],
+  ["Charles", "Mistral", "charles.mistral@email.com", "06 24 25 26 27", "Client démo. Référence IA Mistral."],
+  ["Gemma", "Gemini", "gemma.gemini@email.com", "06 28 29 30 31", "Cliente démo. Référence IA Gemini."],
+  ["Pauline", "Laurent", "pauline.laurent@email.com", "06 14 25 36 47", "Préfère les finitions discrètes."],
+  ["Jean", "Paquet", "jean.paquet@email.com", "07 33 44 55 66", "Client fidèle. Paiement souvent par carte."],
+  ["Marie", "Colin", "marie.colin@email.com", "06 88 77 66 55", "Demande régulièrement du cirage premium."],
+  ["Romain", "Masson", "romain.masson@email.com", "07 48 59 60 71", "Souvent pressé. Délais courts."],
+  ["Amandine", "Perrot", "amandine.perrot@email.com", "06 73 84 95 16", "Articles cuir et petites réparations."],
+  ["Chloé", "Vidal", "chloe.vidal@email.com", "06 97 86 75 64", "Préfère être contactée par email."],
+  ["Bastien", "Delafontaine", "bastien.delafontaine@email.com", "06 21 45 78 12", "Dépose souvent des sneakers."],
+  ["Mathieu", "Girard", "mathieu.girard@email.com", "06 78 11 23 45", "Souhaite des réparations solides avant l’esthétique."],
+  ["Olivier", "Mercier", "olivier.mercier@email.com", "06 61 72 83 94", "Client professionnel. Délais importants."],
+  ["Nadia", "Lefèvre", "nadia.lefevre@email.com", "06 45 18 92 30", "Cliente fidèle. Préfère être appelée en fin de journée."],
+  ["Fatima", "Cherif", "fatima.cherif@email.com", "06 10 20 30 40", "Très attentive aux délais."],
+  ["Lucas", "Garnier", "lucas.garnier@email.com", "07 34 56 78 90", "Réparations cuir. Demande souvent des délais rapides."]
 ]
 
-customers = customers_data.map do |firstname, lastname, email, phone, notes|
+customers = customers_data.each_with_index.map do |(firstname, lastname, email, phone, notes), index|
+  created_at =
+    if index < 15
+      Time.zone.local(2026, 5, rand(1..31), rand(9..18), [0, 15, 30, 45].sample)
+    else
+      Time.zone.local(2026, 6, rand(1..11), rand(9..18), [0, 15, 30, 45].sample)
+    end
+
   Customer.create!(
     establishment: establishment,
     firstname: firstname,
     lastname: lastname,
     email: email,
     phone: phone,
-    notes: notes
+    notes: notes,
+    created_at: created_at,
+    updated_at: created_at
   )
 end
 
@@ -267,7 +299,7 @@ puts "Creating 5 recent transactions..."
 
   created_orders << create_order_with_lines!(
     establishment: establishment,
-    customer: customers[index % customers.length],
+    customer: customers[index + 8],
     status: ["pending", "in_progress", "completed"].sample,
     priority: ["medium", "high"].sample,
     created_at: created_at,
@@ -312,9 +344,9 @@ end
 reminder_item = items_by_name["Ressemelage sneakers"]
 
 reminder_scenarios = [
-  { customer: customers[0], waiting: 0, note: "TEST — commande prête aujourd’hui." },
-  { customer: customers[1], waiting: 4, note: "TEST — rappel retrait J+3 ouvrés." },
-  { customer: customers[2], waiting: 12, note: "TEST — rappel retrait J+10 ouvrés." }
+  { customer: customers[13], waiting: 0, note: "TEST — commande prête aujourd’hui." },
+  { customer: customers[14], waiting: 4, note: "TEST — rappel retrait J+3 ouvrés." },
+  { customer: customers[15], waiting: 12, note: "TEST — rappel retrait J+10 ouvrés." }
 ]
 
 reminder_orders = reminder_scenarios.map do |scenario|
@@ -344,9 +376,9 @@ end
 puts "Creating due-date-alert test orders..."
 
 [
-  { customer: customers[3], status: "pending", offset: 1, note: "TEST — retrait imminent J+1." },
-  { customer: customers[4], status: "in_progress", offset: 0, note: "TEST — retrait aujourd’hui." },
-  { customer: customers[5], status: "in_progress", offset: -2, note: "TEST — retrait dépassé J-2." }
+  { customer: customers[16], status: "pending", offset: 1, note: "TEST — retrait imminent J+1." },
+  { customer: customers[17], status: "in_progress", offset: 0, note: "TEST — retrait aujourd’hui." },
+  { customer: customers[18], status: "in_progress", offset: -2, note: "TEST — retrait dépassé J-2." }
 ].each do |scenario|
   create_order_with_lines!(
     establishment: establishment,
@@ -372,7 +404,7 @@ history_reminder_at = Time.zone.local(2026, 6, 10, 10, 0, 0)
 
 history_order = create_order_with_lines!(
   establishment: establishment,
-  customer: customers[6],
+  customer: customers[19],
   status: "sent",
   priority: "medium",
   created_at: history_created_at,
