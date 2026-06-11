@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { formatMoney } from "../utils/money"
 
 // Parcours "Créer une commande" en 5 étapes (Client · Prestations · Paiement · Infos · Reçu).
 // Gère navigation, panier, totaux live, validation par étape. Une seule soumission à la fin.
@@ -122,7 +123,6 @@ export default class extends Controller {
   selectMethod(event) {
     this.method = event.currentTarget.dataset.value
     this.methodInputTarget.value = this.method
-    this.tileTargets // noop
     this.markGroup(event.currentTarget, "paytile")
     this.render()
   }
@@ -257,18 +257,18 @@ export default class extends Controller {
       recapHtml.push(`
         <div class="recap__line">
           <span class="recap__line-name"><span class="catalog-icon-halo" style="width:34px;height:34px">${icon}</span><span>${qty}× ${name}</span></span>
-          <span style="font-weight:600">${this.money(price * qty)}</span>
+          <span style="font-weight:600">${formatMoney(price * qty)}</span>
         </div>`)
 
       receiptHtml.push(`
-        <div class="receipt__row"><span><span class="receipt__qty">${qty}×</span> ${name}</span><span>${this.money(price * qty)}</span></div>`)
+        <div class="receipt__row"><span><span class="receipt__qty">${qty}×</span> ${name}</span><span>${formatMoney(price * qty)}</span></div>`)
 
       ticketHtml.push(`
         <div class="ticket__line">
           <span class="catalog-icon-halo" style="width:34px;height:34px">${icon}</span>
           <div style="flex:1;min-width:0">
             <div class="ticket__line-name">${name}</div>
-            <div class="ticket__line-unit">${this.money(price)} · ${this.money(price * qty)}</div>
+            <div class="ticket__line-unit">${formatMoney(price)} · ${formatMoney(price * qty)}</div>
           </div>
           <div class="qtyctl">
             <button type="button" data-item-id="${id}" data-action="order-wizard#decItem" aria-label="Retirer un"><i class="fa-solid fa-minus"></i></button>
@@ -300,32 +300,31 @@ export default class extends Controller {
     this.receiptLinesTargets.forEach((e) => (e.innerHTML = receiptHtml.join("")))
 
     // totaux (plusieurs emplacements possibles via les targets)
-    this.subtotalTargets.forEach((e) => (e.textContent = this.money(ht)))
-    this.vatTargets.forEach((e) => (e.textContent = this.money(tva)))
-    this.ttcTargets.forEach((e) => (e.textContent = this.money(ttc)))
-    this.totalTargets.forEach((e) => (e.textContent = this.money(totalDue)))
+    this.subtotalTargets.forEach((e) => (e.textContent = formatMoney(ht)))
+    this.vatTargets.forEach((e) => (e.textContent = formatMoney(tva)))
+    this.ttcTargets.forEach((e) => (e.textContent = formatMoney(ttc)))
+    this.totalTargets.forEach((e) => (e.textContent = formatMoney(totalDue)))
 
     // ligne réduction (panier / récap / reçu)
     this.discountRowTargets.forEach((row) => row.classList.toggle("d-none", discount <= 0))
-    this.discountAmountTargets.forEach((e) => (e.textContent = `− ${this.money(discount)}`))
+    this.discountAmountTargets.forEach((e) => (e.textContent = `− ${formatMoney(discount)}`))
 
     // bouton "Continuer · total" (étape panier) — sur tous les boutons Continuer
     const showAmount = this.step === 1 && ids.length > 0
     this.nextTargets.forEach((b) => {
       const amount = b.querySelector("[data-amount]")
-      if (amount) amount.textContent = showAmount ? ` · ${this.money(totalDue)}` : ""
+      if (amount) amount.textContent = showAmount ? ` · ${formatMoney(totalDue)}` : ""
     })
-    this.element.querySelectorAll("[data-total-amount]").forEach((e) => (e.textContent = this.money(totalDue)))
+    this.element.querySelectorAll("[data-total-amount]").forEach((e) => (e.textContent = formatMoney(totalDue)))
   }
 
-  money(n) { return n.toFixed(2).replace(".", ",") + " €" }
+  get selectedClientRow() {
+    return this.clientRowTargets.find((r) => r.dataset.id === this.customerIdInputTarget.value)
+  }
 
   clientName() {
     if (this.mode === "passage") return "Client de passage"
-    if (this.mode === "existing") {
-      const row = this.clientRowTargets.find((r) => r.dataset.id === this.customerIdInputTarget.value)
-      return row ? row.dataset.name : "—"
-    }
+    if (this.mode === "existing") return this.selectedClientRow?.dataset.name ?? "—"
     const name = this.element.querySelector("[name='order[new_name]']")
     return (name && name.value.trim()) || "Nouveau client"
   }
