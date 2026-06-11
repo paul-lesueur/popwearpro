@@ -1,44 +1,69 @@
-<div class="devise-page">
+<div class="auth-page">
+  <section class="auth-hero">
+    <%= link_to root_path, class: "auth-logo-chip" do %>
+      <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "auth-logo" %>
+    <% end %>
 
-  <div class="devise-page__brand">
-    <div>
-      <h1>Popwear Pro</h1>
-      <p>Gestion simplifiée pour artisans maroquiniers</p>
-    </div>
-  </div>
+    <div class="auth-hero-content">
+      <h1>Récupérez votre accès.</h1>
 
-  <div class="devise-page__content">
-    <div class="devise-card">
-
-      <h1 class="devise-card__title">Mot de passe oublié ?</h1>
-
-      <p class="devise-card__subtitle">
-        Indiquez votre adresse e-mail pour recevoir les instructions de réinitialisation.
+      <p>
+        Recevez un lien sécurisé pour réinitialiser votre mot de passe et retrouver votre espace.
       </p>
 
-      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-        <%= f.error_notification %>
-
-        <div class="form-inputs">
-          <%= f.input :email,
-                      required: true,
-                      autofocus: true,
-                      label: false,
-                      placeholder: "Email",
-                      input_html: { autocomplete: "email" } %>
+      <div class="auth-highlights">
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Réinitialisation sécurisée</span>
         </div>
 
-        <div class="form-actions">
-          <%= f.button :submit, "Recevoir les instructions" %>
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Retour rapide à votre espace</span>
         </div>
-      <% end %>
 
-      <div class="devise-card__links">
-        <%= link_to "Se connecter", new_session_path(resource_name) %><br>
-        <%= link_to "Créer un compte", new_registration_path(resource_name) %>
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Données atelier protégées</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="auth-form-section">
+    <div class="auth-card auth-card--password">
+      <div class="auth-card-header">
+        <span class="auth-card-kicker">Mot de passe oublié</span>
+        <h2>Réinitialiser votre accès</h2>
+        <p>Entrez l’adresse e-mail associée à votre compte.</p>
       </div>
 
-    </div>
-  </div>
+      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form" }) do |f| %>
+        <%= f.error_notification %>
 
+        <%= f.input :email,
+                    required: true,
+                    autofocus: true,
+                    label: "Adresse e-mail",
+                    placeholder: "exemple@email.com",
+                    input_html: { autocomplete: "email" } %>
+
+        <%= f.button :submit, "Recevoir le lien", class: "auth-submit" %>
+      <% end %>
+
+      <div class="auth-password-info">
+        <i class="fa-solid fa-envelope"></i>
+        <p>
+          Si un compte existe avec cette adresse, vous recevrez un e-mail avec les instructions.
+        </p>
+      </div>
+
+      <div class="auth-footer">
+        <p>
+          Vous avez retrouvé votre mot de passe ?
+          <%= link_to "Se connecter", new_session_path(resource_name), class: "auth-link" %>
+        </p>
+      </div>
+    </div>
+  </section>
 </div>

@@ -1,62 +1,92 @@
-<div class="devise-page">
-
-  <div class="devise-page__brand">
-    <%= link_to root_path do %>
-      <%= image_tag "logo-popwear-pro.png",
-                    alt: "Popwear Pro",
-                    width: 150,
-                    style: "position: absolute; top: 32px; left: 48px;" %>
+<div class="auth-page">
+  <section class="auth-hero">
+    <%= link_to root_path, class: "auth-logo-chip" do %>
+      <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "auth-logo" %>
     <% end %>
-  </div>
 
-  <div class="devise-page__content">
-    <div class="devise-card">
+    <div class="auth-hero-content">
+      <h1>Créez votre espace atelier.</h1>
 
-      <h1 class="devise-card__title">Créer un compte</h1>
-
-      <p class="devise-card__subtitle">
-        Connectez-vous avec votre e-mail
+      <p>
+        Lancez votre espace professionnel pour mieux suivre vos commandes, vos clients et vos ventes.
       </p>
 
-      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <div class="auth-highlights">
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Gestion complète des commandes</span>
+        </div>
 
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Catalogue de prestations</span>
+        </div>
+
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Suivi clair de votre activité</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="auth-form-section">
+    <div class="auth-card auth-card--signup">
+      <div class="auth-card-header">
+        <span class="auth-card-kicker">Inscription</span>
+        <h2>Créer un compte</h2>
+        <p>Configurez votre accès en quelques secondes.</p>
+      </div>
+
+      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "auth-form" }) do |f| %>
         <%= f.error_notification %>
 
-        <div class="form-inputs">
+        <%= f.input :name,
+                    required: true,
+                    autofocus: true,
+                    label: "Nom",
+                    placeholder: "Votre nom",
+                    input_html: { autocomplete: "name" } %>
 
-          <%= f.input :name,
-                      required: true,
-                      autofocus: true,
-                      label: false,
-                      placeholder: "Nom",
-                      input_html: { autocomplete: "name" } %>
+        <%= f.input :email,
+                    required: true,
+                    label: "Adresse e-mail",
+                    placeholder: "exemple@email.com",
+                    input_html: { autocomplete: "email" } %>
 
-          <%= f.input :email,
-                      required: true,
-                      label: false,
-                      placeholder: "Email",
-                      input_html: { autocomplete: "email" } %>
+        <%= f.input :password,
+                    required: true,
+                    label: "Mot de passe",
+                    placeholder: "Choisissez un mot de passe",
+                    input_html: { autocomplete: "new-password" } %>
 
-          <%= f.input :password,
-                      required: true,
-                      label: false,
-                      placeholder: "Mot de passe",
-                      input_html: { autocomplete: "new-password" } %>
+        <%= f.input :password_confirmation,
+                    required: true,
+                    label: "Confirmation",
+                    placeholder: "Confirmez votre mot de passe",
+                    input_html: { autocomplete: "new-password" } %>
 
-        </div>
-
-        <div class="form-actions">
-          <%= f.button :submit, "S'inscrire" %>
-        </div>
-
+        <%= f.button :submit, "Créer mon compte", class: "auth-submit" %>
       <% end %>
 
-      <p class="devise-card__footer">
-        Vous êtes déjà inscrit ?
-        <%= link_to "Se connecter", new_session_path(resource_name) %>
-      </p>
+      <div class="auth-reassurance">
+        <div>
+          <i class="fa-solid fa-lock"></i>
+          <span>Compte sécurisé</span>
+        </div>
 
+        <div>
+          <i class="fa-solid fa-bolt"></i>
+          <span>Accès immédiat</span>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        <p>
+          Vous avez déjà un compte ?
+          <%= link_to "Se connecter", new_session_path(resource_name), class: "auth-link" %>
+        </p>
+      </div>
     </div>
-  </div>
-
+  </section>
 </div>
