@@ -1,9 +1,7 @@
-# This file should ensure the existence of records required to run the application in every environment.
-# Warning: this seed resets demo data. Use locally for development/demo.
+# db/seeds.rb
+# Seed demo PopWearPro — focus cordonnier
+# Warning: resets demo data.
 
-# On crée beaucoup de commandes : sans ça, chaque email de confirmation
-# ouvrirait un onglet letter_opener en dev. La trace dans l'historique
-# (Communication kind "confirmation") reste créée indépendamment de l'envoi.
 ActionMailer::Base.perform_deliveries = false
 
 puts "Cleaning database..."
@@ -29,7 +27,7 @@ puts "Creating establishment..."
 establishment = Establishment.create!(
   user: user,
   name: "Atelier Claude",
-  description: "Atelier de cordonnerie artisanale parisien spécialisé dans la réparation, l’entretien et la rénovation de chaussures et articles en cuir.",
+  description: "Atelier de cordonnerie artisanale spécialisé dans la réparation, l’entretien et la rénovation de chaussures et articles en cuir.",
   address: "12 rue des Artisans, 75011 Paris",
   category: "Cordonnier",
   payment_methods: "Carte bancaire, espèces, chèque",
@@ -41,35 +39,13 @@ puts "Creating customers..."
 
 customers_data = [
   ["Camille", "Martin", "camille.martin@email.com", "06 12 34 56 78", "Cliente régulière. Préfère être contactée par SMS."],
-  ["Thomas", "Bernard", "thomas.bernard@email.com", "06 98 76 54 32", "Commande souvent des réparations urgentes."],
+  ["Thomas", "Bernard", "thomas.bernard@email.com", "06 98 76 54 32", "Commandes souvent urgentes."],
   ["Sophie", "Leroy", "sophie.leroy@email.com", "07 22 44 66 88", "Aime les finitions premium."],
-  ["Nadia", "Lefèvre", "nadia.lefevre@email.com", "06 45 18 92 30", "Cliente fidèle. Préfère être appelée en fin de journée."],
-  ["Karim", "Benali", "karim.benali@email.com", "07 11 23 45 67", "Dépose souvent plusieurs articles en même temps."],
-  ["Inès", "Moreau", "ines.moreau@email.com", "06 77 88 99 10", "Préfère être contactée par email."],
-  ["Lucas", "Garnier", "lucas.garnier@email.com", "07 34 56 78 90", "Réparations cuir. Demande souvent des délais rapides."],
-  ["Fatima", "Cherif", "fatima.cherif@email.com", "06 10 20 30 40", "Très attentive aux délais. Prévenir en cas de retard."],
-  ["Antoine", "Rousseau", "antoine.rousseau@email.com", "06 44 55 66 77", "Client occasionnel. À relancer quand la commande est prête."],
-  ["Julie", "Petit", "julie.petit@email.com", "07 90 12 34 56", "Cliente récente. Commandes simples."],
-  ["Bastien", "Delafontaine", "bastien.delafontaine@email.com", "06 21 45 78 12", "Dépose souvent des sneakers."],
-  ["Thomas", "Dumas", "thomas.dumas@email.com", "06 52 18 74 90", "Préfère payer en espèces."],
+  ["Karim", "Benali", "karim.benali@email.com", "07 11 23 45 67", "Dépose souvent plusieurs articles."],
   ["Élise", "Robert", "elise.robert@email.com", "07 15 82 44 31", "Cliente régulière pour entretien cuir."],
-  ["Mathieu", "Girard", "mathieu.girard@email.com", "06 78 11 23 45", "Souhaite des réparations solides avant l’esthétique."],
-  ["Sarah", "Dubois", "sarah.dubois@email.com", "07 41 22 33 44", "Aime être prévenue par SMS."],
-  ["Olivier", "Mercier", "olivier.mercier@email.com", "06 61 72 83 94", "Client professionnel. Délais importants."],
-  ["Claire", "Bousquet", "claire.bousquet@email.com", "07 19 28 37 46", "Commandes souvent des travaux simples."],
-  ["Jérôme", "Racine", "jerome.racine@email.com", "06 90 81 72 63", "Dépose souvent des chaussures de ville."],
-  ["Pauline", "Laurent", "pauline.laurent@email.com", "06 14 25 36 47", "Préfère les finitions discrètes."],
-  ["Jean", "Paquet", "jean.paquet@email.com", "07 33 44 55 66", "Client fidèle. Paiement souvent par carte."],
-  ["Marie", "Colin", "marie.colin@email.com", "06 88 77 66 55", "Demande régulièrement du cirage premium."],
   ["Hugo", "Renard", "hugo.renard@email.com", "07 12 89 45 67", "Sneakers et zip principalement."],
   ["Laura", "Simon", "laura.simon@email.com", "06 32 14 58 79", "Prévenir dès que la commande est prête."],
-  ["Romain", "Masson", "romain.masson@email.com", "07 48 59 60 71", "Souvent pressé. Délais courts."],
-  ["Amandine", "Perrot", "amandine.perrot@email.com", "06 73 84 95 16", "Articles cuir et petites réparations."],
-  ["Mehdi", "Kacem", "mehdi.kacem@email.com", "07 26 37 48 59", "Client régulier pour ressemelage."],
-  ["Chloé", "Vidal", "chloe.vidal@email.com", "06 97 86 75 64", "Préfère être contactée par email."],
-  ["Vincent", "Aubert", "vincent.aubert@email.com", "07 65 54 43 32", "Dépôts fréquents le samedi."],
-  ["Lina", "Fontaine", "lina.fontaine@email.com", "06 11 22 33 44", "Cliente récente."],
-  ["Alexandre", "Noël", "alexandre.noel@email.com", "07 99 88 77 66", "Réparations chaussures haut de gamme."]
+  ["Mehdi", "Kacem", "mehdi.kacem@email.com", "07 26 37 48 59", "Client régulier pour ressemelage."]
 ]
 
 customers = customers_data.map do |firstname, lastname, email, phone, notes|
@@ -86,26 +62,21 @@ end
 puts "Creating catalog items..."
 
 prestations = [
-  { name: "Entretien cuir (nettoyage & cirage)", price_ht: 25, bonus: false, icon: "cirage" },
+  { name: "Entretien cuir nettoyage & cirage", price_ht: 25, bonus: false, icon: "cirage" },
   { name: "Cirage & glaçage", price_ht: 29, bonus: false, icon: "cirage" },
   { name: "Rénovation complète cuir", price_ht: 55, bonus: false, icon: "finition" },
   { name: "Changement de lacets", price_ht: 5, bonus: false, icon: "reparer" },
-  { name: "Pose de patins (x2)", price_ht: 26, bonus: true, icon: "patins-fers" },
-  { name: "Pose de fers (x2)", price_ht: 21, bonus: false, icon: "patins-fers" },
-  { name: "Mise en forme – coup de pied", price_ht: 29, bonus: false, icon: "elargir" },
-  { name: "Ressemelage collé caoutchouc (semelle complète)", price_ht: 83, bonus: true, icon: "ressemelage" },
+  { name: "Pose de patins x2", price_ht: 26, bonus: true, icon: "patins-fers" },
+  { name: "Pose de fers x2", price_ht: 21, bonus: false, icon: "patins-fers" },
+  { name: "Mise en forme coup de pied", price_ht: 29, bonus: false, icon: "elargir" },
+  { name: "Ressemelage caoutchouc", price_ht: 83, bonus: true, icon: "ressemelage" },
   { name: "Ressemelage sneakers", price_ht: 70, bonus: true, icon: "ressemelage" },
-  { name: "Ressemelage cousu rainette (semelle complète)", price_ht: 130, bonus: true, icon: "ressemelage" },
-  { name: "Ressemelage Birkenstock", price_ht: 54, bonus: true, icon: "ressemelage" },
   { name: "Recollage semelle", price_ht: 30, bonus: true, icon: "ressemelage" },
-  { name: "Bonbout – talons aiguille", price_ht: 15, bonus: true, icon: "talon-bonbout" },
-  { name: "Talon complet (chaussures plates)", price_ht: 65, bonus: false, icon: "talon-bonbout" },
-  { name: "Glissoirs (changement)", price_ht: 35, bonus: true, icon: "patins-fers" },
-  { name: "Redresse avant / arrière", price_ht: 17, bonus: true, icon: "reparer" },
-  { name: "Trou – rustine intérieure", price_ht: 20, bonus: true, icon: "dechirure" },
+  { name: "Bonbout talons aiguille", price_ht: 15, bonus: true, icon: "talon-bonbout" },
+  { name: "Talon complet chaussures plates", price_ht: 65, bonus: false, icon: "talon-bonbout" },
+  { name: "Trou avec rustine intérieure", price_ht: 20, bonus: true, icon: "dechirure" },
   { name: "Couture décousue", price_ht: 20, bonus: true, icon: "reparer" },
-  { name: "Zip – changement (x1)", price_ht: 45, bonus: true, icon: "zip" },
-  { name: "Zip de bottes – changement (x1)", price_ht: 55, bonus: true, icon: "zip" }
+  { name: "Changement zip", price_ht: 45, bonus: true, icon: "zip" }
 ]
 
 items_by_name = {}
@@ -123,8 +94,6 @@ end
 
 items = items_by_name.values
 
-puts "Creating orders over several months..."
-
 def create_order_with_lines!(
   establishment:,
   customer:,
@@ -134,8 +103,8 @@ def create_order_with_lines!(
   due_date:,
   payment_method:,
   payment_status:,
-  paid_at:,
-  collected_at:,
+  paid_at: nil,
+  collected_at: nil,
   internal_notes:,
   lines:
 )
@@ -171,172 +140,181 @@ def create_order_with_lines!(
   order
 end
 
-srand(42)
-
-payment_methods = ["card", "cash", "check"]
-priorities = ["low", "medium", "high", "urgent"]
+puts "Creating demo orders..."
 
 notes = [
   "Prévenir le client dès que la commande est prête.",
   "Client pressé. Faire attention au délai.",
   "Vérifier la finition avant remise.",
   "Demande une finition propre et discrète.",
-  "Commande déposée avec plusieurs articles.",
-  "Travail simple, à faire dans la semaine.",
-  "Réparation visible, expliquer le résultat au client.",
-  "Client fidèle, soigner la communication."
+  "Commande déposée avec plusieurs articles."
 ]
-
-# Répartition volontairement réaliste :
-# - Beaucoup de commandes sur le mois courant
-# - Quelques commandes sur les mois précédents
-# - Un pic le jour actuel pour que le dashboard ait du contexte
-months_offsets = [5, 4, 3, 2, 1, 0]
-orders_per_month = {
-  5 => 16,
-  4 => 18,
-  3 => 20,
-  2 => 24,
-  1 => 28,
-  0 => 34
-}
 
 created_orders = []
 
-months_offsets.each do |offset|
-  month_date = Date.current - offset.months
-  month_start = month_date.beginning_of_month
-  month_end = offset.zero? ? Date.current : month_date.end_of_month
-
-  orders_per_month[offset].times do
-    order_date = rand(month_start..month_end)
-    created_at = order_date.to_time.change(hour: rand(9..17), min: [0, 15, 30, 45].sample)
-
-    customer = customers.sample
-    payment_method = payment_methods.sample
-
-    if order_date < Date.current - 7.days
-      status = ["delivered", "completed"].sample
-      payment_status = "paid"
-      paid_at = created_at + rand(1..4).days
-      collected_at = status == "delivered" ? paid_at + rand(1..3).days : nil
-    elsif order_date < Date.current
-      status = ["completed", "in_progress", "delivered"].sample
-      payment_status = status == "delivered" ? "paid" : ["paid", "unpaid"].sample
-      paid_at = payment_status == "paid" ? created_at + rand(1..3).days : nil
-      collected_at = status == "delivered" ? created_at + rand(2..5).days : nil
-    else
-      status = ["pending", "in_progress"].sample
-      payment_status = "unpaid"
-      paid_at = nil
-      collected_at = nil
-    end
-
-    lines_count = [1, 1, 1, 2, 2, 3].sample
-
-    selected_items = items.sample(lines_count).map do |item|
-      {
-        item: item,
-        quantity: [1, 1, 1, 2].sample
-      }
-    end
-
-    order = create_order_with_lines!(
-      establishment: establishment,
-      customer: customer,
-      status: status,
-      priority: priorities.sample,
-      created_at: created_at,
-      due_date: order_date + rand(2..12).days,
-      payment_method: payment_method,
-      payment_status: payment_status,
-      paid_at: paid_at,
-      collected_at: collected_at,
-      internal_notes: notes.sample,
-      lines: selected_items
-    )
-
-    created_orders << order
-  end
-end
-
-# Ajout d’un vrai pic de commandes aujourd’hui pour la page Transactions et le CA du jour.
-today_items_pool = [
-  items_by_name["Entretien cuir (nettoyage & cirage)"],
-  items_by_name["Pose de patins (x2)"],
-  items_by_name["Ressemelage sneakers"],
-  items_by_name["Recollage semelle"],
-  items_by_name["Zip – changement (x1)"],
-  items_by_name["Bonbout – talons aiguille"],
-  items_by_name["Couture décousue"]
+orders_data = [
+  {
+    customer: customers[0],
+    status: "pending",
+    priority: "high",
+    days_ago: 0,
+    due_in: 3,
+    payment_method: "card",
+    payment_status: "unpaid",
+    lines: [["Pose de patins x2", 1], ["Cirage & glaçage", 1]]
+  },
+  {
+    customer: customers[1],
+    status: "in_progress",
+    priority: "urgent",
+    days_ago: 1,
+    due_in: 1,
+    payment_method: "cash",
+    payment_status: "unpaid",
+    lines: [["Ressemelage sneakers", 1]]
+  },
+  {
+    customer: customers[2],
+    status: "completed",
+    priority: "medium",
+    days_ago: 3,
+    due_in: 0,
+    payment_method: "card",
+    payment_status: "paid",
+    lines: [["Rénovation complète cuir", 1]]
+  },
+  {
+    customer: customers[3],
+    status: "sent",
+    priority: "medium",
+    days_ago: 5,
+    due_in: -1,
+    payment_method: "card",
+    payment_status: "paid",
+    lines: [["Ressemelage caoutchouc", 1], ["Bonbout talons aiguille", 1]]
+  },
+  {
+    customer: customers[4],
+    status: "in_progress",
+    priority: "high",
+    days_ago: 2,
+    due_in: 2,
+    payment_method: "card",
+    payment_status: "unpaid",
+    lines: [["Changement zip", 1]]
+  },
+  {
+    customer: customers[5],
+    status: "pending",
+    priority: "medium",
+    days_ago: 0,
+    due_in: 5,
+    payment_method: "cash",
+    payment_status: "unpaid",
+    lines: [["Recollage semelle", 1], ["Changement de lacets", 1]]
+  },
+  {
+    customer: customers[6],
+    status: "completed",
+    priority: "medium",
+    days_ago: 8,
+    due_in: -2,
+    payment_method: "card",
+    payment_status: "paid",
+    lines: [["Talon complet chaussures plates", 1]]
+  },
+  {
+    customer: customers[7],
+    status: "pending",
+    priority: "low",
+    days_ago: 1,
+    due_in: 6,
+    payment_method: "check",
+    payment_status: "unpaid",
+    lines: [["Entretien cuir nettoyage & cirage", 1]]
+  }
 ]
 
-13.times do |index|
-  created_at = Time.current.change(hour: 9 + (index / 2), min: [0, 15, 30, 45].sample)
+orders_data.each do |data|
+  created_at = Time.current - data[:days_ago].days
+  due_date = Date.current + data[:due_in].days
+  paid_at = data[:payment_status] == "paid" ? created_at + 1.hour : nil
 
-  line_item = today_items_pool.sample
-  second_item = today_items_pool.sample
+  lines = data[:lines].map do |item_name, quantity|
+    { item: items_by_name.fetch(item_name), quantity: quantity }
+  end
 
-  lines = [{ item: line_item, quantity: [1, 1, 2].sample }]
-  lines << { item: second_item, quantity: 1 } if index % 4 == 0
-
-  order = create_order_with_lines!(
+  created_orders << create_order_with_lines!(
     establishment: establishment,
-    customer: customers[index % customers.length],
-    status: ["pending", "in_progress", "completed"].sample,
-    priority: ["medium", "high", "urgent"].sample,
+    customer: data[:customer],
+    status: data[:status],
+    priority: data[:priority],
     created_at: created_at,
-    due_date: Date.current + rand(1..8).days,
-    payment_method: ["card", "cash"].sample,
-    payment_status: ["paid", "unpaid"].sample,
-    paid_at: [true, false].sample ? created_at + rand(10..90).minutes : nil,
+    due_date: due_date,
+    payment_method: data[:payment_method],
+    payment_status: data[:payment_status],
+    paid_at: paid_at,
     collected_at: nil,
     internal_notes: notes.sample,
     lines: lines
   )
+end
 
-  created_orders << order
+puts "Creating 5 recent transactions..."
+
+5.times do |index|
+  created_at = Time.current.change(hour: 9 + index, min: [0, 15, 30, 45].sample)
+
+  created_orders << create_order_with_lines!(
+    establishment: establishment,
+    customer: customers[index % customers.length],
+    status: ["pending", "in_progress", "completed"].sample,
+    priority: ["medium", "high"].sample,
+    created_at: created_at,
+    due_date: Date.current + rand(1..6).days,
+    payment_method: ["card", "cash"].sample,
+    payment_status: ["paid", "unpaid"].sample,
+    paid_at: [true, false].sample ? created_at + 30.minutes : nil,
+    collected_at: nil,
+    internal_notes: notes.sample,
+    lines: [{ item: items.sample, quantity: [1, 1, 2].sample }]
+  )
 end
 
 puts "Creating communications..."
 
-active_orders = created_orders.select { |order| ["pending", "in_progress"].include?(order.status) }.sample(8)
-
-active_orders.each_with_index do |order, index|
+created_orders.select { |order| ["pending", "in_progress"].include?(order.status) }.first(4).each_with_index do |order, index|
   customer = order.customer
-  first_name = customer.firstname.presence || "Bonjour"
 
   Communication.create!(
     order: order,
     channel: index.even? ? "sms" : "email",
     status: index.even? ? "draft" : "sent",
-    content: "Bonjour #{first_name}, votre commande est bien prise en charge par l’Atelier Claude. Je vous préviens dès qu’elle est prête.",
+    content: "Bonjour #{customer.firstname}, votre commande est bien prise en charge par l’Atelier Claude. Je vous préviens dès qu’elle est prête.",
     sent_at: index.even? ? nil : Time.current - rand(1..4).hours
   )
 end
 
 puts "Creating pickup-reminder test orders..."
 
-# Renvoie un horodatage situé `n` jours ouvrés (lundi→vendredi) avant aujourd'hui.
 business_days_ago = lambda do |n|
   date = Date.current
   remaining = n
+
   while remaining.positive?
     date -= 1
     remaining -= 1 if (1..5).include?(date.wday)
   end
+
   date.to_time.change(hour: 10)
 end
 
-reminder_item = items_by_name["Ressemelage sneakers"] || items_by_name.values.first
+reminder_item = items_by_name["Ressemelage sneakers"]
 
-# Trois commandes « en attente de retrait » pour tester les rappels SMS.
-# On crée d'abord la commande (le callback pose ready_at = maintenant), puis on
-# force ready_at dans le passé via update_columns (sans repasser par les callbacks).
 reminder_scenarios = [
-  { customer: customers[0], waiting: 0,  note: "TEST — commande prête (J+0), à retirer." },
-  { customer: customers[1], waiting: 4,  note: "TEST — retard de retrait (J+3 ouvrés)." },
-  { customer: customers[2], waiting: 12, note: "TEST — retard de retrait (J+10 ouvrés)." }
+  { customer: customers[0], waiting: 0, note: "TEST — commande prête aujourd’hui." },
+  { customer: customers[1], waiting: 4, note: "TEST — rappel retrait J+3 ouvrés." },
+  { customer: customers[2], waiting: 12, note: "TEST — rappel retrait J+10 ouvrés." }
 ]
 
 reminder_orders = reminder_scenarios.map do |scenario|
@@ -359,24 +337,17 @@ reminder_orders = reminder_scenarios.map do |scenario|
 
   ready_at = scenario[:waiting].zero? ? Time.current : business_days_ago.call(scenario[:waiting])
   order.update_columns(sms_reminder: true, ready_at: ready_at)
-  order
-end
 
-reminder_orders.each do |order|
-  puts "  -> CMD-#{order.id} (#{order.customer.display_name}) : " \
-       "attente #{order.business_days_waiting} j ouvrés, palier #{order.pickup_reminder_level.inspect}"
+  order
 end
 
 puts "Creating due-date-alert test orders..."
 
-# Commandes pas encore prêtes dont la date de retrait est imminente ou dépassée.
-due_date_scenarios = [
-  { customer: customers[3], status: "pending",     offset: 1,  note: "TEST — retrait imminent (J+1)." },
-  { customer: customers[4], status: "in_progress", offset: 0,  note: "TEST — retrait aujourd'hui." },
-  { customer: customers[5], status: "in_progress", offset: -2, note: "TEST — retrait dépassé (J-2)." }
-]
-
-due_date_orders = due_date_scenarios.map do |scenario|
+[
+  { customer: customers[3], status: "pending", offset: 1, note: "TEST — retrait imminent J+1." },
+  { customer: customers[4], status: "in_progress", offset: 0, note: "TEST — retrait aujourd’hui." },
+  { customer: customers[5], status: "in_progress", offset: -2, note: "TEST — retrait dépassé J-2." }
+].each do |scenario|
   create_order_with_lines!(
     establishment: establishment,
     customer: scenario[:customer],
@@ -393,14 +364,8 @@ due_date_orders = due_date_scenarios.map do |scenario|
   )
 end
 
-due_date_orders.each do |order|
-  puts "  -> CMD-#{order.id} (#{order.customer.display_name}) : " \
-       "#{order.status}, retrait dans #{order.days_until_due} j, urgent #{order.urgent?}"
-end
-
 puts "Creating history-demo order..."
 
-# Commande dont l'historique est complet (email de confirmation auto + SMS).
 history_order = create_order_with_lines!(
   establishment: establishment,
   customer: customers[6],
@@ -412,17 +377,25 @@ history_order = create_order_with_lines!(
   payment_status: "paid",
   paid_at: business_days_ago.call(5),
   collected_at: nil,
-  internal_notes: "TEST — historique complet (email + SMS prête + rappel J+3).",
+  internal_notes: "TEST — historique complet email + SMS.",
   lines: [{ item: reminder_item, quantity: 1 }]
 )
-# L'email de confirmation est déjà tracé par le callback ; on ajoute les SMS.
-history_order.communications.create!(channel: "sms", kind: "ready", status: "sent",
-                                     content: history_order.sms_ready_message,
-                                     sent_at: business_days_ago.call(4))
-history_order.communications.create!(channel: "sms", kind: "reminder_j3", status: "sent",
-                                     content: history_order.pickup_reminder_message,
-                                     sent_at: business_days_ago.call(1))
-puts "  -> CMD-#{history_order.id} historique: #{history_order.communications.order(:sent_at).pluck(:kind).inspect}"
+
+history_order.communications.create!(
+  channel: "sms",
+  kind: "ready",
+  status: "sent",
+  content: history_order.sms_ready_message,
+  sent_at: business_days_ago.call(4)
+)
+
+history_order.communications.create!(
+  channel: "sms",
+  kind: "reminder_j3",
+  status: "sent",
+  content: history_order.pickup_reminder_message,
+  sent_at: business_days_ago.call(1)
+)
 
 puts "Seeds finished!"
 puts "#{User.count} user created"
