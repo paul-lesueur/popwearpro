@@ -30,16 +30,20 @@
   <body>
     <% if user_signed_in? %>
       <div class="app-shell">
-        <%= render "shared/sidebar" %>
-        <%= render "shared/sidebar_offcanvas" %>
+        <%# Navbar horizontale pleine largeur : logo (gauche) + menu utilisateur (droite). %>
+        <%= render "shared/header" %>
 
-        <div class="app-main">
-          <%= render "shared/header" %>
-          <%= render "shared/flashes" %>
+        <div class="app-body">
+          <%= render "shared/sidebar" %>
+          <%= render "shared/sidebar_offcanvas" %>
 
-          <main class="app-content">
-            <%= yield %>
-          </main>
+          <div class="app-main">
+            <%= render "shared/flashes" %>
+
+            <main class="app-content">
+              <%= yield %>
+            </main>
+          </div>
         </div>
       </div>
     <% else %>

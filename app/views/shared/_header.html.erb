@@ -1,4 +1,9 @@
 <header class="app-header">
+  <%# Logo : fait partie de la navbar horizontale (aligné au-dessus de la sidebar). %>
+  <%= link_to root_path, class: "app-header__brand" do %>
+    <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "app-header__brand-logo" %>
+  <% end %>
+
   <%# Hamburger : ouvre la sidebar en off-canvas sous 992px uniquement. %>
   <button class="app-header__burger d-lg-none" type="button"
           data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"
