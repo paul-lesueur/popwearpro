@@ -74,9 +74,9 @@ customers_data = [
 customers = customers_data.each_with_index.map do |(firstname, lastname, email, phone, notes), index|
   created_at =
     if index < 15
-      Time.zone.local(2026, 5, rand(1..31), rand(9..18), [0, 15, 30, 45].sample)
+      Time.zone.local(2026, 5, index + 1, 10, 0, 0)
     else
-      Time.zone.local(2026, 6, rand(1..11), rand(9..18), [0, 15, 30, 45].sample)
+      Time.zone.local(2026, 6, index - 14, 10, 0, 0)
     end
 
   Customer.create!(
@@ -189,8 +189,8 @@ orders_data = [
     customer: customers[0],
     status: "pending",
     priority: "high",
-    days_ago: 0,
-    due_in: 3,
+    created_at: Time.zone.local(2026, 6, 11, 9, 0, 0),
+    due_date: Date.new(2026, 6, 14),
     payment_method: "card",
     payment_status: "unpaid",
     lines: [["Pose de patins x2", 1], ["Cirage & glaçage", 1]]
@@ -199,8 +199,8 @@ orders_data = [
     customer: customers[1],
     status: "in_progress",
     priority: "urgent",
-    days_ago: 1,
-    due_in: 1,
+    created_at: Time.zone.local(2026, 6, 10, 10, 0, 0),
+    due_date: Date.new(2026, 6, 12),
     payment_method: "cash",
     payment_status: "unpaid",
     lines: [["Ressemelage sneakers", 1]]
@@ -209,8 +209,8 @@ orders_data = [
     customer: customers[2],
     status: "completed",
     priority: "medium",
-    days_ago: 3,
-    due_in: 0,
+    created_at: Time.zone.local(2026, 6, 8, 11, 0, 0),
+    due_date: Date.new(2026, 6, 11),
     payment_method: "card",
     payment_status: "paid",
     lines: [["Rénovation complète cuir", 1]]
@@ -219,8 +219,8 @@ orders_data = [
     customer: customers[3],
     status: "sent",
     priority: "medium",
-    days_ago: 5,
-    due_in: -1,
+    created_at: Time.zone.local(2026, 6, 6, 12, 0, 0),
+    due_date: Date.new(2026, 6, 10),
     payment_method: "card",
     payment_status: "paid",
     lines: [["Ressemelage caoutchouc", 1], ["Bonbout talons aiguille", 1]]
@@ -229,8 +229,8 @@ orders_data = [
     customer: customers[4],
     status: "in_progress",
     priority: "high",
-    days_ago: 2,
-    due_in: 2,
+    created_at: Time.zone.local(2026, 6, 9, 14, 0, 0),
+    due_date: Date.new(2026, 6, 13),
     payment_method: "card",
     payment_status: "unpaid",
     lines: [["Changement zip", 1]]
@@ -239,8 +239,8 @@ orders_data = [
     customer: customers[5],
     status: "pending",
     priority: "medium",
-    days_ago: 0,
-    due_in: 5,
+    created_at: Time.zone.local(2026, 6, 11, 15, 0, 0),
+    due_date: Date.new(2026, 6, 16),
     payment_method: "cash",
     payment_status: "unpaid",
     lines: [["Recollage semelle", 1], ["Changement de lacets", 1]]
@@ -249,8 +249,8 @@ orders_data = [
     customer: customers[6],
     status: "completed",
     priority: "medium",
-    days_ago: 8,
-    due_in: -2,
+    created_at: Time.zone.local(2026, 6, 3, 10, 30, 0),
+    due_date: Date.new(2026, 6, 7),
     payment_method: "card",
     payment_status: "paid",
     lines: [["Talon complet chaussures plates", 1]]
@@ -259,8 +259,8 @@ orders_data = [
     customer: customers[7],
     status: "pending",
     priority: "low",
-    days_ago: 1,
-    due_in: 6,
+    created_at: Time.zone.local(2026, 6, 10, 16, 0, 0),
+    due_date: Date.new(2026, 6, 17),
     payment_method: "check",
     payment_status: "unpaid",
     lines: [["Entretien cuir nettoyage & cirage", 1]]
@@ -268,9 +268,7 @@ orders_data = [
 ]
 
 orders_data.each do |data|
-  created_at = Time.current - data[:days_ago].days
-  due_date = Date.current + data[:due_in].days
-  paid_at = data[:payment_status] == "paid" ? created_at + 1.hour : nil
+  paid_at = data[:payment_status] == "paid" ? data[:created_at] + 1.hour : nil
 
   lines = data[:lines].map do |item_name, quantity|
     { item: items_by_name.fetch(item_name), quantity: quantity }
@@ -281,8 +279,8 @@ orders_data.each do |data|
     customer: data[:customer],
     status: data[:status],
     priority: data[:priority],
-    created_at: created_at,
-    due_date: due_date,
+    created_at: data[:created_at],
+    due_date: data[:due_date],
     payment_method: data[:payment_method],
     payment_status: data[:payment_status],
     paid_at: paid_at,
@@ -294,22 +292,30 @@ end
 
 puts "Creating 5 recent transactions..."
 
-5.times do |index|
-  created_at = Time.current.change(hour: 9 + index, min: [0, 15, 30, 45].sample)
+recent_transactions_data = [
+  [customers[8],  Time.zone.local(2026, 6, 11, 9, 30, 0)],
+  [customers[9],  Time.zone.local(2026, 6, 11, 10, 30, 0)],
+  [customers[10], Time.zone.local(2026, 6, 11, 11, 30, 0)],
+  [customers[11], Time.zone.local(2026, 6, 11, 12, 15, 0)],
+  [customers[12], Time.zone.local(2026, 6, 11, 13, 45, 0)]
+]
+
+recent_transactions_data.each_with_index do |(customer, created_at), index|
+  payment_status = index.even? ? "paid" : "unpaid"
 
   created_orders << create_order_with_lines!(
     establishment: establishment,
-    customer: customers[index + 8],
-    status: ["pending", "in_progress", "completed"].sample,
-    priority: ["medium", "high"].sample,
+    customer: customer,
+    status: ["pending", "in_progress", "completed"][index % 3],
+    priority: ["medium", "high"][index % 2],
     created_at: created_at,
-    due_date: Date.current + rand(1..6).days,
-    payment_method: ["card", "cash"].sample,
-    payment_status: ["paid", "unpaid"].sample,
-    paid_at: [true, false].sample ? created_at + 30.minutes : nil,
+    due_date: Date.new(2026, 6, 12 + index),
+    payment_method: ["card", "cash"][index % 2],
+    payment_status: payment_status,
+    paid_at: payment_status == "paid" ? created_at + 30.minutes : nil,
     collected_at: nil,
     internal_notes: notes.sample,
-    lines: [{ item: items.sample, quantity: [1, 1, 2].sample }]
+    lines: [{ item: items[index % items.length], quantity: index == 4 ? 2 : 1 }]
   )
 end
 
@@ -323,52 +329,55 @@ created_orders.select { |order| ["pending", "in_progress"].include?(order.status
     channel: index.even? ? "sms" : "email",
     status: index.even? ? "draft" : "sent",
     content: "Bonjour #{customer.firstname}, votre commande est bien prise en charge par l’Atelier Claude. Je vous préviens dès qu’elle est prête.",
-    sent_at: index.even? ? nil : Time.current - rand(1..4).hours
+    sent_at: index.even? ? nil : Time.zone.local(2026, 6, 11, 14, 0, 0) - index.hours
   )
 end
 
 puts "Creating pickup-reminder test orders..."
 
-business_days_ago = lambda do |n|
-  date = Date.current
-  remaining = n
-
-  while remaining.positive?
-    date -= 1
-    remaining -= 1 if (1..5).include?(date.wday)
-  end
-
-  date.to_time.change(hour: 10)
-end
-
 reminder_item = items_by_name["Ressemelage sneakers"]
 
 reminder_scenarios = [
-  { customer: customers[13], waiting: 0, note: "TEST — commande prête aujourd’hui." },
-  { customer: customers[14], waiting: 4, note: "TEST — rappel retrait J+3 ouvrés." },
-  { customer: customers[15], waiting: 12, note: "TEST — rappel retrait J+10 ouvrés." }
+  {
+    customer: customers[13],
+    created_at: Time.zone.local(2026, 6, 10, 10, 0, 0),
+    ready_at: Time.zone.local(2026, 6, 11, 10, 0, 0),
+    note: "TEST — commande prête aujourd’hui."
+  },
+  {
+    customer: customers[14],
+    created_at: Time.zone.local(2026, 6, 2, 10, 0, 0),
+    ready_at: Time.zone.local(2026, 6, 5, 10, 0, 0),
+    note: "TEST — rappel retrait J+3 ouvrés."
+  },
+  {
+    customer: customers[15],
+    created_at: Time.zone.local(2026, 6, 1, 10, 0, 0),
+    ready_at: Time.zone.local(2026, 6, 1, 12, 0, 0),
+    note: "TEST — rappel retrait avancé, sans date avant juin."
+  }
 ]
 
 reminder_orders = reminder_scenarios.map do |scenario|
-  created_at = business_days_ago.call(scenario[:waiting] + 1)
-
   order = create_order_with_lines!(
     establishment: establishment,
     customer: scenario[:customer],
     status: "sent",
     priority: "medium",
-    created_at: created_at,
-    due_date: created_at.to_date,
+    created_at: scenario[:created_at],
+    due_date: scenario[:created_at].to_date,
     payment_method: "card",
     payment_status: "paid",
-    paid_at: created_at,
+    paid_at: scenario[:created_at],
     collected_at: nil,
     internal_notes: scenario[:note],
     lines: [{ item: reminder_item, quantity: 1 }]
   )
 
-  ready_at = scenario[:waiting].zero? ? Time.current : business_days_ago.call(scenario[:waiting])
-  order.update_columns(sms_reminder: true, ready_at: ready_at)
+  order.update_columns(
+    sms_reminder: true,
+    ready_at: scenario[:ready_at]
+  )
 
   order
 end
@@ -376,17 +385,35 @@ end
 puts "Creating due-date-alert test orders..."
 
 [
-  { customer: customers[16], status: "pending", offset: 1, note: "TEST — retrait imminent J+1." },
-  { customer: customers[17], status: "in_progress", offset: 0, note: "TEST — retrait aujourd’hui." },
-  { customer: customers[18], status: "in_progress", offset: -2, note: "TEST — retrait dépassé J-2." }
+  {
+    customer: customers[16],
+    status: "pending",
+    created_at: Time.zone.local(2026, 6, 8, 10, 0, 0),
+    due_date: Date.new(2026, 6, 12),
+    note: "TEST — retrait imminent J+1."
+  },
+  {
+    customer: customers[17],
+    status: "in_progress",
+    created_at: Time.zone.local(2026, 6, 8, 11, 0, 0),
+    due_date: Date.new(2026, 6, 11),
+    note: "TEST — retrait aujourd’hui."
+  },
+  {
+    customer: customers[18],
+    status: "in_progress",
+    created_at: Time.zone.local(2026, 6, 8, 12, 0, 0),
+    due_date: Date.new(2026, 6, 9),
+    note: "TEST — retrait dépassé J-2."
+  }
 ].each do |scenario|
   create_order_with_lines!(
     establishment: establishment,
     customer: scenario[:customer],
     status: scenario[:status],
     priority: "high",
-    created_at: Time.current - 3.days,
-    due_date: Date.current + scenario[:offset],
+    created_at: scenario[:created_at],
+    due_date: scenario[:due_date],
     payment_method: "card",
     payment_status: "unpaid",
     paid_at: nil,
