@@ -20,14 +20,21 @@ class DashboardsController < ApplicationController
     @period_label = PERIOD_OPTIONS[@period]
 
     start_date, end_date = period_range(@period)
-    @period_orders = @orders.where(created_at: start_date.beginning_of_day..end_date.end_of_day)
+    period_range_full = start_date.beginning_of_day..end_date.end_of_day
+    @period_orders = @orders.where(created_at: period_range_full)
+
+    # Indicateurs du bloc "Résumé de l'activité" : tous sensibles à la période choisie.
+    @period_in_progress_count = @period_orders.where(status: ["pending", "in_progress"]).count
+    @period_customers_count = @customers.where(created_at: period_range_full).count
 
     @orders_in_progress = @orders.where(status: ["pending", "in_progress"])
     @urgent_orders = @orders.select(&:urgent?)
     @completed_orders = @orders.where(status: "completed")
     @paid_orders = @orders.select(&:paid?)
 
-    @revenue = @paid_orders.sum(&:total_ttc)
+    # "Votre journée" : chiffre d'affaires encaissé AUJOURD'HUI (commandes du jour payées).
+    # Pas de date de paiement en base -> on se base sur created_at du jour.
+    @revenue = @orders.where(created_at: Date.current.all_day).select(&:paid?).sum(&:total_ttc)
 
     @recent_orders = @orders.order(created_at: :desc).limit(5)
     @recent_customers = @customers.order(created_at: :desc).limit(5)

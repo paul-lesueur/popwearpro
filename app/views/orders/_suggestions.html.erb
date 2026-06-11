@@ -54,7 +54,8 @@
         <div>
           <label class="form-label small mb-1" for="reschedule_due_date_<%= order.id %>">Définir la nouvelle date de retrait</label>
           <%= f.date_field :due_date, id: "reschedule_due_date_#{order.id}", value: order.due_date,
-                min: Date.current, required: true, class: "form-control form-control-sm" %>
+                min: Date.current, required: true, class: "form-control form-control-sm",
+                data: { controller: "datepicker" } %>
         </div>
         <%= f.submit "Mettre à jour la date de retrait",
               class: "btn btn-sm #{d.negative? ? "btn-danger" : "btn-warning"}" %>

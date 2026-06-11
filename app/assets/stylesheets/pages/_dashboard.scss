@@ -62,8 +62,8 @@
 
   h2 {
     margin: 0;
-    font-size: 24px;
-    font-weight: 800;
+    font-size: 20px;
+    font-weight: 700; // titre de section : League Spartan bold (comme avant)
     color: $text-primary;
   }
 }
@@ -108,16 +108,18 @@
 
   h3 {
     margin: 18px 0 4px;
+    font-family: $font-body; // chiffre en Inter
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 700;
     color: $secondary;
     line-height: 1.15;
   }
 
   p {
     margin: 0;
+    font-family: $font-body; // label en Inter
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 500;
     color: $secondary;
   }
 
@@ -147,6 +149,10 @@
 
 .dashboard-v2__quick-card--peach {
   border-top-color: #b8957d;
+}
+
+.dashboard-v2__quick-card--red {
+  border-top-color: #e5484d;
 }
 
 .dashboard-v2__quick-icon {
@@ -189,6 +195,11 @@
   color: #9b725b;
 }
 
+.dashboard-v2__quick-icon--red {
+  background: #fdecec;
+  color: #e5484d;
+}
+
 .dashboard-v2__summary-card,
 .dashboard-v2__panel {
   background: #ffffff;
@@ -216,7 +227,7 @@
   h2 {
     margin: 0;
     font-size: 20px;
-    font-weight: 800;
+    font-weight: 700; // titre de section : League Spartan bold (comme avant)
     color: $text-primary;
   }
 }
@@ -266,13 +277,18 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #fff3ed;
-  color: #ff6b35;
-  border: 1px solid #ffe0d2;
+  border-radius: $radius; // 12px, même design que "Voir le détail"
+  background: #fff;
+  color: $secondary;
+  border: 1px solid $primary;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease, opacity .15s ease;
 
   &:hover {
-    color: #ff6b35;
-    background: #ffe8dc;
+    background: #fff;
+    border-color: #DD4E18;
+    color: $secondary;
+    transform: translateY(-1px);
+    opacity: .92;
   }
 }
 
@@ -295,13 +311,16 @@
 
   h3 {
     margin: 0 0 6px;
+    font-family: $font-body; // chiffre en Inter
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 700;
     color: $text-primary;
   }
 
   p {
     margin: 0;
+    font-family: $font-body; // label en Inter
+    font-weight: 500;
     color: #ab9ea3;
     font-size: 14px;
     line-height: 1.35;
@@ -358,8 +377,8 @@
 
   h2 {
     margin: 0 0 6px;
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 20px;
+    font-weight: 700; // titre de section : League Spartan bold (comme avant)
     color: $text-primary;
   }
 
@@ -421,6 +440,8 @@
   }
 
   strong {
+    font-family: $font-body; // nom client en Inter
+    font-size: 14px;
     color: #411221;
     font-weight: 800;
   }
@@ -432,7 +453,7 @@
   justify-content: center;
   min-height: 30px;
   padding: 0 14px;
-  border-radius: 999px;
+  border-radius: $radius; // 12px, design unifié (pas de pilule)
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
@@ -496,6 +517,8 @@
   strong {
     display: block;
     margin-bottom: 4px;
+    font-family: $font-body; // nom client en Inter, même taille que la table
+    font-size: 14px;
     color: #411221;
     font-weight: 800;
   }

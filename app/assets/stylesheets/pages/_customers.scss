@@ -334,9 +334,9 @@
   }
 
   p {
-    margin: 10px 0 0;
-    color: $subtext;
-    font-size: 15px;
+    margin: 6px 0 0;
+    color: $subtext; // lavande, comme "Client #id" dans la table
+    font-size: 13px;
   }
 }
 
@@ -498,7 +498,7 @@
   justify-content: center !important;
   gap: 5px !important;
   min-height: 26px !important;
-  border-radius: 999px !important;
+  border-radius: 12px !important; // design unifié (pas de pilule)
   padding: 5px 11px !important;
   border: none !important;
   font-size: 11px !important;

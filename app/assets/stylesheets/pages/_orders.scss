@@ -140,6 +140,10 @@ body.detail-modal-open {
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+
+    // Le bloc texte prend toute la largeur dispo ; l'indicateur ne rétrécit pas.
+    > div:first-child { flex: 1; min-width: 0; }
+    > :last-child { flex-shrink: 0; }
   }
 
   &__name {
@@ -155,6 +159,7 @@ body.detail-modal-open {
     font-size: 0.85rem;
     line-height: 1.45;
     color: $subtext;
+    white-space: nowrap; // n° de commande sur une seule ligne
   }
 
   &__divider {

@@ -94,7 +94,7 @@
         <%= number_to_currency(@revenue, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
       </h3>
 
-      <p>Chiffre encaissé</p>
+      <p>Chiffre d'affaires encaissé</p>
     <% end %>
 
     <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--orange" do %>
@@ -106,8 +106,8 @@
       <p>Commandes récentes</p>
     <% end %>
 
-    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--yellow" do %>
-      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--yellow">
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--red" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--red">
         <i class="fa-solid fa-clock"></i>
       </div>
 
@@ -115,13 +115,13 @@
       <p>Commandes urgentes</p>
     <% end %>
 
-    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--coral" do %>
-      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--coral">
-        <i class="fa-solid fa-scissors"></i>
+    <%= link_to orders_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--yellow" do %>
+      <div class="dashboard-v2__quick-icon dashboard-v2__quick-icon--yellow">
+        <i class="fa-solid fa-list-check"></i>
       </div>
 
       <h3><%= @orders_in_progress.count %></h3>
-      <p>À traiter</p>
+      <p>Commandes à traiter</p>
     <% end %>
 
     <%= link_to customers_path, class: "dashboard-v2__quick-card dashboard-v2__quick-card--peach" do %>
@@ -185,7 +185,7 @@
 
       <div class="dashboard-v2__summary-item">
         <div>
-          <h3><%= @orders_in_progress.count %></h3>
+          <h3><%= @period_in_progress_count %></h3>
           <p>Commandes en cours</p>
         </div>
 
@@ -196,7 +196,7 @@
 
       <div class="dashboard-v2__summary-item">
         <div>
-          <h3><%= @customers.count %></h3>
+          <h3><%= @period_customers_count %></h3>
           <p>Clients enregistrés</p>
         </div>
 
@@ -211,7 +211,7 @@
     <section class="dashboard-v2__panel dashboard-v2__panel--large">
       <div class="dashboard-v2__panel-head">
         <div>
-          <h2>Commandes en cours</h2>
+          <h2>Commandes en cours — Vue client</h2>
           <p><%= @orders_in_progress.count %> réparation(s) &amp; création(s) en cours</p>
         </div>
 

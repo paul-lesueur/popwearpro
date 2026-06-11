@@ -21,7 +21,7 @@
 }
 
 .app-sidebar__brand-logo {
-  max-width: 180px;
+  max-width: 220px;
   height: auto;
 }
 
@@ -181,6 +181,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+// Indicateur de plan : Inter, lavande, non cliquable (simple label).
+.app-sidebar__plan {
+  font-family: $font-body;
+  font-size: .78rem;
+  color: $subtext;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
 // ---- Off-canvas mobile (<992px) ----
