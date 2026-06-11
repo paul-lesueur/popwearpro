@@ -51,7 +51,7 @@ export default class extends Controller {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+        "X-CSRF-Token": this.#csrfToken
       },
       body: JSON.stringify({ status })
     })
@@ -66,8 +66,12 @@ export default class extends Controller {
     }
   }
 
+  get #csrfToken() {
+    return document.querySelector('meta[name="csrf-token"]').content
+  }
+
   #showSmsConfirmation(orderId, phone, customerName) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content
+    const csrfToken = this.#csrfToken
 
     let container = document.querySelector(".sms-toast-container")
     if (!container) {
@@ -103,9 +107,12 @@ export default class extends Controller {
       }, { once: true })
     }
 
-    toast.querySelector("[data-role='confirm']").addEventListener("click", async () => {
-      toast.querySelector("[data-role='confirm']").disabled = true
-      toast.querySelector("[data-role='dismiss']").disabled = true
+    const confirmBtn = toast.querySelector("[data-role='confirm']")
+    const dismissBtn = toast.querySelector("[data-role='dismiss']")
+
+    confirmBtn.addEventListener("click", async () => {
+      confirmBtn.disabled = true
+      dismissBtn.disabled = true
       // Le serveur renvoie le vrai résultat (envoyé / déjà envoyé / sans téléphone).
       // En cas d'échec réseau, on ne reste pas bloqué : on affiche une erreur.
       let result
@@ -127,7 +134,7 @@ export default class extends Controller {
       closeAndReload()
     })
 
-    toast.querySelector("[data-role='dismiss']").addEventListener("click", () => {
+    dismissBtn.addEventListener("click", () => {
       sessionStorage.setItem("smsFlash", JSON.stringify({ variant: "info", message: "SMS « commande prête » non envoyé." }))
       closeAndReload()
     })

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { formatMoney } from "../utils/money"
 
 // Panier d'une commande : on clique une carte prestation pour l'ajouter/retirer,
 // et les totaux (sous-total HT, TVA, total TTC) se recalculent en direct.
@@ -63,17 +64,13 @@ export default class extends Controller {
       vat += (price * rate) / 100
     })
 
-    this.subtotalTarget.textContent = this.format(ht)
-    this.vatTarget.textContent = this.format(vat)
-    this.totalTarget.textContent = this.format(ht + vat)
+    this.subtotalTarget.textContent = formatMoney(ht)
+    this.vatTarget.textContent = formatMoney(vat)
+    this.totalTarget.textContent = formatMoney(ht + vat)
 
     if (this.hasEmptyTarget) {
       this.emptyTarget.classList.toggle("d-none", this.linesTarget.children.length > 0)
     }
   }
 
-  // Formate un nombre en "12,50 €" (séparateur décimal français).
-  format(amount) {
-    return `${amount.toFixed(2).replace(".", ",")} €`
-  }
 }

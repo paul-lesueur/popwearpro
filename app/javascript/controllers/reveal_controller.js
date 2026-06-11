@@ -11,7 +11,7 @@ export default class extends Controller {
       setTimeout(() => {
         this.element.classList.remove("reveal--hidden")
         this.element.classList.add("reveal--visible")
-      }, this.delayValue || 0)
+      }, this.delayValue)
       this.observer.disconnect()
     }, { threshold: 0.25 })
 
