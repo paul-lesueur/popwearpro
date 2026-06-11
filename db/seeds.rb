@@ -366,19 +366,28 @@ end
 
 puts "Creating history-demo order..."
 
+history_created_at = Time.zone.local(2026, 6, 4, 10, 0, 0)
+history_ready_at = Time.zone.local(2026, 6, 5, 10, 0, 0)
+history_reminder_at = Time.zone.local(2026, 6, 10, 10, 0, 0)
+
 history_order = create_order_with_lines!(
   establishment: establishment,
   customer: customers[6],
   status: "sent",
   priority: "medium",
-  created_at: business_days_ago.call(5),
-  due_date: business_days_ago.call(5).to_date,
+  created_at: history_created_at,
+  due_date: history_created_at.to_date,
   payment_method: "card",
   payment_status: "paid",
-  paid_at: business_days_ago.call(5),
+  paid_at: history_created_at,
   collected_at: nil,
   internal_notes: "TEST — historique complet email + SMS.",
   lines: [{ item: reminder_item, quantity: 1 }]
+)
+
+history_order.update_columns(
+  sms_reminder: true,
+  ready_at: history_ready_at
 )
 
 history_order.communications.create!(
@@ -386,7 +395,7 @@ history_order.communications.create!(
   kind: "ready",
   status: "sent",
   content: history_order.sms_ready_message,
-  sent_at: business_days_ago.call(4)
+  sent_at: history_ready_at
 )
 
 history_order.communications.create!(
@@ -394,7 +403,7 @@ history_order.communications.create!(
   kind: "reminder_j3",
   status: "sent",
   content: history_order.pickup_reminder_message,
-  sent_at: business_days_ago.call(1)
+  sent_at: history_reminder_at
 )
 
 puts "Seeds finished!"
