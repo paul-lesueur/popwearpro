@@ -1,54 +1,72 @@
-<div class="devise-page">
+<div class="auth-page">
+  <section class="auth-hero">
+    <%= link_to root_path, class: "auth-logo-chip" do %>
+      <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "auth-logo" %>
+    <% end %>
 
-  <div class="devise-page__brand">
-    <div>
-      <h1>Popwear Pro</h1>
-      <p>Gestion simplifiée pour artisans maroquiniers</p>
-    </div>
-  </div>
+    <div class="auth-hero-content">
+      <h1>Choisissez un nouveau mot de passe.</h1>
 
-  <div class="devise-page__content">
-    <div class="devise-card">
-
-      <h1 class="devise-card__title">Changer le mot de passe</h1>
-
-      <p class="devise-card__subtitle">
-        Choisissez un nouveau mot de passe sécurisé.
+      <p>
+        Définissez un nouveau mot de passe sécurisé pour retrouver l’accès à votre espace Popwear Pro.
       </p>
 
-      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+      <div class="auth-highlights">
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Compte sécurisé</span>
+        </div>
+
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Accès protégé</span>
+        </div>
+
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Retour immédiat à votre espace</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="auth-form-section">
+    <div class="auth-card auth-card--password">
+      <div class="auth-card-header">
+        <span class="auth-card-kicker">Sécurité</span>
+        <h2>Nouveau mot de passe</h2>
+        <p>Choisissez un nouveau mot de passe pour votre compte.</p>
+      </div>
+
+      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "auth-form" }) do |f| %>
         <%= f.error_notification %>
 
         <%= f.input :reset_password_token, as: :hidden %>
         <%= f.full_error :reset_password_token %>
 
-        <div class="form-inputs">
-          <%= f.input :password,
-                      required: true,
-                      autofocus: true,
-                      label: false,
-                      placeholder: "Nouveau mot de passe",
-                      hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
-                      input_html: { autocomplete: "new-password" } %>
+        <%= f.input :password,
+                    required: true,
+                    autofocus: true,
+                    label: "Nouveau mot de passe",
+                    placeholder: "Votre nouveau mot de passe",
+                    hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
+                    input_html: { autocomplete: "new-password" } %>
 
-          <%= f.input :password_confirmation,
-                      required: true,
-                      label: false,
-                      placeholder: "Confirmer le nouveau mot de passe",
-                      input_html: { autocomplete: "new-password" } %>
-        </div>
+        <%= f.input :password_confirmation,
+                    required: true,
+                    label: "Confirmation",
+                    placeholder: "Confirmez votre nouveau mot de passe",
+                    input_html: { autocomplete: "new-password" } %>
 
-        <div class="form-actions">
-          <%= f.button :submit, "Changer mon mot de passe" %>
-        </div>
+        <%= f.button :submit, "Modifier mon mot de passe", class: "auth-submit" %>
       <% end %>
 
-      <div class="devise-card__links">
-        <%= link_to "Se connecter", new_session_path(resource_name) %><br>
-        <%= link_to "Créer un compte", new_registration_path(resource_name) %>
+      <div class="auth-footer">
+        <p>
+          Retour à la connexion ?
+          <%= link_to "Se connecter", new_session_path(resource_name), class: "auth-link" %>
+        </p>
       </div>
-
     </div>
-  </div>
-
+  </section>
 </div>

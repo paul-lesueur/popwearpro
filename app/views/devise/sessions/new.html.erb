@@ -1,66 +1,79 @@
-<div class="devise-page">
-
-  <div class="devise-page__brand">
-    <%= link_to root_path do %>
-      <%= image_tag "logo-popwear-pro.png",
-                    alt: "Popwear Pro",
-                    width: 150,
-                    style: "position: absolute; top: 32px; left: 48px;" %>
+<div class="auth-page">
+  <section class="auth-hero">
+    <%= link_to root_path, class: "auth-logo-chip" do %>
+      <%= image_tag "logo-popwear-pro.png", alt: "Popwear Pro", class: "auth-logo" %>
     <% end %>
-  </div>
 
-  <div class="devise-page__content">
-    <div class="devise-card">
+    <div class="auth-hero-content">
+      <h1>Pilotez votre atelier simplement.</h1>
 
-      <h1 class="devise-card__title">Se connecter</h1>
-
-      <p class="devise-card__subtitle">
-        Connectez-vous avec votre adresse e-mail
+      <p>
+        Commandes, clients, prestations et ventes réunis dans une interface claire pensée pour les artisans.
       </p>
 
-      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="auth-highlights">
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Suivi des commandes atelier</span>
+        </div>
 
-        <div class="form-inputs">
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Clients et historique centralisés</span>
+        </div>
 
-          <%= f.input :email,
-                      required: false,
-                      autofocus: true,
-                      label: false,
-                      placeholder: "Email",
-                      input_html: { autocomplete: "email" } %>
+        <div>
+          <i class="fa-solid fa-check"></i>
+          <span>Tableau de bord clair et rapide</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <%= f.input :password,
-                      required: false,
-                      label: false,
-                      placeholder: "Mot de passe",
-                      input_html: { autocomplete: "current-password" } %>
+  <section class="auth-form-section">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <span class="auth-card-kicker">Connexion</span>
+        <h2>Se connecter</h2>
+        <p>Accédez à votre espace Popwear Pro.</p>
+      </div>
 
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "auth-form" }) do |f| %>
+        <%= f.input :email,
+                    required: false,
+                    autofocus: true,
+                    label: "Adresse e-mail",
+                    placeholder: "exemple@email.com",
+                    input_html: { autocomplete: "email" } %>
+
+        <%= f.input :password,
+                    required: false,
+                    label: "Mot de passe",
+                    placeholder: "Votre mot de passe",
+                    input_html: { autocomplete: "current-password" } %>
+
+        <div class="auth-options">
           <% if devise_mapping.rememberable? %>
             <%= f.input :remember_me,
                         as: :boolean,
-                        label: "Se souvenir de moi" %>
+                        label: "Se souvenir de moi",
+                        wrapper_html: { class: "auth-remember" } %>
           <% end %>
-
         </div>
 
-        <div class="form-actions">
-          <%= f.button :submit, "Se connecter" %>
-        </div>
-
+        <%= f.button :submit, "Se connecter", class: "auth-submit" %>
       <% end %>
 
-      <p class="devise-card__footer">
-        Pas encore de compte ?
-        <%= link_to "S'inscrire", new_registration_path(resource_name) %>
-      </p>
+      <div class="auth-footer">
+        <% if devise_mapping.recoverable? %>
+          <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class: "auth-link auth-password-link" %>
+        <% end %>
 
-      <% if devise_mapping.recoverable? %>
-        <div class="devise-card__links">
-          <%= link_to "Mot de passe oublié ?", new_password_path(resource_name) %>
-        </div>
-      <% end %>
-
+        <p>
+          Pas encore de compte ?
+          <%= link_to "Créer un compte", new_registration_path(resource_name), class: "auth-link" %>
+        </p>
+      </div>
     </div>
-  </div>
-
+  </section>
 </div>
