@@ -2,10 +2,30 @@
 <html>
   <head>
     <title><%= content_for(:title) || "Popwear Pro" %></title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Popwear Pro aide les artisans à gérer leurs commandes, leurs clients, leurs ventes et leur atelier au quotidien.">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Popwearpro">
+    <meta name="application-name" content="Popwear Pro">
     <meta name="mobile-web-app-capable" content="yes">
+
+    <%# Open Graph %>
+    <meta property="og:title" content="Popwear Pro — Gestion d’atelier pour artisans">
+    <meta property="og:description" content="Un outil simple pour gérer les commandes, clients, ventes et suivis d’atelier des artisans.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:image" content="<%= "#{request.base_url}#{asset_path('og-popwear-pro.png')}" %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Aperçu de l’application Popwear Pro">
+
+    <%# Twitter / X preview %>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Popwear Pro — Gestion d’atelier pour artisans">
+    <meta name="twitter:description" content="Un outil simple pour gérer les commandes, clients, ventes et suivis d’atelier des artisans.">
+    <meta name="twitter:image" content="<%= "#{request.base_url}#{asset_path('og-popwear-pro.png')}" %>">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
