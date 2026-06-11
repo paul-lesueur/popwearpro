@@ -350,6 +350,8 @@ span.flatpickr-weekday { color: $w-muted; font-weight: 700; }
 .cmddone__title { font-family: $font-heading; font-weight: 700; font-size: 1.5rem; color: $w-ink; }
 .cmddone__sub { color: $w-ink-soft; font-size: .9375rem; margin: 8px auto 0; line-height: 1.55; max-width: 440px; }
 .cmddone__outputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 620px; margin: 26px auto 0; }
+// 3 cartes (carte email présente) : grille équilibrée à 3 colonnes.
+.cmddone__outputs--three { grid-template-columns: repeat(3, 1fr); max-width: 920px; }
 .cmddone__card { display: flex; gap: 14px; align-items: flex-start; text-align: left; padding: 18px; border: 1px solid $w-line; border-radius: $radius; background: $bg-card; }
 .cmddone__card-ic { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 12px; background: $w-orange-soft; color: $w-orange-press; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
 .cmddone__card-title { font-family: $font-heading; font-weight: 700; font-size: .9rem; }

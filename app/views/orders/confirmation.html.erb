@@ -8,18 +8,18 @@
         a été enregistrée. Voici ce qui a été généré&nbsp;:
       </div>
 
-      <div class="cmddone__outputs">
+      <div class="cmddone__outputs <%= "cmddone__outputs--three" if @order.email_confirmation? %>">
         <div class="cmddone__card">
           <span class="cmddone__card-ic"><i class="fa-solid fa-tag"></i></span>
           <div>
-            <div class="cmddone__card-title">Ligne de commande</div>
-            <div class="cmddone__card-desc">Ajoutée au suivi de l'établissement — prête à passer en préparation.</div>
+            <div class="cmddone__card-title">Nouvelle commande</div>
+            <div class="cmddone__card-desc">Ajoutée au suivi des commandes.</div>
           </div>
         </div>
         <div class="cmddone__card">
           <span class="cmddone__card-ic"><i class="fa-solid fa-clipboard"></i></span>
           <div>
-            <div class="cmddone__card-title"><%= @order.document_label %></div>
+            <div class="cmddone__card-title"><%= @order.document_label == "Facture" ? "Facture éditée" : @order.document_label %></div>
             <div class="cmddone__card-desc">
               <%= number_to_currency(@order.total_due, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               · <%= @order.payment_method.presence || "—" %>
@@ -27,12 +27,25 @@
             </div>
           </div>
         </div>
+
+        <%# Vignette affichée uniquement si la confirmation par e-mail était activée. %>
+        <% if @order.email_confirmation? %>
+          <div class="cmddone__card">
+            <span class="cmddone__card-ic"><i class="fa-solid fa-envelope"></i></span>
+            <div>
+              <div class="cmddone__card-title">Email</div>
+              <div class="cmddone__card-desc">Email de confirmation envoyé</div>
+            </div>
+          </div>
+        <% end %>
       </div>
 
       <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
-        <%= link_to "Retour aux commandes", orders_path, class: "btn btn-light" %>
-        <%= link_to order_path(@order), class: "btn btn-primary" do %>
-          <i class="fa-solid fa-clipboard me-2"></i>Voir la commande
+        <%= link_to orders_path, class: "btn-wiz btn-wiz--ghost" do %>
+          <i class="fa-solid fa-arrow-left"></i>Retour aux commandes
+        <% end %>
+        <%= link_to orders_path(open: @order.id), class: "btn-wiz btn-wiz--primary" do %>
+          <i class="fa-solid fa-clipboard"></i>Voir la commande
         <% end %>
       </div>
     </div>

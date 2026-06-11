@@ -4,10 +4,9 @@
   padding: 1.25rem 1rem;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  min-height: 100vh;
+  height: calc(100vh - 64px); // sous la navbar horizontale
   position: sticky;
-  top: 0;
+  top: 64px;
   overflow: hidden;
 }
 
