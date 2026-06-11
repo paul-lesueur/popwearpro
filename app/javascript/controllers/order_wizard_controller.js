@@ -5,7 +5,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "step", "stepperItem", "stepperLine",
-    "clientModeInput", "clientPanel", "clientName",
+    "clientModeInput", "clientPanel", "clientName", "clientNumber",
     "clientSearch", "clientRow", "customerIdInput", "clientEmpty",
     "tile", "lines", "ticketLines", "ticketEmpty", "ticketClear",
     "recapLines", "receiptLines",
@@ -212,6 +212,7 @@ export default class extends Controller {
 
     // nom du client (récap / reçu)
     this.clientNameTargets.forEach((e) => (e.textContent = this.clientName()))
+    this.clientNumberTargets.forEach((e) => (e.textContent = this.clientNumber()))
     this.methodLabelTargets.forEach((e) => (e.textContent = this.method || "—"))
     this.statusLabelTargets.forEach((e) => (e.textContent = this.status === "paid" ? "Payé" : this.status === "unpaid" ? "Au retrait" : "—"))
 
@@ -327,6 +328,15 @@ export default class extends Controller {
     }
     const name = this.element.querySelector("[name='order[new_name]']")
     return (name && name.value.trim()) || "Nouveau client"
+  }
+
+  // Sous le nom dans le récap : n° client pour un client existant, sinon le type.
+  clientNumber() {
+    if (this.mode === "existing" && this.customerIdInputTarget.value) {
+      return `Client #${this.customerIdInputTarget.value}`
+    }
+    if (this.mode === "new") return "Nouveau client"
+    return "Client de passage"
   }
 }
 

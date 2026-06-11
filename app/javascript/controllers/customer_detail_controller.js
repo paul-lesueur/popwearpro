@@ -6,6 +6,7 @@ export default class extends Controller {
   static targets = [
     "row",
     "name",
+    "number",
     "initials",
     "emailInDetails",
     "phone",
@@ -25,6 +26,7 @@ export default class extends Controller {
     row.classList.add("is-selected")
 
     this.nameTarget.textContent = row.dataset.name || "Client"
+    this.numberTarget.textContent = row.dataset.customerId ? `Client #${row.dataset.customerId}` : "—"
     this.initialsTarget.textContent = row.dataset.initials || "CL"
     this.emailInDetailsTarget.textContent = row.dataset.email || "Email non renseigné"
     this.phoneTarget.textContent = row.dataset.phone || "Téléphone non renseigné"

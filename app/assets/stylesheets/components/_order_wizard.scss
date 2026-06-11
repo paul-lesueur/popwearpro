@@ -245,7 +245,7 @@ $w-hover:         #FBF7F5;
 // Titres de section uniformes de l'étape Informations (Date, Commentaires, SMS, CGV) :
 // League Spartan, même poids/taille pour les labels de champ et les libellés de toggle.
 .inforow__title,
-.wizlabel { font-family: $font-heading; font-weight: 700; font-size: 1rem; color: $w-ink; }
+.wizlabel { font-family: $font-heading; font-weight: 700; font-size: 1.125rem; color: $w-ink; }
 .inforow__desc { color: $w-muted; font-size: .8125rem; margin-top: 3px; line-height: 1.45; max-width: 420px; }
 
 // Champ "Date de retrait" — input date habillé (charte + icône calendrier teintée).
